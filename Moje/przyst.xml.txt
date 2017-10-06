@@ -1,0 +1,179 @@
+<stops>
+<stop cat="tram" latTtss="180367133" lonTtss="72043450" lat="50.1019813888889" lon="20.0120694444444" name="Os.Piastów" id="378" >
+<stop cat="tram" latTtss="180234831" lonTtss="71825984" lat="50.0652308333333" lon="19.9516622222222" name="Lubicz" id="126" >
+<stop cat="tram" latTtss="180074257" lonTtss="71632051" lat="50.0206269444444" lon="19.8977919444444" name="Chmieleniec" id="2691" >
+<stop cat="tram" latTtss="180064597" lonTtss="71601349" lat="50.0179436111111" lon="19.8892636111111" name="Czerwone Maki P+R" id="3038" >
+<stop cat="tram" latTtss="180087693" lonTtss="71646235" lat="50.0243591666667" lon="19.9017319444444" name="Kampus UJ" id="2690" >
+<stop cat="tram" latTtss="180048914" lonTtss="71821671" lat="50.0135872222222" lon="19.9504641666667" name="Kurdwanów" id="744" >
+<stop cat="tram" latTtss="180088119" lonTtss="71762192" lat="50.0244775" lon="19.9339422222222" name="£agiewniki ZUS" id="2821" >
+<stop cat="tram" latTtss="180047695" lonTtss="71736393" lat="50.0132486111111" lon="19.9267758333333" name="Borek Fa³êcki" id="747" >
+<stop cat="tram" latTtss="180052313" lonTtss="71740458" lat="50.0145313888889" lon="19.927905" name="Borek Fa³êcki I" id="824" >
+<stop cat="tram" latTtss="180058468" lonTtss="71746670" lat="50.0162411111111" lon="19.9296305555556" name="Solvay" id="746" >
+<stop cat="tram" latTtss="180080431" lonTtss="71757823" lat="50.0223419444444" lon="19.9327286111111" name="Sanktuarium Bo¿ego Mi³osierdzia" id="615" >
+<stop cat="tram" latTtss="180263081" lonTtss="71696364" lat="50.0730780555556" lon="19.9156566666667" name="Biprostal" id="84" >
+<stop cat="tram" latTtss="180189697" lonTtss="71695213" lat="50.0526936111111" lon="19.9153369444444" name="Salwator" id="311" >
+<stop cat="tram" latTtss="180097653" lonTtss="71660276" lat="50.0271258333333" lon="19.9056322222222" name="Ruczaj" id="589" >
+<stop cat="tram" latTtss="180108113" lonTtss="71685718" lat="50.0300313888889" lon="19.9126994444444" name="Norymberska" id="2688" >
+<stop cat="tram" latTtss="180220900" lonTtss="71679150" lat="50.0613611111111" lon="19.910875" name="Reymana" id="320" >
+<stop cat="tram" latTtss="180157950" lonTtss="71809135" lat="50.043875" lon="19.9469819444444" name="Korona" id="571" >
+<stop cat="tram" latTtss="180110753" lonTtss="71729800" lat="50.0307647222222" lon="19.9249444444444" name="Lipiñskiego" id="2686" >
+<stop cat="tram" latTtss="180114083" lonTtss="71714885" lat="50.0316897222222" lon="19.9208013888889" name="Grota-Roweckiego" id="2687" >
+<stop cat="tram" latTtss="180109861" lonTtss="71743736" lat="50.0305169444444" lon="19.9288155555556" name="Borsucza" id="612" >
+<stop cat="tram" latTtss="180124296" lonTtss="71733518" lat="50.0345266666667" lon="19.9259772222222" name="Kobierzyñska" id="584" >
+<stop cat="tram" latTtss="180109799" lonTtss="71754497" lat="50.0304997222222" lon="19.9318047222222" name="Bro¿ka" id="613" >
+<stop cat="tram" latTtss="180148135" lonTtss="71727501" lat="50.0411486111111" lon="19.9243058333333" name="S³omiana" id="577" >
+<stop cat="tram" latTtss="180119708" lonTtss="71778550" lat="50.0332522222222" lon="19.9384861111111" name="Rzemieœlnicza" id="611" >
+<stop cat="tram" latTtss="180114207" lonTtss="71762733" lat="50.0317241666667" lon="19.9340925" name="PT" id="614" >
+<stop cat="tram" latTtss="180107850" lonTtss="71769998" lat="50.0299583333333" lon="19.9361105555556" name="£agiewniki" id="922" >
+<stop cat="tram" latTtss="180131163" lonTtss="71786300" lat="50.0364341666667" lon="19.9406388888889" name="Rondo Matecznego" id="610" >
+<stop cat="tram" latTtss="180149478" lonTtss="71795415" lat="50.0415216666667" lon="19.9431708333333" name="Smolki" id="572" >
+<stop cat="other" latTtss="180213932" lonTtss="71730079" lat="50.0594255555556" lon="19.9250219444444" name="Cracovia" id="318" >
+<stop cat="tram" latTtss="180213932" lonTtss="71730079" lat="50.0594255555556" lon="19.9250219444444" name="Muzeum Narodowe" id="3141" >
+<stop cat="tram" latTtss="180162052" lonTtss="71719420" lat="50.0450144444444" lon="19.9220611111111" name="Kapelanka" id="576" >
+<stop cat="other" latTtss="180174943" lonTtss="71751643" lat="50.0485952777778" lon="19.9310119444444" name="Most Grunwaldzki" id="574" >
+<stop cat="tram" latTtss="180174899" lonTtss="71751717" lat="50.0485830555556" lon="19.9310325" name="Centrum Kongresowe ICE" id="3039" >
+<stop cat="tram" latTtss="180168366" lonTtss="71731454" lat="50.0467683333333" lon="19.9254038888889" name="Szwedzka" id="575" >
+<stop cat="tram" latTtss="180192257" lonTtss="71718218" lat="50.0534047222222" lon="19.9217272222222" name="Komorowskiego" id="313" >
+<stop cat="tram" latTtss="180217018" lonTtss="71704348" lat="50.0602827777778" lon="19.9178744444444" name="Park Jordana" id="960" >
+<stop cat="tram" latTtss="180215404" lonTtss="71714643" lat="50.0598344444444" lon="19.9207341666667" name="Oleandry" id="823" >
+<stop cat="tram" latTtss="180198915" lonTtss="71739237" lat="50.0552541666667" lon="19.9275658333333" name="Jubilat" id="319" >
+<stop cat="tram" latTtss="180217279" lonTtss="71752656" lat="50.0603552777778" lon="19.9312933333333" name="Uniwersytet Jagielloñski" id="321" >
+<stop cat="tram" latTtss="180212247" lonTtss="71759953" lat="50.0589575" lon="19.9333202777778" name="Filharmonia" id="322" >
+<stop cat="tram" latTtss="180182070" lonTtss="71778588" lat="50.050575" lon="19.9384966666667" name="Orzeszkowej" id="361" >
+<stop cat="tram" latTtss="180186102" lonTtss="71790433" lat="50.051695" lon="19.9417869444444" name="Stradom" id="359" >
+<stop cat="other" latTtss="180179604" lonTtss="71810604" lat="50.04989" lon="19.94739" name="Muzeum In¿ynierii Miejskiej" id="2726" >
+<stop cat="tram" latTtss="180172775" lonTtss="71796294" lat="50.0479930555556" lon="19.943415" name="Plac Wolnica" id="360" >
+<stop cat="other" latTtss="180182304" lonTtss="71822304" lat="50.05064" lon="19.95064" name="Dajwór" id="915" >
+<stop cat="tram" latTtss="180183978" lonTtss="71823985" lat="50.051105" lon="19.9511069444444" name="Œw.Wawrzyñca" id="2742" >
+<stop cat="tram" latTtss="180196182" lonTtss="71782457" lat="50.054495" lon="19.9395713888889" name="Wawel" id="325" >
+<stop cat="tram" latTtss="180213089" lonTtss="71776500" lat="50.0591913888889" lon="19.9379166666667" name="Plac Wszystkich Œwiêtych" id="1360" >
+<stop cat="tram" latTtss="180210340" lonTtss="71786990" lat="50.0584277777778" lon="19.9408305555556" name="Œw.Gertrudy" id="2741" >
+<stop cat="tram" latTtss="180214076" lonTtss="71792015" lat="50.0594655555556" lon="19.9422263888889" name="Poczta G³ówna" id="357" >
+<stop cat="tram" latTtss="180206010" lonTtss="71803581" lat="50.057225" lon="19.9454391666667" name="Starowiœlna" id="358" >
+<stop cat="tram" latTtss="180192826" lonTtss="71814352" lat="50.0535627777778" lon="19.9484311111111" name="Miodowa" id="362" >
+<stop cat="tram" latTtss="180211207" lonTtss="71816125" lat="50.0586686111111" lon="19.9489236111111" name="Hala Targowa" id="363" >
+<stop cat="tram" latTtss="180284716" lonTtss="71630238" lat="50.0790877777778" lon="19.8972883333333" name="Wesele" id="133" >
+<stop cat="tram" latTtss="180226642" lonTtss="71651287" lat="50.0629561111111" lon="19.9031352777778" name="Cichy K¹cik" id="87" >
+<stop cat="tram" latTtss="180279461" lonTtss="71644220" lat="50.0776280555556" lon="19.9011722222222" name="Bronowice" id="89" >
+<stop cat="tram" latTtss="180274061" lonTtss="71659664" lat="50.0761280555556" lon="19.9054622222222" name="G³owackiego" id="1049" >
+<stop cat="tram" latTtss="180267420" lonTtss="71677535" lat="50.0742833333333" lon="19.9104263888889" name="Uniwersytet Pedagogiczny" id="88" >
+<stop cat="tram" latTtss="180295027" lonTtss="71577170" lat="50.0819519444444" lon="19.8825472222222" name="Bronowice Ma³e" id="135" >
+<stop cat="other" latTtss="180293148" lonTtss="71601153" lat="50.08143" lon="19.8892091666667" name="Balicka Wiadukt" id="134" >
+<stop cat="tram" latTtss="180293078" lonTtss="71601237" lat="50.0814105555556" lon="19.8892325" name="Bronowice Wiadukt" id="136" >
+<stop cat="tram" latTtss="180303281" lonTtss="71761873" lat="50.0842447222222" lon="19.9338536111111" name="Bratys³awska" id="61" >
+<stop cat="tram" latTtss="180319272" lonTtss="71753242" lat="50.0886866666667" lon="19.9314561111111" name="Krowodrza Górka" id="63" >
+<stop cat="tram" latTtss="180240862" lonTtss="71745438" lat="50.0669061111111" lon="19.9292883333333" name="Batorego" id="78" >
+<stop cat="tram" latTtss="180228878" lonTtss="71758536" lat="50.0635772222222" lon="19.9329266666667" name="Teatr Bagatela" id="77" >
+<stop cat="tram" latTtss="180249160" lonTtss="71735097" lat="50.0692111111111" lon="19.9264158333333" name="Plac Inwalidów" id="79" >
+<stop cat="tram" latTtss="180259199" lonTtss="71711001" lat="50.0719997222222" lon="19.9197225" name="Urzêdnicza" id="83" >
+<stop cat="tram" latTtss="180255545" lonTtss="71801840" lat="50.0709847222222" lon="19.9449555555556" name="Politechnika" id="73" >
+<stop cat="other" latTtss="180239020" lonTtss="71781145" lat="50.0663944444444" lon="19.9392069444444" name="Basztowa LOT" id="75" >
+<stop cat="other" latTtss="180238571" lonTtss="71782388" lat="50.0662697222222" lon="19.9395522222222" name="Stary Kleparz" id="3032" >
+<stop cat="other" latTtss="180250622" lonTtss="71775251" lat="50.0696172222222" lon="19.9375697222222" name="Pêdzichów" id="72" >
+<stop cat="tram" latTtss="180232794" lonTtss="71802022" lat="50.064665" lon="19.9450061111111" name="Dworzec G³ówny" id="131" >
+<stop cat="tram" latTtss="180244921" lonTtss="71803299" lat="50.0680336111111" lon="19.9453608333333" name="Dworzec G³ówny Zachód" id="2608" >
+<stop cat="tram" latTtss="180246297" lonTtss="71809578" lat="50.0684158333333" lon="19.947105" name="Dworzec G³ówny Tunel" id="1173" >
+<stop cat="tram" latTtss="180272154" lonTtss="71784192" lat="50.0755983333333" lon="19.9400533333333" name="Dworzec Towarowy" id="70" >
+<stop cat="other" latTtss="180264512" lonTtss="71771333" lat="50.0734755555556" lon="19.9364813888889" name="Nowy Kleparz" id="71" >
+<stop cat="other" latTtss="180290620" lonTtss="71776085" lat="50.0807277777778" lon="19.9378013888889" name="Pr¹dnicka" id="69" >
+<stop cat="tram" latTtss="180290484" lonTtss="71776260" lat="50.08069" lon="19.93785" name="Szpital Narutowicza" id="3036" >
+<stop cat="tram" latTtss="180044563" lonTtss="71842829" lat="50.0123786111111" lon="19.9563413888889" name="Witosa" id="718" >
+<stop cat="tram" latTtss="180048499" lonTtss="71873272" lat="50.0134719444444" lon="19.9647977777778" name="Nowos¹decka" id="715" >
+<stop cat="tram" latTtss="180084121" lonTtss="71929954" lat="50.0233669444444" lon="19.9805427777778" name="Bie¿anowska" id="630" >
+<stop cat="tram" latTtss="180055534" lonTtss="71897389" lat="50.0154261111111" lon="19.9714969444444" name="Piaski Nowe" id="716" >
+<stop cat="tram" latTtss="180066423" lonTtss="71919126" lat="50.0184508333333" lon="19.977535" name="Dauna" id="632" >
+<stop cat="tram" latTtss="180070051" lonTtss="71956735" lat="50.0194586111111" lon="19.9879819444444" name="Wlotowa" id="634" >
+<stop cat="tram" latTtss="180052049" lonTtss="71998775" lat="50.0144580555556" lon="19.9996597222222" name="Prokocim Szpital" id="682" >
+<stop cat="tram" latTtss="180063373" lonTtss="71967644" lat="50.0176036111111" lon="19.9910122222222" name="Prokocim" id="637" >
+<stop cat="tram" latTtss="180059594" lonTtss="72027118" lat="50.0165538888889" lon="20.0075327777778" name="Teligi" id="681" >
+<stop cat="tram" latTtss="180058408" lonTtss="72045634" lat="50.0162244444444" lon="20.0126761111111" name="Nowy Prokocim" id="2582" >
+<stop cat="tram" latTtss="180056187" lonTtss="72082990" lat="50.0156075" lon="20.0230527777778" name="Nowy Bie¿anów" id="2580" >
+<stop cat="tram" latTtss="180057659" lonTtss="72070712" lat="50.0160163888889" lon="20.0196422222222" name="Æwikliñskiej" id="679" >
+<stop cat="tram" latTtss="180151766" lonTtss="71859715" lat="50.0421572222222" lon="19.9610319444444" name="Powstañców Wielkopolskich" id="568" >
+<stop cat="tram" latTtss="180139866" lonTtss="71872993" lat="50.0388516666667" lon="19.9647202777778" name="Cmentarz Podgórski" id="621" >
+<stop cat="tram" latTtss="180096973" lonTtss="71916944" lat="50.0269369444444" lon="19.9769288888889" name="Kabel" id="624" >
+<stop cat="tram" latTtss="180119078" lonTtss="71894471" lat="50.0330772222222" lon="19.9706863888889" name="Dworcowa" id="623" >
+<stop cat="tram" latTtss="180120524" lonTtss="71917499" lat="50.0334788888889" lon="19.9770830555556" name="Dworzec P³aszów Estakada" id="2870" >
+<stop cat="tram" latTtss="180146336" lonTtss="71920669" lat="50.0406488888889" lon="19.9779636111111" name="Gromadzka" id="560" >
+<stop cat="tram" latTtss="180146469" lonTtss="71939257" lat="50.0406858333333" lon="19.9831269444444" name="Lipska" id="561" >
+<stop cat="tram" latTtss="180162383" lonTtss="71839584" lat="50.0451063888889" lon="19.95544" name="Limanowskiego" id="569" >
+<stop cat="tram" latTtss="180167637" lonTtss="71838366" lat="50.0465658333333" lon="19.9551016666667" name="Plac Bohaterów Getta" id="570" >
+<stop cat="tram" latTtss="180179166" lonTtss="71873518" lat="50.0497683333333" lon="19.9648661111111" name="Zab³ocie" id="1154" >
+<stop cat="tram" latTtss="180176268" lonTtss="71883649" lat="50.0489633333333" lon="19.9676802777778" name="Klimeckiego" id="946" >
+<stop cat="tram" latTtss="180207818" lonTtss="71852584" lat="50.0577272222222" lon="19.9590511111111" name="Rondo Grzegórzeckie" id="365" >
+<stop cat="other" latTtss="180211890" lonTtss="71864976" lat="50.0588583333333" lon="19.9624933333333" name="Kordylewskiego" id="2536" >
+<stop cat="tram" latTtss="180211819" lonTtss="71864862" lat="50.0588386111111" lon="19.9624616666667" name="Teatr Variété" id="2859" >
+<stop cat="tram" latTtss="180216338" lonTtss="71881211" lat="50.0600938888889" lon="19.9670030555556" name="Francesco Nullo" id="367" >
+<stop cat="tram" latTtss="180219707" lonTtss="71925633" lat="50.0610297222222" lon="19.9793425" name="D¹bie" id="370" >
+<stop cat="tram" latTtss="180160654" lonTtss="71904812" lat="50.0446261111111" lon="19.9735588888889" name="Kukliñskiego" id="567" >
+<stop cat="tram" latTtss="180217301" lonTtss="71894481" lat="50.0603613888889" lon="19.9706891666667" name="Fabryczna" id="368" >
+<stop cat="tram" latTtss="180214611" lonTtss="71914779" lat="50.0596141666667" lon="19.9763275" name="Ofiar D¹bia" id="369" >
+<stop cat="tram" latTtss="180143662" lonTtss="72005402" lat="50.0399061111111" lon="20.0015005555556" name="Ma³y P³aszów" id="1263" >
+<stop cat="tram" latTtss="180145794" lonTtss="71970297" lat="50.0404983333333" lon="19.9917491666667" name="Rzebika" id="1262" >
+<stop cat="tram" latTtss="180239469" lonTtss="71891259" lat="50.0665191666667" lon="19.9697941666667" name="Cystersów" id="129" >
+<stop cat="tram" latTtss="180236041" lonTtss="71853530" lat="50.0655669444444" lon="19.9593138888889" name="Rondo Mogilskie" id="125" >
+<stop cat="tram" latTtss="180254686" lonTtss="71835785" lat="50.0707461111111" lon="19.9543847222222" name="Rakowicka" id="128" >
+<stop cat="tram" latTtss="180244685" lonTtss="71828772" lat="50.0679680555556" lon="19.9524366666667" name="Uniwersytet Ekonomiczny" id="127" >
+<stop cat="tram" latTtss="180264956" lonTtss="71844258" lat="50.0735988888889" lon="19.9567383333333" name="Cmentarz Rakowicki" id="124" >
+<stop cat="other" latTtss="180257919" lonTtss="71942105" lat="50.0716441666667" lon="19.9839180555556" name="Wieczysta" id="114" >
+<stop cat="tram" latTtss="180256961" lonTtss="71939814" lat="50.0713780555556" lon="19.9832816666667" name="TAURON Arena Kraków Wieczysta" id="3040" >
+<stop cat="tram" latTtss="180243813" lonTtss="71919353" lat="50.0677258333333" lon="19.9775980555556" name="Bia³ucha" id="130" >
+<stop cat="other" latTtss="180226861" lonTtss="71942233" lat="50.0630169444444" lon="19.9839536111111" name="Kraków Plaza" id="959" >
+<stop cat="tram" latTtss="180226726" lonTtss="71941975" lat="50.0629794444444" lon="19.9838819444444" name="Plaza" id="3033" >
+<stop cat="other" latTtss="180230163" lonTtss="71954541" lat="50.0639341666667" lon="19.9873725" name="Lema" id="2537" >
+<stop cat="tram" latTtss="180236053" lonTtss="71988794" lat="50.0655702777778" lon="19.9968872222222" name="M1 Al. Pokoju" id="930" >
+<stop cat="other" latTtss="180231471" lonTtss="71962356" lat="50.0642975" lon="19.9895433333333" name="Kraków Arena Al. Pokoju" id="2803" >
+<stop cat="tram" latTtss="180231481" lonTtss="71962198" lat="50.0643002777778" lon="19.9894994444444" name="TAURON Arena Kraków Al. Pokoju" id="2871" >
+<stop cat="other" latTtss="180242565" lonTtss="72019445" lat="50.0673791666667" lon="20.0054013888889" name="Nowohucka" id="372" >
+<stop cat="tram" latTtss="180242602" lonTtss="72019457" lat="50.0673894444444" lon="20.0054047222222" name="Rondo 308. Dywizjonu" id="3041" >
+<stop cat="tram" latTtss="180264612" lonTtss="71965384" lat="50.0735033333333" lon="19.9903844444444" name="Muzeum Lotnictwa" id="2811" >
+<stop cat="tram" latTtss="180266265" lonTtss="71996755" lat="50.0739625" lon="19.9990986111111" name="AWF" id="113" >
+<stop cat="tram" latTtss="180267446" lonTtss="72016931" lat="50.0742905555556" lon="20.0047030555556" name="Stella-Sawickiego" id="112" >
+<stop cat="tram" latTtss="180249472" lonTtss="72044791" lat="50.0692977777778" lon="20.0124419444444" name="Centralna" id="409" >
+<stop cat="tram" latTtss="180266390" lonTtss="72041060" lat="50.0739972222222" lon="20.0114055555556" name="Czy¿yny" id="407" >
+<stop cat="tram" latTtss="180273208" lonTtss="72075195" lat="50.0758911111111" lon="20.0208875" name="Bieñczycka" id="867" >
+<stop cat="tram" latTtss="180265067" lonTtss="72061596" lat="50.0736297222222" lon="20.01711" name="Rondo Czy¿yñskie" id="408" >
+<stop cat="tram" latTtss="180342391" lonTtss="71986739" lat="50.0951086111111" lon="19.9963163888889" name="Mistrzejowice" id="375" >
+<stop cat="tram" latTtss="180337361" lonTtss="72015690" lat="50.0937113888889" lon="20.0043583333333" name="Os.Z³otego Wieku" id="377" >
+<stop cat="tram" latTtss="180340084" lonTtss="71999812" lat="50.0944677777778" lon="19.9999477777778" name="Miœnieñska" id="2538" >
+<stop cat="tram" latTtss="180332424" lonTtss="72056920" lat="50.09234" lon="20.0158111111111" name="Dunikowskiego" id="388" >
+<stop cat="tram" latTtss="180304250" lonTtss="72074134" lat="50.0845138888889" lon="20.0205927777778" name="DH Wanda" id="392" >
+<stop cat="tram" latTtss="180339761" lonTtss="72040494" lat="50.0943780555556" lon="20.0112483333333" name="Rondo Piastowskie" id="383" >
+<stop cat="tram" latTtss="180344562" lonTtss="72045557" lat="50.0957116666667" lon="20.0126547222222" name="Kleeberga" id="382" >
+<stop cat="tram" latTtss="180353434" lonTtss="72046888" lat="50.0981761111111" lon="20.0130244444444" name="Piasta Ko³odzieja" id="379" >
+<stop cat="tram" latTtss="180324306" lonTtss="72077018" lat="50.090085" lon="20.0213938888889" name="Rondo Hipokratesa" id="2539" >
+<stop cat="tram" latTtss="180259494" lonTtss="72135185" lat="50.0720816666667" lon="20.0375513888889" name="Plac Centralny im. R.Reagana" id="2744" >
+<stop cat="tram" latTtss="180260346" lonTtss="72104898" lat="50.0723183333333" lon="20.0291383333333" name="Os.Kolorowe" id="413" >
+<stop cat="tram" latTtss="180286510" lonTtss="72098620" lat="50.0795861111111" lon="20.0273944444444" name="Rondo Kocmyrzowskie im. Ks. Gorzelanego" id="2745" >
+<stop cat="tram" latTtss="180276386" lonTtss="72112242" lat="50.0767738888889" lon="20.0311783333333" name="Os.Zgody" id="418" >
+<stop cat="tram" latTtss="180251143" lonTtss="72164924" lat="50.0697619444444" lon="20.0458122222222" name="Os.Na Skarpie" id="424" >
+<stop cat="tram" latTtss="180246786" lonTtss="72189420" lat="50.0685516666667" lon="20.0526166666667" name="Klasztorna" id="429" >
+<stop cat="tram" latTtss="180242960" lonTtss="72212828" lat="50.0674888888889" lon="20.0591188888889" name="Suche Stawy" id="2548" >
+<stop cat="tram" latTtss="180268841" lonTtss="72168894" lat="50.0746780555556" lon="20.046915" name="Struga" id="423" >
+<stop cat="tram" latTtss="180295778" lonTtss="72116868" lat="50.0821605555556" lon="20.0324633333333" name="Teatr Ludowy" id="420" >
+<stop cat="tram" latTtss="180306450" lonTtss="72136926" lat="50.085125" lon="20.038035" name="Cienista" id="3037" >
+<stop cat="other" latTtss="180306733" lonTtss="72137208" lat="50.0852036111111" lon="20.0381133333333" name="Kocmyrzowska" id="401" >
+<stop cat="tram" latTtss="180313263" lonTtss="72171640" lat="50.0870175" lon="20.0476777777778" name="Wañkowicza" id="2543" >
+<stop cat="tram" latTtss="180318123" lonTtss="72204362" lat="50.0883675" lon="20.0567672222222" name="Wiadukty" id="434" >
+<stop cat="tram" latTtss="180326907" lonTtss="72212839" lat="50.0908075" lon="20.0591219444444" name="Darwina" id="435" >
+<stop cat="other" latTtss="180330387" lonTtss="72217988" lat="50.0917741666667" lon="20.0605522222222" name="Cmentarz Grêba³ów Zachód" id="2549" >
+<stop cat="tram" latTtss="180330358" lonTtss="72217850" lat="50.0917661111111" lon="20.0605138888889" name="Jarzêbiny" id="2685" >
+<stop cat="tram" latTtss="180315951" lonTtss="72286426" lat="50.0877641666667" lon="20.0795627777778" name="Agencja Kraków Wschód" id="462" >
+<stop cat="tram" latTtss="180322790" lonTtss="72300966" lat="50.0896638888889" lon="20.0836016666667" name="Walcownia" id="463" >
+<stop cat="tram" latTtss="180244244" lonTtss="72236407" lat="50.0678455555556" lon="20.0656686111111" name="Bardosa" id="449" >
+<stop cat="tram" latTtss="180249368" lonTtss="72243352" lat="50.0692688888889" lon="20.0675977777778" name="Kopiec Wandy" id="450" >
+<stop cat="other" latTtss="180233825" lonTtss="72269721" lat="50.0649513888889" lon="20.0749225" name="Brama nr 4" id="451" >
+<stop cat="other" latTtss="180238786" lonTtss="72256369" lat="50.0663294444444" lon="20.0712136111111" name="Fort Mogi³a" id="1051" >
+<stop cat="tram" latTtss="180285303" lonTtss="72236590" lat="50.0792508333333" lon="20.0657194444444" name="Kombinat" id="459" >
+<stop cat="other" latTtss="180232684" lonTtss="72304711" lat="50.0646344444444" lon="20.0846419444444" name="Je¿ynowa" id="452" >
+<stop cat="other" latTtss="180250342" lonTtss="72332498" lat="50.0695394444444" lon="20.0923605555556" name="Brama nr 5" id="453" >
+<stop cat="other" latTtss="180251551" lonTtss="72342602" lat="50.0698752777778" lon="20.0951672222222" name="Meksyk" id="454" >
+<stop cat="tram" latTtss="180341535" lonTtss="72234935" lat="50.0948708333333" lon="20.0652597222222" name="Wzgórza Krzes³awickie" id="442" >
+<stop cat="tram" latTtss="180303027" lonTtss="72232399" lat="50.0841741666667" lon="20.0645552777778" name="PH" id="466" >
+<stop cat="tram" latTtss="180300788" lonTtss="72236130" lat="50.0835522222222" lon="20.0655916666667" name="Zajezdnia Nowa Huta" id="465" >
+<stop cat="tram" latTtss="180315729" lonTtss="72231482" lat="50.0877025" lon="20.0643005555556" name="Elektromonta¿" id="464" >
+<stop cat="tram" latTtss="180302996" lonTtss="72258514" lat="50.0841655555556" lon="20.0718094444444" name="Mrozowa" id="460" >
+<stop cat="tram" latTtss="180307241" lonTtss="72267887" lat="50.0853447222222" lon="20.0744130555556" name="Blokowa" id="461" >
+<stop cat="other" latTtss="180263218" lonTtss="72423770" lat="50.0731161111111" lon="20.1177138888889" name="Pleszów" id="458" >
+<stop cat="other" latTtss="180258540" lonTtss="72375333" lat="50.0718166666667" lon="20.1042591666667" name="Koksochemia" id="457" >
+</stops>

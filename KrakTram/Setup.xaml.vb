@@ -33,8 +33,14 @@ Public NotInheritable Class Setup
         uiPositionLat.Visibility = Visibility.Collapsed
         uiPositionLong.Visibility = Visibility.Collapsed
         uiPositionName.Visibility = Visibility.Collapsed
+        uiPositionButt.Visibility = Visibility.Collapsed
+
         Setup_SizeChanged(sender, Nothing) ' wielkosc WebView
 
+        ReloadFavPlaces()
+        uiPosition.SelectedIndex = 0
+    End Sub
+    Private Sub ReloadFavPlaces()
         Dim sTxt As String
         sTxt = App.GetSettingsString("favPlaces", "<places></places>")
         'sTxt = "<places></places>"
@@ -44,12 +50,16 @@ Public NotInheritable Class Setup
             App.DialogBox("ERROR loading favourites list")
         End Try
 
+        ' dwa podstawowe
+        uiPosition.Items.Clear
+        uiPosition.Items.Add(ResourceLoader.GetForCurrentView().GetString("resSettPosItemGPS"))
+        uiPosition.Items.Add(ResourceLoader.GetForCurrentView().GetString("resSettPosItemEnter"))
+
         For Each oPlace In oXmlPlaces.DocumentElement.SelectNodes("//place")
             uiPosition.Items.Add(oPlace.SelectSingleNode("@name").NodeValue)
         Next
 
     End Sub
-
     Private Sub Setup_SizeChanged(sender As Object, e As SizeChangedEventArgs)
         If uiSetupWebView Is Nothing Then Exit Sub
         uiSetupWebView.Height = uiPage.ActualHeight - uiSetup_Grid.ActualHeight - 20    ' zgaduje, tu sie powinno odjac poczatek rysowania (Y.top)
@@ -162,13 +172,19 @@ Public NotInheritable Class Setup
         uiPositionName.Visibility = Visibility.Collapsed
         Setup_SizeChanged(sender, Nothing) ' wielkosc WebView
 
-        If uiPosition.SelectedValue.Content = uiSettPosGPS.Content Then
+        Dim iTmp As Integer = uiPosition.SelectedIndex
+        If iTmp < 0 Then Exit Sub
+
+        Dim sTxt As String = uiPosition.Items.ElementAt(iTmp)
+
+        If sTxt = ResourceLoader.GetForCurrentView().GetString("resSettPosItemGPS") Then
             ' uzywaj GPS
             App.mdLat = 100
+            eMaxOdl_Changed(Nothing, Nothing)
             Exit Sub
         End If
 
-        If uiPosition.SelectedValue.Content = uiSettPosEnter.Content Then
+        If sTxt = ResourceLoader.GetForCurrentView().GetString("resSettPosItemEnter") Then
 
             uiPositionLat.Visibility = Visibility.Visible
             uiPositionLong.Visibility = Visibility.Visible
@@ -187,44 +203,35 @@ Public NotInheritable Class Setup
             Exit Sub
         End If
 
-        If uiPosition.SelectedValue.Content.Substring(0, 1) = "*" Then
-            ' nowiutki swiezutki
-            App.mdLat = uiPositionLat.Text
-            App.mdLong = uiPositionLong.Text
-            Exit Sub
-        End If
+        'If uiPosition.SelectedValue.Substring(0, 1) = "*" Then
+        '    ' nowiutki swiezutki
+        '    App.mdLat = uiPositionLat.Text
+        '    App.mdLong = uiPositionLong.Text
+        '    Exit Sub
+        'End If
 
         ' to bedzie jakis Favourite
         Try
-            Dim oItem = oXmlPlaces.DocumentElement.SelectSingleNode(
-                        "//place[@name='" & uiPosition.SelectedValue.Content & "'")
+            Dim oItem = oXmlPlaces.DocumentElement.SelectSingleNode("//place[@name='" & sTxt & "']")
             App.mdLat = oItem.SelectSingleNode("@lat").NodeValue
             App.mdLong = oItem.SelectSingleNode("@long").NodeValue
             uiMaxOdlSld.Value = oItem.SelectSingleNode("@maxOdl").NodeValue
 
             uiPositionFavButt.Visibility = Visibility.Visible
+            eMaxOdl_Changed(Nothing, Nothing)
         Catch ex As Exception
 
         End Try
 
     End Sub
 
-    <CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="e")>
-    Private Sub uiAddRemove_Click(sender As Object, e As RoutedEventArgs)
-        ' w nowej wersji - to tylko kasowanie
-        oXmlPlaces.DocumentElement.RemoveChild(
-                oXmlPlaces.DocumentElement.SelectSingleNode(
-                    "//place[@name='" & uiPosition.SelectedValue.Content & "'"))
-
-        ' select [locator] - ale moze niech sie samo zmieni...
-
-        uiPositionFavButt.Visibility = Visibility.Collapsed
-
-    End Sub
+    '<CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="e")>
+    'Private Sub uiAddRemove_Click(sender As Object, e As RoutedEventArgs)
+    '    ' w nowej wersji - to tylko kasowanie
+    'End Sub
 
     Private Sub uiPositOk_Click(sender As Object, e As RoutedEventArgs) Handles uiPositionButt.Click
         ' dodawanie nowego entry
-        uiPositionFavButt.Visibility = Visibility.Collapsed
 
         Dim sTxt = uiPositionName.Text
         sTxt = sTxt.Replace("*", "")
@@ -244,12 +251,14 @@ Public NotInheritable Class Setup
             Catch ex As Exception
 
             End Try
+            uiPositionName.Visibility = Visibility.Collapsed
+            uiPositionFavButt.Visibility = Visibility.Collapsed
+            ReloadFavPlaces()
+            uiPosition.SelectedIndex = uiPosition.Items.Count - 1 ' na ostatni (bo bez sortowania)
         Else
             App.DialogBoxRes("resErrorNazwaZaKrotka")
         End If
 
-        uiPositionName.Visibility = Visibility.Collapsed
-        Setup_Loaded(sender, e)  ' odczytaj liste do ComboBoxa
     End Sub
 
     Private Sub uiLat_Changed(sender As Object, e As TextChangedEventArgs) Handles uiPositionLat.TextChanged
@@ -258,5 +267,22 @@ Public NotInheritable Class Setup
 
     Private Sub uiLong_Changed(sender As Object, e As TextChangedEventArgs) Handles uiPositionLong.TextChanged
         App.mdLong = uiPositionLong.Text
+    End Sub
+
+    Private Sub bFavButton_Click(sender As Object, e As RoutedEventArgs) Handles uiPositionFavButt.Click
+        Dim iTmp As Integer = uiPosition.SelectedIndex
+        Dim sTxt As String = uiPosition.Items.ElementAt(iTmp)
+
+        oXmlPlaces.DocumentElement.RemoveChild(
+                oXmlPlaces.DocumentElement.SelectSingleNode("//place[@name='" & sTxt & "']"))
+        App.SetSettingsString("favPlaces", oXmlPlaces.GetXml, True)
+        ' select [locator] - ale moze niech sie samo zmieni...
+
+        uiPositionFavButt.Visibility = Visibility.Collapsed
+
+        ReloadFavPlaces()
+        uiPosition.SelectedIndex = 0
+
+
     End Sub
 End Class

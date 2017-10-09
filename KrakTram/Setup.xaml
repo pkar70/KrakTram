@@ -34,8 +34,6 @@
         <TextBlock x:Uid="resSettingsTitle"  Text="Settings" HorizontalAlignment="Center" FontSize="20" Margin="10,10,10,10"/>
 
         <ComboBox x:Name="uiPosition" Grid.Row="1" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Center" >
-            <ComboBoxItem x:Uid="resSettPosGPS" x:Name="uiSettPosGPS" Content="[locator]" IsSelected="True" />
-            <ComboBoxItem x:Uid="resSettPosEnter" x:Name="uiSettPosEnter" Content="[enter]" />
         </ComboBox>
         <Button x:Uid="uiPositionFavButt" x:Name="uiPositionFavButt" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Del" Margin="10,0,10,0" Visibility="Collapsed"/>
 

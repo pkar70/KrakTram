@@ -132,12 +132,6 @@
   <data name="resSettingsTitle.Text" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="resSettPosGPS.Content" xml:space="preserve">
-    <value>[locator]</value>
-  </data>
-  <data name="resSettPosEnter.Content" xml:space="preserve">
-    <value>[enter]</value>
-  </data>
   <data name="uiPositionFavButt.Content" xml:space="preserve">
     <value>Del</value>
   </data>
@@ -197,5 +191,11 @@
   </data>
   <data name="resGoTtssB.Content" xml:space="preserve">
     <value>Get data</value>
+  </data>
+  <data name="resSettPosItemEnter" xml:space="preserve">
+    <value>[enter]</value>
+  </data>
+  <data name="resSettPosItemGPS" xml:space="preserve">
+    <value>[locator]</value>
   </data>
 </root>

@@ -1,10 +1,12 @@
 ﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
+Imports System.Net.NetworkInformation
 Imports Windows.Data.Json
 Imports Windows.Data.Xml.Dom
 Imports Windows.Data.Xml.Xsl
 Imports Windows.Devices.Geolocation
-Imports Windows.Web.Http
+Imports System.Net.Http
+
 ''' <summary>
 ''' An empty page that can be used on its own or navigated to within a Frame.
 ''' </summary>
@@ -51,24 +53,47 @@ Public NotInheritable Class MainPage
 
     Private Async Function GetTablicaXml(iId As Integer, iOdl As Integer) As Task(Of String)
         Dim oHttp As New HttpClient()
-        Dim sTmp As String
-        sTmp = Await oHttp.GetStringAsync(New Uri("http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop=" & iId))
+        Dim sTmp As String = ""
+
+        If Not NetworkInterface.GetIsNetworkAvailable() Then
+            App.DialogBoxRes("resErrorNoNetwork")
+            Return ""
+        End If
+
+        Dim bError = False
+        oHttp.Timeout = TimeSpan.FromSeconds(8)
+
+        Try
+            sTmp = Await oHttp.GetStringAsync(New Uri("http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop=" & iId))
+        Catch ex As Exception
+            bError = True
+        End Try
+        If bError Then
+            App.DialogBoxRes("resErrorGetHttp")
+            Return ""
+        End If
 
         Dim oJson As JsonObject
         Try
             oJson = JsonObject.Parse(sTmp)
         Catch ex As Exception
+            bError = True
+        End Try
+        If bError Then
             App.DialogBox("ERROR: JSON parsing error - tablica")
             Return ""
-        End Try
+        End If
 
         Dim oJsonStops As New JsonArray
         Try
             oJsonStops = oJson.GetNamedArray("actual")
         Catch ex As Exception
+            bError = True
+        End Try
+        If bError Then
             App.DialogBox("ERROR: JSON ""actual"" array missing")
             Return ""
-        End Try
+        End If
 
         If oJsonStops.Count = 0 Then
             ' przeciez tabliczka moze byc pusta (po kursach, przystanek nieczynny...)
@@ -79,7 +104,9 @@ Public NotInheritable Class MainPage
         Dim oRoot = oXml.CreateElement("root")
         oXml.AppendChild(oRoot)
 
-        Dim iMinSec As Integer = 3600 * iOdl / (App.GetSettingsInt("walkSpeed", 4) * 1000)
+        ' Dim iMinSec As Integer = 3600 * iOdl / (App.GetSettingsInt("walkSpeed", 4) * 1000)
+        ' 20171108: nie walkspeed, ale aktualna szybkosc (nie mniej niz walkSpeed)
+        Dim iMinSec As Integer = 3.6 * iOdl / App.mSpeed
 
         For Each oVal In oJsonStops
 
@@ -161,19 +188,38 @@ Public NotInheritable Class MainPage
 
         uiGetTtss.Visibility = Visibility.Collapsed
         uiWebView.Visibility = Visibility.Visible
+        uiGoTtssBar.IsEnabled = False
 
+        uiWorking.Text = "o"
         Dim oPoint As Point = Await App.GetCurrentPoint
         Dim sHtml = ""
 
-        For Each oNode In App.oStops.SelectNodes("//stop")
-            iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.SelectSingleNode("@lat").NodeValue, oNode.SelectSingleNode("@lon").NodeValue)
+        Dim iWorking = 0
+
+        For Each oNode In App.oStops.GetList
+            uiWorking.Text = "."
+            iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon)
             If iOdl < App.GetSettingsInt("maxOdl") Then
-                sHtml = sHtml & Await GetTablicaXml(CInt(oNode.SelectSingleNode("@id").NodeValue), iOdl)
+                iWorking += 1
+                Select Case iWorking Mod 4
+                    Case 1
+                        uiWorking.Text = "/"
+                    Case 2
+                        uiWorking.Text = "-"
+                    Case 3
+                        uiWorking.Text = "\"
+                    Case 0
+                        uiWorking.Text = "|"
+                End Select
+                sHtml = sHtml & Await GetTablicaXml(CInt(oNode.id), iOdl)
             End If
         Next
 
         msXml = sHtml
         WypiszTabele()
+
+        uiWorking.Text = " "
+        uiGoTtssBar.IsEnabled = True
 
     End Sub
     <CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.Int32.ToString")>

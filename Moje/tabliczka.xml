@@ -1,0 +1,253 @@
+"{
+  “actual”: [
+    {
+      “actualRelativeTime”: -43,
+      “actualTime”: “19:41”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “0 Min”,
+      “passageid”: “-9223372036099614418”,
+      “patternText”: “6”,
+      “plannedTime”: “19:39”,
+      “routeId”: “6350571212602605624”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574044588057”,
+      “vehicleId”: “6352185295672181152”
+    },
+    {
+      “actualRelativeTime”: 77,
+      “actualTime”: “19:43”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “1 Min”,
+      “passageid”: “-9223372036099609219”,
+      “patternText”: “50”,
+      “plannedTime”: “19:43”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045153298”,
+      “vehicleId”: “6352185295672181369”
+    },
+    {
+      “actualRelativeTime”: 137,
+      “actualTime”: “19:44”,
+      “direction”: “Salwator”,
+      “mixedTime”: “2 Min”,
+      “passageid”: “-9223372036099594498”,
+      “patternText”: “6”,
+      “plannedTime”: “19:43”,
+      “routeId”: “6350571212602605624”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574044563476”,
+      “vehicleId”: “6352185295672181041”
+    },
+    {
+      “actualRelativeTime”: 257,
+      “direction”: “Krowodrza Górka”,
+      “mixedTime”: “19:46”,
+      “passageid”: “-9223372036099585265”,
+      “patternText”: “50”,
+      “plannedTime”: “19:46”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PLANNED”,
+      “tripId”: “6351558574045145108”
+    },
+    {
+      “actualRelativeTime”: 497,
+      “actualTime”: “19:50”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “8 Min”,
+      “passageid”: “-9223372036099615086”,
+      “patternText”: “24”,
+      “plannedTime”: “19:47”,
+      “routeId”: “6350571212602605630”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045108240”,
+      “vehicleId”: “6352185295672180869”
+    },
+    {
+      “actualRelativeTime”: 737,
+      “actualTime”: “19:54”,
+      “direction”: “Bronowice Ma³e”,
+      “mixedTime”: “12 Min”,
+      “passageid”: “-9223372036099587482”,
+      “patternText”: “24”,
+      “plannedTime”: “19:54”,
+      “routeId”: “6350571212602605630”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045104144”,
+      “vehicleId”: “6352185295672181640”
+    },
+    {
+      “actualRelativeTime”: 737,
+      “actualTime”: “19:54”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “12 Min”,
+      “passageid”: “-9223372036099604515”,
+      “patternText”: “6”,
+      “plannedTime”: “19:54”,
+      “routeId”: “6350571212602605624”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574044567571”,
+      “vehicleId”: “6352185295672181048”
+    },
+    {
+      “actualRelativeTime”: 797,
+      “actualTime”: “19:55”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “13 Min”,
+      “passageid”: “-9223372036099604138”,
+      “patternText”: “50”,
+      “plannedTime”: “19:51”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045157395”,
+      “vehicleId”: “6352185295672181646”
+    },
+    {
+      “actualRelativeTime”: 857,
+      “actualTime”: “19:56”,
+      “direction”: “Krowodrza Górka”,
+      “mixedTime”: “14 Min”,
+      “passageid”: “-9223372036099586509”,
+      “patternText”: “50”,
+      “plannedTime”: “19:56”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045149201”,
+      “vehicleId”: “6352185295672181372”
+    },
+    {
+      “actualRelativeTime”: 977,
+      “actualTime”: “19:58”,
+      “direction”: “Salwator”,
+      “mixedTime”: “16 Min”,
+      “passageid”: “-9223372036099584968”,
+      “patternText”: “6”,
+      “plannedTime”: “19:58”,
+      “routeId”: “6350571212602605624”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574044588058”,
+      “vehicleId”: “6352185295672181152”
+    },
+    {
+      “actualRelativeTime”: 1037,
+      “actualTime”: “19:59”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “17 Min”,
+      “passageid”: “-9223372036099599512”,
+      “patternText”: “50”,
+      “plannedTime”: “19:58”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045161490”,
+      “vehicleId”: “6352185295672181376”
+    },
+    {
+      “actualRelativeTime”: 1217,
+      “actualTime”: “20:02”,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “20 Min”,
+      “passageid”: “-9223372036099604929”,
+      “patternText”: “24”,
+      “plannedTime”: “20:02”,
+      “routeId”: “6350571212602605630”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045079569”,
+      “vehicleId”: “6352185295672181639”
+    },
+    {
+      “actualRelativeTime”: 1397,
+      “actualTime”: “20:05”,
+      “direction”: “Krowodrza Górka”,
+      “mixedTime”: “23 Min”,
+      “passageid”: “-9223372036099580953”,
+      “patternText”: “50”,
+      “plannedTime”: “20:05”,
+      “routeId”: “6350571212602605631”,
+      “status”: “PREDICTED”,
+      “tripId”: “6351558574045153299”,
+      “vehicleId”: “6352185295672181369”
+    }
+  ],
+  “directions”: [],
+  “firstPassageTime”: 1518459103000,
+  “generalAlerts”: [],
+  “lastPassageTime”: 1518466620000,
+  “old”: [
+    {
+      “actualRelativeTime”: -223,
+      “direction”: “Krowodrza Górka”,
+      “mixedTime”: “0 Min”,
+      “passageid”: “-9223372036099597758”,
+      “patternText”: “50”,
+      “plannedTime”: “19:38”,
+      “routeId”: “6350571212602605631”,
+      “status”: “DEPARTED”,
+      “tripId”: “6351558574045194259”,
+      “vehicleId”: “6352185295672181364”
+    },
+    {
+      “actualRelativeTime”: -223,
+      “direction”: “Kurdwanów P+R”,
+      “mixedTime”: “0 Min”,
+      “passageid”: “-9223372036099614999”,
+      “patternText”: “50”,
+      “plannedTime”: “19:35”,
+      “routeId”: “6350571212602605631”,
+      “status”: “DEPARTED”,
+      “tripId”: “6351558574045149200”,
+      “vehicleId”: “6352185295672181372”
+    },
+    {
+      “actualRelativeTime”: -43,
+      “direction”: “Bronowice Ma³e”,
+      “mixedTime”: “0 Min”,
+      “passageid”: “-9223372036099597020”,
+      “patternText”: “24”,
+      “plannedTime”: “19:39”,
+      “routeId”: “6350571212602605630”,
+      “status”: “DEPARTED”,
+      “tripId”: “6351558574045100049”,
+      “vehicleId”: “6352185295672180884”
+    }
+  ],
+  “routes”: [
+    {
+      “alerts”: [],
+      “authority”: “MPK”,
+      “directions”: [
+        “Kurdwanów P+R”,
+        “Salwator”
+      ],
+      “id”: “6350571212602605624”,
+      “name”: “6”,
+      “routeType”: “tram”,
+      “shortName”: “6”
+    },
+    {
+      “alerts”: [],
+      “authority”: “MPK”,
+      “directions”: [
+        “Kurdwanów P+R”,
+        “Bronowice Ma³e”
+      ],
+      “id”: “6350571212602605630”,
+      “name”: “24”,
+      “routeType”: “tram”,
+      “shortName”: “24”
+    },
+    {
+      “alerts”: [],
+      “authority”: “MPK”,
+      “directions”: [
+        “Kurdwanów P+R”,
+        “Krowodrza Górka”
+      ],
+      “id”: “6350571212602605631”,
+      “name”: “50”,
+      “routeType”: “tram”,
+      “shortName”: “50”
+    }
+  ],
+  “stopName”: “Dauna”,
+  “stopShortName”: “632”
+}"

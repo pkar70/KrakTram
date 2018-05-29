@@ -17,19 +17,22 @@ Public NotInheritable Class Setup
         App.SetSettingsInt("maxOdl", uiMaxOdlSld.Value)
         App.SetSettingsInt("walkSpeed", uiWalkSpeedSld.Value)
         App.SetSettingsInt("alsoNext", uiAlsoNextSld.Value)
+        App.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
         App.SetSettingsString("favPlaces", oXmlPlaces.GetXml)
 
         Me.Frame.Navigate(GetType(MainPage))
     End Sub
 
     Private Sub bLoadStops_Click(sender As Object, e As RoutedEventArgs)
-        App.CheckLoadStopList(True)
+        Me.Frame.Navigate(GetType(ListaPrzystankow))
     End Sub
 
     Private Sub Setup_Loaded(sender As Object, e As RoutedEventArgs)
         uiMaxOdlSld.Value = App.GetSettingsInt("maxOdl", 1000)
         uiWalkSpeedSld.Value = App.GetSettingsInt("walkSpeed", 4)
         uiAlsoNextSld.Value = App.GetSettingsInt("alsoNext", 5)
+        uiGPSPrecSld.Value = App.GetSettingsInt("gpsPrec", 75)
+
         uiPositionLat.Visibility = Visibility.Collapsed
         uiPositionLong.Visibility = Visibility.Collapsed
         uiPositionName.Visibility = Visibility.Collapsed
@@ -44,11 +47,13 @@ Public NotInheritable Class Setup
         Dim sTxt As String
         sTxt = App.GetSettingsString("favPlaces", "<places></places>")
         'sTxt = "<places></places>"
+        Dim bError = False
         Try
             oXmlPlaces.LoadXml(sTxt)
         Catch ex As Exception
-            App.DialogBox("ERROR loading favourites list")
+            bError = True
         End Try
+        If bError Then App.DialogBox("ERROR loading favourites list")
 
         ' dwa podstawowe
         uiPosition.Items.Clear
@@ -61,8 +66,9 @@ Public NotInheritable Class Setup
 
     End Sub
     Private Sub Setup_SizeChanged(sender As Object, e As SizeChangedEventArgs)
-        If uiSetupWebView Is Nothing Then Exit Sub
-        uiSetupWebView.Height = uiPage.ActualHeight - uiSetup_Grid.ActualHeight - 20    ' zgaduje, tu sie powinno odjac poczatek rysowania (Y.top)
+        ' poprzednio ręcznie, teraz samo niby (via Stretch)
+        'If uiSetupWebView Is Nothing Then Exit Sub
+        'uiSetupWebView.Height = uiPage.ActualHeight - uiSetup_Grid.ActualHeight - 20    ' zgaduje, tu sie powinno odjac poczatek rysowania (Y.top)
     End Sub
 
     Private Async Sub eMaxOdl_Changed(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiMaxOdlSld.ValueChanged
@@ -95,10 +101,10 @@ Public NotInheritable Class Setup
         Dim iMinOdl As Integer = 100000
         Dim sTmp As String
 
-        For Each oNode In App.oStops.SelectNodes("//stop")
-            iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.SelectSingleNode("@lat").NodeValue, oNode.SelectSingleNode("@lon").NodeValue)
+        For Each oNode In App.oStops.GetList
+            iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon)
             If iOdl < uiMaxOdlSld.Value Then
-                sXml = sXml & "<item name='" & oNode.SelectSingleNode("@name").NodeValue & "' odl='" & iOdl & "' "
+                sXml = sXml & "<item name='" & oNode.Name & "' odl='" & iOdl & "' "
                 iOdl = 60 * iOdl / (uiWalkSpeedSld.Value * 1000)
                 sXml = sXml & "odlMinut='" & iOdl & "' />"
                 iCnt = iCnt + 1
@@ -180,6 +186,8 @@ Public NotInheritable Class Setup
         If sTxt = ResourceLoader.GetForCurrentView().GetString("resSettPosItemGPS") Then
             ' uzywaj GPS
             App.mdLat = 100
+            uiGPSPrecSld.Visibility = Visibility.Visible
+            uiGPSPrecTxt.Visibility = Visibility.Visible
             eMaxOdl_Changed(Nothing, Nothing)
             Exit Sub
         End If
@@ -218,6 +226,9 @@ Public NotInheritable Class Setup
             uiMaxOdlSld.Value = oItem.SelectSingleNode("@maxOdl").NodeValue
 
             uiPositionFavButt.Visibility = Visibility.Visible
+            uiGPSPrecSld.Visibility = Visibility.Collapsed
+            uiGPSPrecTxt.Visibility = Visibility.Collapsed
+
             eMaxOdl_Changed(Nothing, Nothing)
         Catch ex As Exception
 
@@ -238,35 +249,61 @@ Public NotInheritable Class Setup
         sTxt = sTxt.Replace("[", "")
         sTxt = sTxt.Replace("]", "")
 
-        If sTxt.Length > 3 Then
-            ' ominiecie zabawy w Nodes - dodajemy na koncu
+        If sTxt.Length < 4 Then
+            App.DialogBoxRes("resErrorNazwaZaKrotka")
+            Exit Sub
+        End If
+
+        If App.mdLong < 19 Or App.mdLong > 21 Or
+            App.mdLat < 49 Or App.mdLat > 51 Then
+            App.DialogBoxRes("resErrorPozaKrakowem")
+            Exit Sub
+        End If
+
+        If sTxt = "pkarinit" Then
+            sTxt = "<place name='domek' long='19.9785' lat='50.0198' maxOdl='500' />" & vbCrLf &
+                "<place name='meiselsa' long='19.9432361' lat='50.0513642' maxOdl='600' />" & vbCrLf &
+                "<place name='franc3' long='19.9339632' lat='50.059781' maxOdl='500' />" & vbCrLf &
+                "<place name='widok' long='19.8816113' lat='50.0789713' maxOdl='500' />" & vbCrLf
+        Else
             sTxt = "<place name='" & sTxt & "'" &
                 " long='" & App.mdLong & "'" &
                 " lat='" & App.mdLat & "'" &
                 " maxOdl='" & uiMaxOdlSld.Value & "' />" & vbCrLf
-            sTxt = oXmlPlaces.GetXml.Replace("</places>", sTxt & "</places>")
-            Try
-                oXmlPlaces.LoadXml(sTxt)
-                App.SetSettingsString("favPlaces", sTxt, True)
-            Catch ex As Exception
-
-            End Try
-            uiPositionName.Visibility = Visibility.Collapsed
-            uiPositionFavButt.Visibility = Visibility.Collapsed
-            ReloadFavPlaces()
-            uiPosition.SelectedIndex = uiPosition.Items.Count - 1 ' na ostatni (bo bez sortowania)
-        Else
-            App.DialogBoxRes("resErrorNazwaZaKrotka")
         End If
+
+
+        ' ominiecie zabawy w Nodes - dodajemy na koncu
+        sTxt = oXmlPlaces.GetXml.Replace("</places>", sTxt & "</places>")
+        Try
+            oXmlPlaces.LoadXml(sTxt)
+            App.SetSettingsString("favPlaces", sTxt, True)
+        Catch ex As Exception
+
+        End Try
+        uiPositionName.Visibility = Visibility.Collapsed
+        uiPositionFavButt.Visibility = Visibility.Collapsed
+        ' 20171019 - usuwamy wiecej, i jeszcze zmieniamy WebView wielkosc
+        uiPositionLat.Visibility = Visibility.Collapsed
+        uiPositionLong.Visibility = Visibility.Collapsed
+        uiPositionButt.Visibility = Visibility.Collapsed
+        Setup_SizeChanged(sender, Nothing) ' wielkosc WebView
+
+        ReloadFavPlaces()
+        uiPosition.SelectedIndex = uiPosition.Items.Count - 1 ' na ostatni (bo bez sortowania)
 
     End Sub
 
     Private Sub uiLat_Changed(sender As Object, e As TextChangedEventArgs) Handles uiPositionLat.TextChanged
-        App.mdLat = uiPositionLat.Text
+        If Not Double.TryParse(uiPositionLat.Text, App.mdLat) Then
+            App.mdLat = 0
+        End If
     End Sub
 
     Private Sub uiLong_Changed(sender As Object, e As TextChangedEventArgs) Handles uiPositionLong.TextChanged
-        App.mdLong = uiPositionLong.Text
+        If Not Double.TryParse(uiPositionLong.Text, App.mdLong) Then
+            App.mdLong = 0
+        End If
     End Sub
 
     Private Sub bFavButton_Click(sender As Object, e As RoutedEventArgs) Handles uiPositionFavButt.Click
@@ -284,5 +321,14 @@ Public NotInheritable Class Setup
         uiPosition.SelectedIndex = 0
 
 
+    End Sub
+
+    Private Sub uiGpsPrec_Changed(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiGPSPrecSld.ValueChanged
+
+        If uiGPSPrecTxt Is Nothing Then Exit Sub
+        uiGPSPrecTxt.Text = uiGPSPrecSld.Value & " m"
+
+        ' musi od razu, żeby zaraz zaczęło działać (np. przy przestawianiu odleglosci od przystanku)
+        App.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
     End Sub
 End Class

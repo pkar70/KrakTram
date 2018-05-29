@@ -9,6 +9,7 @@
 
     <Grid x:Name="uiMainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
         <Button x:Uid="resGoTtssB" x:Name="uiGetTtss" Content="GetTTSS" HorizontalAlignment="Center"  Margin="10,10,10,10" VerticalAlignment="Center" Click="bGetGPS_Click"/>
+        <TextBlock x:Name="uiWorking" Text=" " FontSize="10" Margin="10,5,5,5" HorizontalAlignment="Right" VerticalAlignment="Top" />
         <WebView x:Name="uiWebView" HorizontalAlignment="Stretch" Height="400" Margin="10,30,10,10" VerticalAlignment="Top" Visibility="Collapsed" />
 
     </Grid>
@@ -23,7 +24,7 @@
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton x:Uid="resGoTtss" Icon="Refresh" Label="Wczytaj TTSS" Click="bGetGPS_Click"/>
+            <AppBarButton x:Name="uiGoTtssBar" x:Uid="resGoTtss" Icon="Refresh" Label="Wczytaj TTSS" Click="bGetGPS_Click"/>
             <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" />
         </CommandBar>
 

@@ -154,7 +154,7 @@
     <value>Maks. odl. od przystanku</value>
   </data>
   <data name="resGoRefresh.Label" xml:space="preserve">
-    <value>Wczytaj przystanki</value>
+    <value>Lista przystanków</value>
   </data>
   <data name="resGoRate.Label" xml:space="preserve">
     <value>Oceń</value>
@@ -197,5 +197,32 @@
   </data>
   <data name="resSettPosItemGPS" xml:space="preserve">
     <value>[GPS]</value>
+  </data>
+  <data name="resErrorNoGPSAllowed" xml:space="preserve">
+    <value>Brak dostępu do usługi lokalizacji - używam danych testowych</value>
+  </data>
+  <data name="resSettGPSPrec.Header" xml:space="preserve">
+    <value>Dokładność lokalizacji</value>
+  </data>
+  <data name="uiPosSrc.Text" xml:space="preserve">
+    <value>Pozycja</value>
+  </data>
+  <data name="resErrorGetHttp" xml:space="preserve">
+    <value>Błąd: wystąpił błąd w komunikacji sieciowej.</value>
+  </data>
+  <data name="resErrorHttpTimeout" xml:space="preserve">
+    <value>Zbyt długie oczekiwanie na sieć</value>
+  </data>
+  <data name="resErrorPozaKrakowem" xml:space="preserve">
+    <value>Wybierz współrzędne w obrębie Krakowa...</value>
+  </data>
+  <data name="resListaInfo.Text" xml:space="preserve">
+    <value>Klikając na nazwie przystanku dopisuje się go do listy zapamiętanych pozycji.</value>
+  </data>
+  <data name="resListaTytul.Text" xml:space="preserve">
+    <value>Lista przystanków</value>
+  </data>
+  <data name="resStopRefresh.Label" xml:space="preserve">
+    <value>Wczytaj przystanki</value>
   </data>
 </root>

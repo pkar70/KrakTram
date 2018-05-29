@@ -10,8 +10,10 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions> 
+        </Grid.RowDefinitions>
+        <!--<TextBlock x:Uid="resSettingsTitle"  Text="Settings" HorizontalAlignment="Center" FontSize="20" Margin="10,10,10,10"/>-->
 
         <Grid x:Name="uiSetup_Grid" >
             
@@ -28,31 +30,39 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition />
+                <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Uid="resSettingsTitle"  Text="Settings" HorizontalAlignment="Center" FontSize="20" Margin="10,10,10,10"/>
+            <Grid Grid.Row="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Uid="uiPosSrc" Text="Position" VerticalAlignment="Center" Margin="10,0,10,0"/>
+                <ComboBox x:Name="uiPosition" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,5,10,5" VerticalAlignment="Center" />
+            </Grid>
+        <Button x:Uid="uiPositionFavButt" x:Name="uiPositionFavButt" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Del" Margin="10,0,10,0" Visibility="Collapsed"/>
 
-        <ComboBox x:Name="uiPosition" Grid.Row="1" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Center" >
-        </ComboBox>
-        <Button x:Uid="uiPositionFavButt" x:Name="uiPositionFavButt" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Del" Margin="10,0,10,0" Visibility="Collapsed"/>
+        <TextBox x:Uid="resSettName" x:Name="uiPositionName" Grid.Row="1" Header="Name" Margin="10,0,10,0"  Visibility="Collapsed"/>
+        <TextBox x:Uid="resSettLat" x:Name="uiPositionLat" Grid.Row="2" Header="Latitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
+        <TextBox x:Uid="resSettLong" x:Name="uiPositionLong" Grid.Row="3" Header="Longitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
+        <Button x:Name="uiPositionButt" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ok" Margin="10,0,10,0" Visibility="Collapsed" />
 
-        <TextBox x:Uid="resSettName" x:Name="uiPositionName" Grid.Row="2" Header="Name" Margin="10,0,10,0"  Visibility="Collapsed"/>
-        <TextBox x:Uid="resSettLat" x:Name="uiPositionLat" Grid.Row="3" Header="Latitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
-        <TextBox x:Uid="resSettLong" x:Name="uiPositionLong" Grid.Row="4" Header="Longitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
-        <Button x:Name="uiPositionButt" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ok" Margin="10,0,10,0" Visibility="Collapsed" />
+            <Slider x:Uid="resSettGPSPrec" x:Name="uiGPSPrecSld" Grid.Row="4" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Dokładność lokalizacji" Minimum="50" Maximum="150" LargeChange="25" SmallChange="25" StepFrequency="25" TickFrequency="25" Value="75" TickPlacement="BottomRight"/>
+            <TextBlock x:Name="uiGPSPrecTxt" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="75 m" />
+            
+            <Slider x:Uid="resSettWalkSld"  x:Name="uiWalkSpeedSld" Grid.Row="5" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Walking speed" Maximum="7" Minimum="1" Value="4"/>
+        <TextBlock x:Name="uiWalkSpeedTxt" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="10,5,10,0" VerticalAlignment="Center" Text="4 km/h"/>
 
-        <Slider x:Uid="resSettWalkSld"  x:Name="uiWalkSpeedSld" Grid.Row="5" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Header="Walking speed" Maximum="7" Minimum="1" Value="4"/>
-        <TextBlock x:Name="uiWalkSpeedTxt" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0,10,0" VerticalAlignment="Center" Text="4 km/h"/>
+        <Slider x:Uid="resSettNextSld" x:Name="uiAlsoNextSld" Grid.Row="6" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Pokaż kolejny tramwaj gdy za mniej niż" Maximum="10" Minimum="0" StepFrequency="1" Value="5" TickPlacement="BottomRight"/>
+        <TextBlock x:Name="uiAlsoNextTxt" Grid.Row="6" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="5 min" />
 
-        <Slider x:Uid="resSettNextSld" x:Name="uiAlsoNextSld" Grid.Row="6" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Header="Pokaż kolejny tramwaj gdy za mniej niż" Maximum="10" Minimum="0" StepFrequency="1" Value="5" TickPlacement="BottomRight"/>
-        <TextBlock x:Name="uiAlsoNextTxt" Grid.Row="6" HorizontalAlignment="Center" Grid.Column="1" Margin="10,0,10,0" VerticalAlignment="Center" Text="5 min" />
+        <Slider x:Uid="resSettMaxOld" x:Name="uiMaxOdlSld" Grid.Row="7" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Max odl od przystanku" Maximum="1400" LargeChange="200" SmallChange="100" StepFrequency="100" TickFrequency="200" Value="600" TickPlacement="BottomRight"/>
+        <TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="400 m" />
 
-        <Slider x:Uid="resSettMaxOld" x:Name="uiMaxOdlSld" Grid.Row="7" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Header="Max odl od przystanku" Maximum="1400" LargeChange="200" SmallChange="100" StepFrequency="100" TickFrequency="200" Value="600" TickPlacement="BottomRight"/>
-        <TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,0,10,0" VerticalAlignment="Center" Text="400 m" />
         </Grid>
 
-        <WebView x:Name="uiSetupWebView" Grid.Row="1" VerticalAlignment="Top"  HorizontalAlignment="Stretch" Height="100" Margin="10,10,10,10" />
+        <WebView x:Name="uiSetupWebView" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="100" Margin="10,10,10,10" />
 
 
     </Grid>
@@ -60,7 +70,7 @@
         <CommandBar>
             <AppBarButton Icon="Accept" Label="Ok" Click="bOk_Click"/>
             <AppBarSeparator/>
-            <AppBarButton x:Uid="resGoRefresh" Icon="Refresh" Label="Wczytaj przystanki" Click="bLoadStops_Click"/>
+            <AppBarButton x:Name="uiReloadStop" x:Uid="resGoRefresh" Icon="Flag" Label="Przystanki" Click="bLoadStops_Click"/>
             <AppBarSeparator/>
             <AppBarButton x:Uid="resGoRate" Icon="OutlineStar" Label="Rate"  />
         </CommandBar>

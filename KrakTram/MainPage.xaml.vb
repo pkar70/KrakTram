@@ -1,349 +1,213 @@
-﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+﻿
+' 2019.06.26 odjazdy:kierunek:contextMenu tylko ten, albo usun ten, kierunek z listy
 
-Imports System.Net.NetworkInformation
-Imports Windows.Data.Json
-Imports Windows.Data.Xml.Dom
-Imports Windows.Data.Xml.Xsl
-Imports Windows.Devices.Geolocation
-Imports System.Net.Http
+' 2019.04.02
+' 1. viewport w HEAD przy pokazywaniu zmian/reroutes zeby bylo czytelne
+' 2019.04.09
+' 1. pokazywanie częściowej listy (co kazde wczytanie tabliczki)
+' 2019.04.19
+' 1. zoom mode w historii sieci
+' 2. zmiana domyślnego 30 dni na 14 dni w ważności cache objazdów
 
-''' <summary>
-''' An empty page that can be used on its own or navigated to within a Frame.
-''' </summary>
+' 2019.03.16
+' 1. przygotowanie: app korzysta z App.GetSettingsInt("treatAsSameStop", 150), ale nie ma ustawiania tego
+' 2. wyszukiwanie przystanków wedle mask
+' 3. pamietanie sposobu sortowania
+' 2019.03.18
+' 1. progressring przy wczytywaniu trasy
+' 2019.03.21
+' 1. strona Zmiany/Reroutes, cache'owalna
+' 2. poprawka - po refresh trasy nie było refresh (tylko do pliku zapisywalo nowe)
+
+
 Public NotInheritable Class MainPage
     Inherits Page
 
-    Dim miSortMode As Integer = 0
-    Dim msXml As String
+    Private msStopName As String = ""
 
     Private Sub bSetup_Click(sender As Object, e As RoutedEventArgs)
-        Me.Frame.Navigate(GetType(Setup))
+        Me.Frame.Navigate(GetType(Setup), "MAIN")
     End Sub
 
+    Private Sub KontrolaSzerokosci()
+        ' kontrola szerokosci dla pola lewego (linia, typ)
+        Dim iWidthLine, iWidthTyp, iWidthTime As Integer
 
-    Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        App.CheckLoadStopList()
+        uiTesterTyp.Visibility = Visibility.Visible
+        iWidthTyp = uiTesterTyp.ActualWidth  ' typ
+        uiTesterTyp.Visibility = Visibility.Collapsed
+
+        uiTesterLinia.Visibility = Visibility.Visible
+        iWidthLine = uiTesterLinia.ActualWidth  'linia
+        uiTesterLinia.Visibility = Visibility.Collapsed
+
+        uiTesterCzas.Visibility = Visibility.Visible
+        iWidthTime = uiTesterCzas.ActualWidth  ' czas
+        uiTesterCzas.Visibility = Visibility.Collapsed
+
+        'uiTester.FontSize = 9
+        'uiTester.Text = "2014N"
+        'iWidth = uiTester.ActualWidth   'typ
+        'uiTester.FontSize = 20
+        'uiTester.Text = "22 min"
+        'iWidth2 = uiTester.ActualWidth  'linia
+
+        'uiTester.FontSize = 28
+        'uiTester.FontWeight = Windows.UI.Text.FontWeights.Bold
+        'uiTester.Text = "50"
+        'uiTester.Visibility = Visibility.Collapsed
+
+        App.SetSettingsInt("widthCol0", Math.Max(iWidthLine, iWidthTyp))
+        App.SetSettingsInt("widthCol3", iWidthTime)
     End Sub
 
-    Private Shared Function VehicleId2VehicleType(sTmp As String) As String
-        ' https://github.com/jacekkow/mpk-ttss/blob/master/common.js
+    Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+        App.GetSettingsInt("selectMode", 0)  ' pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
+        KontrolaSzerokosci()
 
-        If sTmp.Length < 15 Then Return " " ' <error>, znaczy nie ma danych w tabliczce
-        If sTmp.Substring(0, 15) <> "635218529567218" Then Return "???"
-        Dim id = CInt(sTmp.Substring(15)) - 736
-        If id = 831 Then id = 216
-        If id < 100 Then Return "???"
+        ' zeby nie bylo widac...
+        uiBusStopList.Visibility = Visibility.Collapsed
+        uiGoBusStop.Visibility = Visibility.Collapsed
 
-        If id < 200 Then Return "E1"  ' lowfloor=0
-        If id < 300 Then Return "105N"  ' lowfloor=0
-        If id < 400 Then Return "GT8"  ' lowfloor=0, dla 313 i 323 low=1; 
-        If id < 450 Then Return "EU8N"  ' lowfloor=1
-        If id < 500 Then Return "N8"  ' lowfloor=1
-        If id < 600 Then Return "???"
-        If id < 700 Then Return "NGT6"  ' lowfloor=2
-        If id < 800 Then Return "???"
-        If id < 890 Then Return "NGT8"
-        If id = 899 Then Return "126N"
-        If id < 990 Then Return "2014N"
-        If id = 990 Then Return "405N-Kr"
+        Await App.LoadFavList
+        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
 
-        Return "???"
-    End Function
+        Await App.CheckLoadStopList()
+        uiStopList.ItemsSource = From c In App.oStops.GetList("tram") Order By c.Name Select c.Name
 
-
-    Private Async Function GetTablicaXml(iId As Integer, iOdl As Integer) As Task(Of String)
-        Dim oHttp As New HttpClient()
-        Dim sTmp As String = ""
-
-        If Not NetworkInterface.GetIsNetworkAvailable() Then
-            App.DialogBoxRes("resErrorNoNetwork")
-            Return ""
+        If App.GetSettingsBool("settingsAlsoBus") Then
+            uiBusStopList.Visibility = Visibility.Visible
+            uiGoBusStop.Visibility = Visibility.Visible
+            uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Order By c.Name Select c.Name
         End If
 
-        Dim bError = False
-        oHttp.Timeout = TimeSpan.FromSeconds(8)
+    End Sub
 
-        Try
-            sTmp = Await oHttp.GetStringAsync(New Uri("http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop=" & iId))
-        Catch ex As Exception
-            bError = True
-        End Try
-        If bError Then
-            App.DialogBoxRes("resErrorGetHttp")
-            Return ""
-        End If
+    Private Sub bGetGPS_Click(sender As Object, e As RoutedEventArgs)
+        App.mbGoGPS = True    ' zgodnie z GPS prosze postapic (jak do tej pory)
+        App.moOdjazdy.Clear()
+        Me.Frame.Navigate(GetType(Odjazdy))
+    End Sub
 
-        Dim oJson As JsonObject
-        Try
-            oJson = JsonObject.Parse(sTmp)
-        Catch ex As Exception
-            bError = True
-        End Try
-        If bError Then
-            App.DialogBox("ERROR: JSON parsing error - tablica")
-            Return ""
-        End If
+    Private Sub uiGoFavour_Click(sender As Object, e As RoutedEventArgs)
+        If uiFavList.SelectedValue Is Nothing Then Exit Sub
 
-        Dim oJsonStops As New JsonArray
-        Try
-            oJsonStops = oJson.GetNamedArray("actual")
-        Catch ex As Exception
-            bError = True
-        End Try
-        If bError Then
-            App.DialogBox("ERROR: JSON ""actual"" array missing")
-            Return ""
-        End If
-
-        If oJsonStops.Count = 0 Then
-            ' przeciez tabliczka moze byc pusta (po kursach, przystanek nieczynny...)
-            Return ""
-        End If
-
-        Dim oXml = New XmlDocument
-        Dim oRoot = oXml.CreateElement("root")
-        oXml.AppendChild(oRoot)
-
-        ' Dim iMinSec As Integer = 3600 * iOdl / (App.GetSettingsInt("walkSpeed", 4) * 1000)
-        ' 20171108: nie walkspeed, ale aktualna szybkosc (nie mniej niz walkSpeed)
-        Dim iMinSec As Integer = 3.6 * iOdl / App.mSpeed
-
-        For Each oVal In oJsonStops
-
-            Dim iCurrSec As Integer = oVal.GetObject.GetNamedNumber("actualRelativeTime", 0)
-
-            If iCurrSec > iMinSec Then  ' tylko kiedy mozna zdążyć
-
-                Dim oNode As XmlElement = oXml.CreateElement("item")
-                oNode.SetAttribute("line", oVal.GetObject.GetNamedString("patternText", "!error!"))
-                oNode.SetAttribute("typ", VehicleId2VehicleType(
-                    oVal.GetObject.GetNamedString("vehicleId", "!error!")))
-                oNode.SetAttribute("numer",
-                    oVal.GetObject.GetNamedString("vehicleId", "12345678901234599999").Substring(15))
-                oNode.SetAttribute("dir", oVal.GetObject.GetNamedString("direction", "!error!"))
-                oNode.SetAttribute("time",
-                    oVal.GetObject.GetNamedString("mixedTime", "!error!").Replace("Min", "min"))
-                oNode.SetAttribute("timeSec", iCurrSec.ToString)
-                oNode.SetAttribute("stop", oJson.GetObject.GetNamedString("stopName", "!error!"))
-                oNode.SetAttribute("odl", iOdl.ToString)
-                oNode.SetAttribute("odlMin", iMinSec \ 60)
-                oNode.SetAttribute("odlSec", iMinSec)
-
-
-                Dim bBylo As Boolean = False
-
-                Dim sTxt As String = "//item"
-                sTxt = sTxt & "[@line='" & oVal.GetObject.GetNamedString("patternText", "!error!") &
-                "' and @dir='" & oVal.GetObject.GetNamedString("direction", "!error!") & "']"
-                For Each oTmpNode In oRoot.SelectNodes(sTxt)
-                    Dim iOldSec = oTmpNode.SelectSingleNode("@timeSec").NodeValue
-                    If iCurrSec > iOldSec + 60 * App.GetSettingsInt("alsoNext", 5) Then
-                        bBylo = True
-                        Exit For
-                    End If
-                Next
-                If Not bBylo Then oRoot.AppendChild(oNode)
-
+        Dim sStop As String = uiFavList.SelectedValue.ToString
+        For Each oStop As FavStop In App.oFavour.GetList
+            If oStop.Name = sStop Then
+                App.mbGoGPS = False
+                App.mMaxOdl = oStop.maxOdl
+                App.mdLat = oStop.Lat
+                App.mdLong = oStop.Lon
+                App.moOdjazdy.Clear()
+                Me.Frame.Navigate(GetType(Odjazdy))
             End If
-
         Next
-
-        sTmp = oXml.GetXml
-        sTmp = sTmp.Replace("<root>", "")
-        sTmp = sTmp.Replace("</root>", "")
-        Return sTmp
-
-    End Function
-    Private Shared Sub OdfiltrujMiedzytabliczkowo(ByRef oXml As XmlDocument)
-        ' usuwa z oXml to co powinien :)
-        ' <root><item ..>
-        ' o tabliczce: stop, odl, odlMin, odlSec - nazwa, odleglosc: metry, minuty, sec
-        ' o tramwaju: line, dir, time, timSec, typ, numer - linia, kierunek, mixedTime, sekundy, typ (eu8n), numer wozu
-
-        Dim iInd, iInd1 As Integer
-        Dim oRoot = oXml.DocumentElement.SelectSingleNode("//root")
-        For iInd = oRoot.SelectNodes("//item").Count - 1 To 0 Step -1
-            Dim oNode = oRoot.ChildNodes.Item(iInd)
-            For iInd1 = iInd - 1 To 0 Step -1
-
-                If oRoot.ChildNodes.Item(iInd1).SelectSingleNode("@numer").NodeValue = oRoot.ChildNodes.Item(iInd).SelectSingleNode("@numer").NodeValue Then
-                    If CInt(oRoot.ChildNodes.Item(iInd1).SelectSingleNode("@odlMin").NodeValue) >
-                        CInt(oNode.SelectSingleNode("@odlMin").NodeValue) Then
-                        oXml.DocumentElement.RemoveChild(oRoot.ChildNodes.Item(iInd1))
-                        Exit For
-                    End If
-                End If
-            Next
-        Next
-
     End Sub
 
-    Private Async Sub bGetGPS_Click(sender As Object, e As RoutedEventArgs)
-        Dim iOdl As Integer
-
-        If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            App.DialogBoxRes("resErrorNoNetwork")
-            Exit Sub
-        End If
-
-        uiGetTtss.Visibility = Visibility.Collapsed
-        uiWebView.Visibility = Visibility.Visible
-        uiGoTtssBar.IsEnabled = False
-
-        uiWorking.Text = "o"
-        Dim oPoint As Point = Await App.GetCurrentPoint
-        Dim sHtml = ""
-
-        Dim iWorking = 0
-
-        For Each oNode In App.oStops.GetList
-            uiWorking.Text = "."
-            iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon)
-            If iOdl < App.GetSettingsInt("maxOdl") Then
-                iWorking += 1
-                Select Case iWorking Mod 4
-                    Case 1
-                        uiWorking.Text = "/"
-                    Case 2
-                        uiWorking.Text = "-"
-                    Case 3
-                        uiWorking.Text = "\"
-                    Case 0
-                        uiWorking.Text = "|"
-                End Select
-                sHtml = sHtml & Await GetTablicaXml(CInt(oNode.id), iOdl)
+    Private Sub GoStop(sName As String, sCat As String)
+        For Each oStop As Przystanek In App.oStops.GetList(sCat)
+            If oStop.Name = sName Then
+                App.mbGoGPS = False
+                App.mMaxOdl = App.GetSettingsInt("treatAsSameStop", 150)
+                App.mdLat = oStop.Lat
+                App.mdLong = oStop.Lon
+                App.msCat = oStop.Cat
+                App.moOdjazdy.Clear()
+                Me.Frame.Navigate(GetType(Odjazdy))
             End If
         Next
 
-        msXml = sHtml
-        WypiszTabele()
-
-        uiWorking.Text = " "
-        uiGoTtssBar.IsEnabled = True
-
     End Sub
-    <CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.Int32.ToString")>
-    Private Sub WypiszTabele()
-        Dim sXml As String
-        sXml = msXml
 
-        If sXml = "" Then
-            sXml = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("resZeroKursow")
-            uiWebView.NavigateToString("<html><body><h1>" & sXml & "</h1></body></html>")
-            Exit Sub
+    Private Sub uiGoStop_Click(sender As Object, e As RoutedEventArgs)
+        If uiStopList.SelectedValue Is Nothing Then Exit Sub
+        ' KontrolaSzerokosci()
+        Dim sStop As String = uiStopList.SelectedValue.ToString
+        GoStop(sStop, "tram")
+    End Sub
+
+    Private Sub HideAppPins()
+        uiUnpin.Visibility = Visibility.Collapsed
+        uiPin.Visibility = Visibility.Collapsed
+        uiAppSep.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub uiUnPin_Click(sender As Object, e As RoutedEventArgs)
+        ' usun z Fav
+        Dim sName As String = uiFavList.SelectedItem
+        App.oFavour.Del(sName)
+        App.oFavour.Save(False)
+        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
+        HideAppPins()
+    End Sub
+
+    Private Sub uiPin_Click(sender As Object, e As RoutedEventArgs)
+        If msStopName = "" Then Exit Sub
+
+        ' dodaj do Fav
+        ' Dim sName As String = uiStopList.SelectedItem
+        Dim oPrzyst As Przystanek = App.oStops.GetItem(msStopName)
+        If oPrzyst Is Nothing Then Exit Sub
+
+        App.oFavour.Add(msStopName, oPrzyst.Lat, oPrzyst.Lon, 150)  ' odl 150, zeby byl tram/bus
+        App.oFavour.Save(False)
+
+        msStopName = "" ' powtorka buttonu nie zadziała
+
+        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
+        HideAppPins()
+    End Sub
+
+    Private Sub uiFavList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiFavList.SelectionChanged
+        HideAppPins()
+        uiUnpin.Visibility = Visibility.Visible
+    End Sub
+
+    Private Sub uiStopList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiStopList.SelectionChanged, uiBusStopList.SelectionChanged
+        HideAppPins()
+
+        msStopName = TryCast(sender, ComboBox).SelectedItem
+        uiPin.Visibility = Visibility.Visible
+    End Sub
+
+    Private Sub uiHist_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Historia))
+    End Sub
+
+    Private Sub uiGoBusStop_Click(sender As Object, e As RoutedEventArgs)
+        If uiBusStopList.SelectedValue Is Nothing Then Exit Sub
+        ' KontrolaSzerokosci()
+        Dim sStop As String = uiBusStopList.SelectedValue.ToString
+        GoStop(sStop, "bus")
+    End Sub
+
+    Private Async Sub uiStopList_DoubleTapped(sender As Object, e As DoubleTappedRoutedEventArgs) Handles uiStopList.DoubleTapped
+        Dim sMask As String = Await App.DialogBoxInput("msgEnterName")
+
+        If sMask = "" Then
+            sMask = sMask.ToLower
+            uiStopList.ItemsSource = From c In App.oStops.GetList("tram") Order By c.Name Select c.Name
+        Else
+            sMask = sMask.ToLower
+            uiStopList.ItemsSource = From c In App.oStops.GetList("tram") Where c.Name.ToLower.Contains(sMask) Order By c.Name Select c.Name
         End If
 
-        sXml = "<root>" & sXml & "</root>"
-        Dim oXmlDoc As New XmlDocument
-        oXmlDoc.LoadXml(sXml)
+    End Sub
 
-        OdfiltrujMiedzytabliczkowo(oXmlDoc)
-
-        ' tester: http://xslttest.appspot.com/
-        Dim sXslt = "
-<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'>
-    <xsl:template match='root'>
-        <html>
-            <head>
-            <style>
-.Line  {font-size:#FONTSIZELINE#pt; font-weight:bold}
-.Center {text-align:center;}
-.Kier  {font-size:#FONTSIZEKIER#pt; font-weight:bold}
-.Stop  {font-size:#FONTSIZESTOP#pt}
-.Time  {font-size:#FONTSIZETIME#pt}
-.Typ  {font-size:#FONTSIZEMINI#pt}
-.Odl   {font-size:#FONTSIZEODL#pt}
-            </style>
-            </head>
-            <body>
-                <table border='1'>
-                    <xsl:apply-templates select='/root/item'>
-    #SORTBY#
-                    </xsl:apply-templates>
-                </table>
-            </body>
-        </html>
-    </xsl:template>
-
-  <xsl:template match='root/item'>
-    <tr><td rowspan='2' class='Center'><span class='Line'><xsl:value-of select='@line'/></span><br/>
-        <span class='Typ'><xsl:value-of select='@typ'/></span></td>
-     <td><span class='Kier'><xsl:value-of select='@dir'/></span></td>
-    <td rowspan='2' class='Center'><span class='Time'><xsl:value-of select='@time'/></span></td>
-    </tr>
-    <tr><td><span class='Stop'><xsl:value-of select='@stop'/> </span> 
-        <span class='Odl'> (<xsl:value-of select='@odl'/> m, <xsl:value-of select='@odlMin'/> min)</span></td>
-    </tr>
-
-  </xsl:template>
-</xsl:stylesheet>
-"
-        ' <span class='Typ'> dla @stop - bo błąd w telefonie, i pokazuje duże
-
-        ' skalowanie
-        Dim dTmp = Windows.Graphics.Display.DisplayInformation.GetForCurrentView.RawPixelsPerViewPixel
-        dTmp = dTmp * dTmp * dTmp
-        ' PC = 1, Lumia = 1.5; kolejne potegi: 1.5; 2.25, 3.375, 5.062
-
-        sXslt = sXslt.Replace("#FONTSIZELINE#", CInt(12 * dTmp * 1.7).ToString)
-        sXslt = sXslt.Replace("#FONTSIZEMINI#", CInt(12 * dTmp * 0.75).ToString)    ' typ
-        sXslt = sXslt.Replace("#FONTSIZETIME#", CInt(12 * dTmp * 1.25).ToString)
-        sXslt = sXslt.Replace("#FONTSIZEKIER#", CInt(12 * dTmp).ToString)
-
-        ' EDGE BUG OVERRIDE
-        If CInt(12 * dTmp * 0.85) = 34 Then
-            sXslt = sXslt.Replace("#FONTSIZESTOP#", "24")
-            sXslt = sXslt.Replace("#FONTSIZEODL#", "20")    ' odl
-        Else    ' normalnie, np. PC
-            sXslt = sXslt.Replace("#FONTSIZESTOP#", CInt(12 * dTmp * 0.85).ToString)
-            sXslt = sXslt.Replace("#FONTSIZEODL#", CInt(12 * dTmp * 0.75).ToString)    ' odl
+    Private Async Sub uiBusStopList_DoubleTapped(sender As Object, e As DoubleTappedRoutedEventArgs) Handles uiBusStopList.DoubleTapped
+        Dim sMask As String = Await App.DialogBoxInput("msgEnterName")
+        If sMask = "" Then
+            sMask = sMask.ToLower
+            uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Order By c.Name Select c.Name
+        Else
+            sMask = sMask.ToLower
+            uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Where c.Name.ToLower.Contains(sMask) Order By c.Name Select c.Name
         End If
 
-        Dim sTmp As String
-        Select Case miSortMode
-            Case 1  ' stop/czas/dir
-                sTmp = "<xsl:sort select='@stop' /><xsl:sort data-type='number' select='@timeSec' /><xsl:sort select='@dir' />"
-            Case 2  ' dir/stop/czas
-                sTmp = "<xsl:sort select='@dir' /><xsl:sort select='@stop' /><xsl:sort data-type='number' select='@timeSec' />"
-            Case Else   ' czyli takze domyslne zero; linia/kierunek/czas
-                sTmp = "<xsl:sort data-type='number' select='@line' /><xsl:sort select='@dir' /><xsl:sort data-type='number' select='@timeSec' />"
-        End Select
-
-        sXslt = sXslt.Replace("#SORTBY#", sTmp)
-        Dim oXsltDoc As New XmlDocument
-        oXsltDoc.LoadXml(sXslt)
-        Dim oXP = New XsltProcessor(oXsltDoc)
-        sTmp = oXP.TransformToString(oXmlDoc.DocumentElement)
-
-        'sHtml = sHtml.Replace("</body>", "<p>RawPixelsPerViewPixel = " & iTmp.ToString & "</p></body>")
-        uiWebView.NavigateToString(sTmp)
     End Sub
 
-    Private Sub Page_Resized(sender As Object, e As SizeChangedEventArgs)
-        uiWebView.Height = uiMainGrid.ActualHeight - 50
-    End Sub
-
-    Private Sub bSortByLine_Click(sender As Object, e As RoutedEventArgs)
-        miSortMode = 0
-        uiSortKier.IsChecked = False
-        uiSortLine.IsChecked = True
-        uiSortStop.IsChecked = False
-        WypiszTabele()
-    End Sub
-
-    Private Sub bSortByStop_Click(sender As Object, e As RoutedEventArgs)
-        miSortMode = 1
-        uiSortKier.IsChecked = False
-        uiSortLine.IsChecked = False
-        uiSortStop.IsChecked = True
-        WypiszTabele()
-    End Sub
-
-    Private Sub bSortByKier_Click(sender As Object, e As RoutedEventArgs)
-        miSortMode = 2
-        uiSortKier.IsChecked = True
-        uiSortLine.IsChecked = False
-        uiSortStop.IsChecked = False
-        WypiszTabele()
+    Private Sub uiChanges_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Zmiany))
     End Sub
 End Class

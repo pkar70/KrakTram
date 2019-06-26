@@ -5,9 +5,9 @@
     xmlns:local="using:KrakTram"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Setup_Loaded" SizeChanged="Setup_SizeChanged">
+    mc:Ignorable="d" Loaded="Setup_Loaded" >
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -25,7 +25,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -38,10 +39,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Uid="uiPosSrc" Text="Position" VerticalAlignment="Center" Margin="10,0,10,0"/>
-                <ComboBox x:Name="uiPosition" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,5,10,5" VerticalAlignment="Center" />
+                <Button x:Name="uiOpenPosPanel" x:Uid="uiPosSrc" Content="Position" VerticalAlignment="Center" Click="uiOpenPosPanel_Click"/>
+                <!-- <ComboBox x:Name="uiPosition" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,5,10,5" VerticalAlignment="Center" /> -->
             </Grid>
-        <Button x:Uid="uiPositionFavButt" x:Name="uiPositionFavButt" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Del" Margin="10,0,10,0" Visibility="Collapsed"/>
+            <!-- <Button x:Uid="uiPositionFavButt" x:Name="uiPositionFavButt" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Del" Margin="10,0,10,0" Visibility="Collapsed"/> -->
 
         <TextBox x:Uid="resSettName" x:Name="uiPositionName" Grid.Row="1" Header="Name" Margin="10,0,10,0"  Visibility="Collapsed"/>
         <TextBox x:Uid="resSettLat" x:Name="uiPositionLat" Grid.Row="2" Header="Latitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
@@ -60,6 +61,7 @@
         <Slider x:Uid="resSettMaxOld" x:Name="uiMaxOdlSld" Grid.Row="7" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Max odl od przystanku" Maximum="1400" LargeChange="200" SmallChange="100" StepFrequency="100" TickFrequency="200" Value="600" TickPlacement="BottomRight"/>
         <TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="400 m" />
 
+            <ToggleSwitch x:Name="uiAlsoBus" x:Uid="uiAlsoBus" Grid.Row="8" OnContent="bus &amp; tram (experimental)" OffContent="only tram" />
         </Grid>
 
         <WebView x:Name="uiSetupWebView" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="100" Margin="10,10,10,10" />
@@ -70,7 +72,7 @@
         <CommandBar>
             <AppBarButton Icon="Accept" Label="Ok" Click="bOk_Click"/>
             <AppBarSeparator/>
-            <AppBarButton x:Name="uiReloadStop" x:Uid="resGoRefresh" Icon="Flag" Label="Przystanki" Click="bLoadStops_Click"/>
+            <AppBarButton x:Name="uiReloadStop" x:Uid="resGoRefresh" Icon="Refresh" Label="Przystanki" Click="bLoadStops_Click"/>
             <AppBarSeparator/>
             <AppBarButton x:Uid="resGoRate" Icon="OutlineStar" Label="Rate"  />
         </CommandBar>

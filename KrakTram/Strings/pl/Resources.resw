@@ -204,8 +204,8 @@
   <data name="resSettGPSPrec.Header" xml:space="preserve">
     <value>Dokładność lokalizacji</value>
   </data>
-  <data name="uiPosSrc.Text" xml:space="preserve">
-    <value>Pozycja</value>
+  <data name="uiPosSrc.Content" xml:space="preserve">
+    <value>Pozycja...</value>
   </data>
   <data name="resErrorGetHttp" xml:space="preserve">
     <value>Błąd: wystąpił błąd w komunikacji sieciowej.</value>
@@ -224,5 +224,83 @@
   </data>
   <data name="resStopRefresh.Label" xml:space="preserve">
     <value>Wczytaj przystanki</value>
+  </data>
+  <data name="resErrorXMLload" xml:space="preserve">
+    <value>Błąd konwersji XML?</value>
+  </data>
+  <data name="resAll.Header" xml:space="preserve">
+    <value>Przystanki</value>
+  </data>
+  <data name="resFavour.Header" xml:space="preserve">
+    <value>Zapisane pozycje</value>
+  </data>
+  <data name="resGoStop.Content" xml:space="preserve">
+    <value>Pokaż!</value>
+  </data>
+  <data name="resImportedOldFav" xml:space="preserve">
+    <value>Zaimportowałem poprzednią listę miejsc</value>
+  </data>
+  <data name="uiMoreInfo.Text" xml:space="preserve">
+    <value>Więcej...</value>
+  </data>
+  <data name="uiShowStops.Text" xml:space="preserve">
+    <value>Przystanki</value>
+  </data>
+  <data name="resTrasa" xml:space="preserve">
+    <value>Przystanki linii</value>
+  </data>
+  <data name="uiPin.Label" xml:space="preserve">
+    <value>Dodaj ulubiony</value>
+  </data>
+  <data name="uiUnpin.Label" xml:space="preserve">
+    <value>Usuń ulubiony</value>
+  </data>
+  <data name="resBadFloat" xml:space="preserve">
+    <value>To chyba nie jest liczba</value>
+  </data>
+  <data name="resGoTabliczka.Text" xml:space="preserve">
+    <value>Tabliczka przystanku</value>
+  </data>
+  <data name="resChangesInStopList" xml:space="preserve">
+    <value>Zmiany na liście przystanków:</value>
+  </data>
+  <data name="uiRefresh.Label" xml:space="preserve">
+    <value>Aktualizuj</value>
+  </data>
+  <data name="resHistoriaTitle" xml:space="preserve">
+    <value>Sieć tram w</value>
+  </data>
+  <data name="uiHistoria.Label" xml:space="preserve">
+    <value>Historia</value>
+  </data>
+  <data name="uiAlsoBus.OffContent" xml:space="preserve">
+    <value>tylko tramwaje</value>
+  </data>
+  <data name="uiAlsoBus.OnContent" xml:space="preserve">
+    <value>tramwaje i autobusy (eksperymentalne)</value>
+  </data>
+  <data name="msgEnterName" xml:space="preserve">
+    <value>Fragment nazwy:</value>
+  </data>
+  <data name="resDlgCancel" xml:space="preserve">
+    <value>Wszystkie</value>
+  </data>
+  <data name="resDlgContinue" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="resSortCzas.Text" xml:space="preserve">
+    <value>wg czasu</value>
+  </data>
+  <data name="uiChanges.Label" xml:space="preserve">
+    <value>Objazdy</value>
+  </data>
+  <data name="uiZmianyTitle.Text" xml:space="preserve">
+    <value>Zmiany tras</value>
+  </data>
+  <data name="uiExcludeKier.Text" xml:space="preserve">
+    <value>Bez tego kierunku</value>
+  </data>
+  <data name="uiOnlyThisKier.Text" xml:space="preserve">
+    <value>Tylko ten kierunek</value>
   </data>
 </root>

@@ -1,0 +1,1450 @@
+{"stops": [
+  {
+    "category": "tram",
+    "id": "6350927454370005230",
+    "latitude": 180367133,
+    "longitude": 72043450,
+    "name": "Os.Piastów",
+    "shortName": "378"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005196",
+    "latitude": 180234831,
+    "longitude": 71825984,
+    "name": "Lubicz",
+    "shortName": "126"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005339",
+    "latitude": 180074257,
+    "longitude": 71632051,
+    "name": "Chmieleniec",
+    "shortName": "2691"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005564",
+    "latitude": 180064597,
+    "longitude": 71601349,
+    "name": "Czerwone Maki P+R",
+    "shortName": "3038"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005338",
+    "latitude": 180087693,
+    "longitude": 71646235,
+    "name": "Kampus UJ",
+    "shortName": "2690"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005300",
+    "latitude": 180048914,
+    "longitude": 71821671,
+    "name": "Kurdwanów",
+    "shortName": "744"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005353",
+    "latitude": 180088119,
+    "longitude": 71762192,
+    "name": "Łagiewniki ZUS",
+    "shortName": "2821"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005833",
+    "latitude": 180048914,
+    "longitude": 71821671,
+    "name": "Kurdwanów P+R",
+    "shortName": "3176"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005302",
+    "latitude": 180047695,
+    "longitude": 71736393,
+    "name": "Borek Fałęcki",
+    "shortName": "747"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005304",
+    "latitude": 180052313,
+    "longitude": 71740458,
+    "name": "Borek Fałęcki I",
+    "shortName": "824"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005301",
+    "latitude": 180058468,
+    "longitude": 71746670,
+    "name": "Solvay",
+    "shortName": "746"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005287",
+    "latitude": 180080431,
+    "longitude": 71757823,
+    "name": "Sanktuarium Bożego Miłosierdzia",
+    "shortName": "615"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005205",
+    "latitude": 180189697,
+    "longitude": 71695213,
+    "name": "Salwator",
+    "shortName": "311"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005187",
+    "latitude": 180263081,
+    "longitude": 71696364,
+    "name": "Biprostal",
+    "shortName": "84"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005281",
+    "latitude": 180097653,
+    "longitude": 71660276,
+    "name": "Ruczaj",
+    "shortName": "589"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005337",
+    "latitude": 180108113,
+    "longitude": 71685718,
+    "name": "Norymberska",
+    "shortName": "2688"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005209",
+    "latitude": 180220900,
+    "longitude": 71679150,
+    "name": "Reymana",
+    "shortName": "320"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005271",
+    "latitude": 180157950,
+    "longitude": 71809135,
+    "name": "Korona",
+    "shortName": "571"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005335",
+    "latitude": 180110753,
+    "longitude": 71729800,
+    "name": "Lipińskiego",
+    "shortName": "2686"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005336",
+    "latitude": 180114083,
+    "longitude": 71714885,
+    "name": "Grota-Roweckiego",
+    "shortName": "2687"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005284",
+    "latitude": 180109861,
+    "longitude": 71743736,
+    "name": "Borsucza",
+    "shortName": "612"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005277",
+    "latitude": 180124296,
+    "longitude": 71733518,
+    "name": "Kobierzyńska",
+    "shortName": "584"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005285",
+    "latitude": 180109799,
+    "longitude": 71754497,
+    "name": "Brożka",
+    "shortName": "613"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005276",
+    "latitude": 180148135,
+    "longitude": 71727501,
+    "name": "Słomiana",
+    "shortName": "577"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005283",
+    "latitude": 180119708,
+    "longitude": 71778550,
+    "name": "Rzemieślnicza",
+    "shortName": "611"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005286",
+    "latitude": 180114207,
+    "longitude": 71762733,
+    "name": "PT",
+    "shortName": "614"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005306",
+    "latitude": 180107850,
+    "longitude": 71769998,
+    "name": "Łagiewniki",
+    "shortName": "922"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005282",
+    "latitude": 180131163,
+    "longitude": 71786300,
+    "name": "Rondo Matecznego",
+    "shortName": "610"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005272",
+    "latitude": 180149478,
+    "longitude": 71795415,
+    "name": "Smolki",
+    "shortName": "572"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005207",
+    "latitude": 180213932,
+    "longitude": 71730079,
+    "name": "Cracovia",
+    "shortName": "318"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005774",
+    "latitude": 180213932,
+    "longitude": 71730079,
+    "name": "Muzeum Narodowe",
+    "shortName": "3141"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005275",
+    "latitude": 180162052,
+    "longitude": 71719420,
+    "name": "Kapelanka",
+    "shortName": "576"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005273",
+    "latitude": 180174943,
+    "longitude": 71751643,
+    "name": "Most Grunwaldzki",
+    "shortName": "574"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005565",
+    "latitude": 180174899,
+    "longitude": 71751717,
+    "name": "Centrum Kongresowe ICE",
+    "shortName": "3039"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005274",
+    "latitude": 180168366,
+    "longitude": 71731454,
+    "name": "Szwedzka",
+    "shortName": "575"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005206",
+    "latitude": 180192257,
+    "longitude": 71718218,
+    "name": "Komorowskiego",
+    "shortName": "313"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005310",
+    "latitude": 180217018,
+    "longitude": 71704348,
+    "name": "Park Jordana",
+    "shortName": "960"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005303",
+    "latitude": 180215404,
+    "longitude": 71714643,
+    "name": "Oleandry",
+    "shortName": "823"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005208",
+    "latitude": 180198915,
+    "longitude": 71739237,
+    "name": "Jubilat",
+    "shortName": "319"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005210",
+    "latitude": 180217279,
+    "longitude": 71752656,
+    "name": "Uniwersytet Jagielloński",
+    "shortName": "321"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005211",
+    "latitude": 180212247,
+    "longitude": 71759953,
+    "name": "Filharmonia",
+    "shortName": "322"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005218",
+    "latitude": 180182070,
+    "longitude": 71778588,
+    "name": "Orzeszkowej",
+    "shortName": "361"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005216",
+    "latitude": 180186102,
+    "longitude": 71790433,
+    "name": "Stradom",
+    "shortName": "359"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005342",
+    "latitude": 180179604,
+    "longitude": 71810604,
+    "name": "Muzeum Inżynierii Miejskiej",
+    "shortName": "2726"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005217",
+    "latitude": 180172775,
+    "longitude": 71796294,
+    "name": "Plac Wolnica",
+    "shortName": "360"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005341",
+    "latitude": 180182304,
+    "longitude": 71822304,
+    "name": "Dajwór",
+    "shortName": "915"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005344",
+    "latitude": 180183978,
+    "longitude": 71823985,
+    "name": "Św.Wawrzyńca",
+    "shortName": "2742"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005213",
+    "latitude": 180196182,
+    "longitude": 71782457,
+    "name": "Wawel",
+    "shortName": "325"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005317",
+    "latitude": 180213089,
+    "longitude": 71776500,
+    "name": "Plac Wszystkich Świętych",
+    "shortName": "1360"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005343",
+    "latitude": 180210340,
+    "longitude": 71786990,
+    "name": "Św.Gertrudy",
+    "shortName": "2741"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005214",
+    "latitude": 180214076,
+    "longitude": 71792015,
+    "name": "Poczta Główna",
+    "shortName": "357"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005215",
+    "latitude": 180206010,
+    "longitude": 71803581,
+    "name": "Starowiślna",
+    "shortName": "358"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005219",
+    "latitude": 180192826,
+    "longitude": 71814352,
+    "name": "Miodowa",
+    "shortName": "362"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005220",
+    "latitude": 180211207,
+    "longitude": 71816125,
+    "name": "Hala Targowa",
+    "shortName": "363"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005202",
+    "latitude": 180284716,
+    "longitude": 71630238,
+    "name": "Wesele",
+    "shortName": "133"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005188",
+    "latitude": 180226642,
+    "longitude": 71651287,
+    "name": "Cichy Kącik",
+    "shortName": "87"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005190",
+    "latitude": 180279461,
+    "longitude": 71644220,
+    "name": "Bronowice",
+    "shortName": "89"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005311",
+    "latitude": 180274061,
+    "longitude": 71659664,
+    "name": "Głowackiego",
+    "shortName": "1049"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005189",
+    "latitude": 180267420,
+    "longitude": 71677535,
+    "name": "Uniwersytet Pedagogiczny",
+    "shortName": "88"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005204",
+    "latitude": 180295027,
+    "longitude": 71577170,
+    "name": "Bronowice Małe",
+    "shortName": "135"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005203",
+    "latitude": 180293148,
+    "longitude": 71601153,
+    "name": "Balicka Wiadukt",
+    "shortName": "134"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005690",
+    "latitude": 180293078,
+    "longitude": 71601237,
+    "name": "Bronowice Wiadukt",
+    "shortName": "136"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005175",
+    "latitude": 180303281,
+    "longitude": 71761873,
+    "name": "Bratysławska",
+    "shortName": "61"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005176",
+    "latitude": 180319272,
+    "longitude": 71753242,
+    "name": "Krowodrza Górka",
+    "shortName": "63"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005184",
+    "latitude": 180240862,
+    "longitude": 71745438,
+    "name": "Batorego",
+    "shortName": "78"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005183",
+    "latitude": 180228878,
+    "longitude": 71758536,
+    "name": "Teatr Bagatela",
+    "shortName": "77"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005185",
+    "latitude": 180249160,
+    "longitude": 71735097,
+    "name": "Plac Inwalidów",
+    "shortName": "79"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005186",
+    "latitude": 180259199,
+    "longitude": 71711001,
+    "name": "Urzędnicza",
+    "shortName": "83"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005181",
+    "latitude": 180255545,
+    "longitude": 71801840,
+    "name": "Politechnika",
+    "shortName": "73"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005560",
+    "latitude": 180238571,
+    "longitude": 71782388,
+    "name": "Stary Kleparz",
+    "shortName": "3032"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005182",
+    "latitude": 180239020,
+    "longitude": 71781145,
+    "name": "Basztowa LOT",
+    "shortName": "75"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005180",
+    "latitude": 180250622,
+    "longitude": 71775251,
+    "name": "Pędzichów",
+    "shortName": "72"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005201",
+    "latitude": 180232794,
+    "longitude": 71802022,
+    "name": "Dworzec Główny",
+    "shortName": "131"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005844",
+    "latitude": 180232570,
+    "longitude": 71803421,
+    "name": "Teatr Słowackiego",
+    "shortName": "3242"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005327",
+    "latitude": 180244921,
+    "longitude": 71803299,
+    "name": "Dworzec Główny Zachód",
+    "shortName": "2608"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005314",
+    "latitude": 180246297,
+    "longitude": 71809578,
+    "name": "Dworzec Główny Tunel",
+    "shortName": "1173"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005178",
+    "latitude": 180272154,
+    "longitude": 71784192,
+    "name": "Dworzec Towarowy",
+    "shortName": "70"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005179",
+    "latitude": 180264512,
+    "longitude": 71771333,
+    "name": "Nowy Kleparz",
+    "shortName": "71"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005562",
+    "latitude": 180290484,
+    "longitude": 71776260,
+    "name": "Szpital Narutowicza",
+    "shortName": "3036"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005177",
+    "latitude": 180290620,
+    "longitude": 71776085,
+    "name": "Prądnicka",
+    "shortName": "69"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005299",
+    "latitude": 180044563,
+    "longitude": 71842829,
+    "name": "Witosa",
+    "shortName": "718"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005297",
+    "latitude": 180048499,
+    "longitude": 71873272,
+    "name": "Nowosądecka",
+    "shortName": "715"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005290",
+    "latitude": 180084121,
+    "longitude": 71929954,
+    "name": "Bieżanowska",
+    "shortName": "630"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005298",
+    "latitude": 180055534,
+    "longitude": 71897389,
+    "name": "Piaski Nowe",
+    "shortName": "716"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005291",
+    "latitude": 180066423,
+    "longitude": 71919126,
+    "name": "Dauna",
+    "shortName": "632"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005292",
+    "latitude": 180070051,
+    "longitude": 71956735,
+    "name": "Wlotowa",
+    "shortName": "634"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005296",
+    "latitude": 180052049,
+    "longitude": 71998775,
+    "name": "Prokocim Szpital",
+    "shortName": "682"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005293",
+    "latitude": 180063373,
+    "longitude": 71967644,
+    "name": "Prokocim",
+    "shortName": "637"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005295",
+    "latitude": 180059594,
+    "longitude": 72027118,
+    "name": "Teligi",
+    "shortName": "681"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005326",
+    "latitude": 180058408,
+    "longitude": 72045634,
+    "name": "Nowy Prokocim",
+    "shortName": "2582"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005325",
+    "latitude": 180056187,
+    "longitude": 72082990,
+    "name": "Nowy Bieżanów",
+    "shortName": "2580"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005832",
+    "latitude": 180056187,
+    "longitude": 72082990,
+    "name": "Nowy Bieżanów P+R",
+    "shortName": "3175"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005294",
+    "latitude": 180057659,
+    "longitude": 72070712,
+    "name": "Ćwiklińskiej",
+    "shortName": "679"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005329",
+    "latitude": 180151766,
+    "longitude": 71859715,
+    "name": "Powstańców Wielkopolskich",
+    "shortName": "568"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005812",
+    "latitude": 180290620,
+    "longitude": 71776085,
+    "name": "Podgórze SKA",
+    "shortName": "3158"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005331",
+    "latitude": 180139866,
+    "longitude": 71872993,
+    "name": "Cmentarz Podgórski",
+    "shortName": "621"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005289",
+    "latitude": 180096973,
+    "longitude": 71916944,
+    "name": "Kabel",
+    "shortName": "624"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005288",
+    "latitude": 180119078,
+    "longitude": 71894471,
+    "name": "Dworcowa",
+    "shortName": "623"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005416",
+    "latitude": 180120524,
+    "longitude": 71917499,
+    "name": "Dworzec Płaszów Estakada",
+    "shortName": "2870"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005267",
+    "latitude": 180146336,
+    "longitude": 71920669,
+    "name": "Gromadzka",
+    "shortName": "560"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005268",
+    "latitude": 180146469,
+    "longitude": 71939257,
+    "name": "Lipska",
+    "shortName": "561"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005330",
+    "latitude": 180162383,
+    "longitude": 71839584,
+    "name": "Limanowskiego",
+    "shortName": "569"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005270",
+    "latitude": 180167637,
+    "longitude": 71838366,
+    "name": "Plac Bohaterów Getta",
+    "shortName": "570"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005313",
+    "latitude": 180179166,
+    "longitude": 71873518,
+    "name": "Zabłocie",
+    "shortName": "1154"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005308",
+    "latitude": 180176268,
+    "longitude": 71883649,
+    "name": "Klimeckiego",
+    "shortName": "946"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005222",
+    "latitude": 180207818,
+    "longitude": 71852584,
+    "name": "Rondo Grzegórzeckie",
+    "shortName": "365"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005318",
+    "latitude": 180211890,
+    "longitude": 71864976,
+    "name": "Kordylewskiego",
+    "shortName": "2536"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005378",
+    "latitude": 180211819,
+    "longitude": 71864862,
+    "name": "Teatr Variété",
+    "shortName": "2859"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005223",
+    "latitude": 180216338,
+    "longitude": 71881211,
+    "name": "Francesco Nullo",
+    "shortName": "367"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005226",
+    "latitude": 180219707,
+    "longitude": 71925633,
+    "name": "Dąbie",
+    "shortName": "370"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005269",
+    "latitude": 180160654,
+    "longitude": 71904812,
+    "name": "Kuklińskiego",
+    "shortName": "567"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005224",
+    "latitude": 180217301,
+    "longitude": 71894481,
+    "name": "Fabryczna",
+    "shortName": "368"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005225",
+    "latitude": 180214611,
+    "longitude": 71914779,
+    "name": "Ofiar Dąbia",
+    "shortName": "369"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005316",
+    "latitude": 180143662,
+    "longitude": 72005402,
+    "name": "Mały Płaszów",
+    "shortName": "1263"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005315",
+    "latitude": 180145794,
+    "longitude": 71970297,
+    "name": "Rzebika",
+    "shortName": "1262"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005199",
+    "latitude": 180239469,
+    "longitude": 71891259,
+    "name": "Cystersów",
+    "shortName": "129"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005195",
+    "latitude": 180236041,
+    "longitude": 71853530,
+    "name": "Rondo Mogilskie",
+    "shortName": "125"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005198",
+    "latitude": 180254686,
+    "longitude": 71835785,
+    "name": "Rakowicka",
+    "shortName": "128"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005197",
+    "latitude": 180244685,
+    "longitude": 71828772,
+    "name": "Uniwersytet Ekonomiczny",
+    "shortName": "127"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005194",
+    "latitude": 180264956,
+    "longitude": 71844258,
+    "name": "Cmentarz Rakowicki",
+    "shortName": "124"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005193",
+    "latitude": 180257919,
+    "longitude": 71942105,
+    "name": "Wieczysta",
+    "shortName": "114"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005566",
+    "latitude": 180256961,
+    "longitude": 71939814,
+    "name": "TAURON Arena Kraków Wieczysta",
+    "shortName": "3040"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005200",
+    "latitude": 180243813,
+    "longitude": 71919353,
+    "name": "Białucha",
+    "shortName": "130"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005309",
+    "latitude": 180226861,
+    "longitude": 71942233,
+    "name": "Kraków Plaza",
+    "shortName": "959"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005561",
+    "latitude": 180226726,
+    "longitude": 71941975,
+    "name": "Plaza",
+    "shortName": "3033"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005319",
+    "latitude": 180230163,
+    "longitude": 71954541,
+    "name": "Lema",
+    "shortName": "2537"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005307",
+    "latitude": 180236053,
+    "longitude": 71988794,
+    "name": "M1 Al. Pokoju",
+    "shortName": "930"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005349",
+    "latitude": 180231471,
+    "longitude": 71962356,
+    "name": "Kraków Arena Al. Pokoju",
+    "shortName": "2803"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005417",
+    "latitude": 180231481,
+    "longitude": 71962198,
+    "name": "TAURON Arena Kraków Al. Pokoju",
+    "shortName": "2871"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005227",
+    "latitude": 180242565,
+    "longitude": 72019445,
+    "name": "Nowohucka",
+    "shortName": "372"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005567",
+    "latitude": 180242602,
+    "longitude": 72019457,
+    "name": "Rondo 308. Dywizjonu",
+    "shortName": "3041"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005352",
+    "latitude": 180264612,
+    "longitude": 71965384,
+    "name": "Muzeum Lotnictwa",
+    "shortName": "2811"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005192",
+    "latitude": 180266265,
+    "longitude": 71996755,
+    "name": "AWF",
+    "shortName": "113"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005191",
+    "latitude": 180267446,
+    "longitude": 72016931,
+    "name": "Stella-Sawickiego",
+    "shortName": "112"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005239",
+    "latitude": 180249472,
+    "longitude": 72044791,
+    "name": "Centralna",
+    "shortName": "409"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005237",
+    "latitude": 180266390,
+    "longitude": 72041060,
+    "name": "Czyżyny",
+    "shortName": "407"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005305",
+    "latitude": 180273208,
+    "longitude": 72075195,
+    "name": "Bieńczycka",
+    "shortName": "867"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005238",
+    "latitude": 180265067,
+    "longitude": 72061596,
+    "name": "Rondo Czyżyńskie",
+    "shortName": "408"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005228",
+    "latitude": 180342391,
+    "longitude": 71986739,
+    "name": "Mistrzejowice",
+    "shortName": "375"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005229",
+    "latitude": 180337361,
+    "longitude": 72015690,
+    "name": "Os.Złotego Wieku",
+    "shortName": "377"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005320",
+    "latitude": 180340084,
+    "longitude": 71999812,
+    "name": "Miśnieńska",
+    "shortName": "2538"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005234",
+    "latitude": 180332424,
+    "longitude": 72056920,
+    "name": "Dunikowskiego",
+    "shortName": "388"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005235",
+    "latitude": 180304250,
+    "longitude": 72074134,
+    "name": "DH Wanda",
+    "shortName": "392"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005233",
+    "latitude": 180339761,
+    "longitude": 72040494,
+    "name": "Rondo Piastowskie",
+    "shortName": "383"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005232",
+    "latitude": 180344562,
+    "longitude": 72045557,
+    "name": "Kleeberga",
+    "shortName": "382"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005231",
+    "latitude": 180353434,
+    "longitude": 72046888,
+    "name": "Piasta Kołodzieja",
+    "shortName": "379"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005321",
+    "latitude": 180324306,
+    "longitude": 72077018,
+    "name": "Rondo Hipokratesa",
+    "shortName": "2539"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005345",
+    "latitude": 180259494,
+    "longitude": 72135185,
+    "name": "Plac Centralny im. R.Reagana",
+    "shortName": "2744"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005240",
+    "latitude": 180260346,
+    "longitude": 72104898,
+    "name": "Os.Kolorowe",
+    "shortName": "413"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005346",
+    "latitude": 180286510,
+    "longitude": 72098620,
+    "name": "Rondo Kocmyrzowskie im. Ks. Gorzelanego",
+    "shortName": "2745"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005242",
+    "latitude": 180276386,
+    "longitude": 72112242,
+    "name": "Os.Zgody",
+    "shortName": "418"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005246",
+    "latitude": 180251143,
+    "longitude": 72164924,
+    "name": "Os.Na Skarpie",
+    "shortName": "424"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005247",
+    "latitude": 180246786,
+    "longitude": 72189420,
+    "name": "Klasztorna",
+    "shortName": "429"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005323",
+    "latitude": 180242960,
+    "longitude": 72212828,
+    "name": "Suche Stawy",
+    "shortName": "2548"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005245",
+    "latitude": 180268841,
+    "longitude": 72168894,
+    "name": "Struga",
+    "shortName": "423"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005244",
+    "latitude": 180295778,
+    "longitude": 72116868,
+    "name": "Teatr Ludowy",
+    "shortName": "420"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005563",
+    "latitude": 180306450,
+    "longitude": 72136926,
+    "name": "Cienista",
+    "shortName": "3037"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005236",
+    "latitude": 180306733,
+    "longitude": 72137208,
+    "name": "Kocmyrzowska",
+    "shortName": "401"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005322",
+    "latitude": 180313263,
+    "longitude": 72171640,
+    "name": "Wańkowicza",
+    "shortName": "2543"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005248",
+    "latitude": 180318123,
+    "longitude": 72204362,
+    "name": "Wiadukty",
+    "shortName": "434"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005249",
+    "latitude": 180326907,
+    "longitude": 72212839,
+    "name": "Darwina",
+    "shortName": "435"
+  },
+  {
+    "category": "other",
+    "id": "6350927454370005324",
+    "latitude": 180330387,
+    "longitude": 72217988,
+    "name": "Cmentarz Grębałów Zachód",
+    "shortName": "2549"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005334",
+    "latitude": 180330358,
+    "longitude": 72217850,
+    "name": "Jarzębiny",
+    "shortName": "2685"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005262",
+    "latitude": 180315951,
+    "longitude": 72286426,
+    "name": "Agencja Kraków Wschód",
+    "shortName": "462"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005263",
+    "latitude": 180322790,
+    "longitude": 72300966,
+    "name": "Walcownia",
+    "shortName": "463"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005251",
+    "latitude": 180244244,
+    "longitude": 72236407,
+    "name": "Bardosa",
+    "shortName": "449"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005252",
+    "latitude": 180249368,
+    "longitude": 72243352,
+    "name": "Kopiec Wandy",
+    "shortName": "450"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005253",
+    "latitude": 180233825,
+    "longitude": 72269721,
+    "name": "Brama nr 4",
+    "shortName": "451"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005312",
+    "latitude": 180238786,
+    "longitude": 72256369,
+    "name": "Fort Mogiła",
+    "shortName": "1051"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005259",
+    "latitude": 180285303,
+    "longitude": 72236590,
+    "name": "Kombinat",
+    "shortName": "459"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005254",
+    "latitude": 180232684,
+    "longitude": 72304711,
+    "name": "Jeżynowa",
+    "shortName": "452"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005255",
+    "latitude": 180250342,
+    "longitude": 72332498,
+    "name": "Brama nr 5",
+    "shortName": "453"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005256",
+    "latitude": 180251551,
+    "longitude": 72342602,
+    "name": "Meksyk",
+    "shortName": "454"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005250",
+    "latitude": 180341535,
+    "longitude": 72234935,
+    "name": "Wzgórza Krzesławickie",
+    "shortName": "442"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005266",
+    "latitude": 180303027,
+    "longitude": 72232399,
+    "name": "PH",
+    "shortName": "466"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005265",
+    "latitude": 180300788,
+    "longitude": 72236130,
+    "name": "Zajezdnia Nowa Huta",
+    "shortName": "465"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005264",
+    "latitude": 180315729,
+    "longitude": 72231482,
+    "name": "Elektromontaż",
+    "shortName": "464"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005260",
+    "latitude": 180302996,
+    "longitude": 72258514,
+    "name": "Mrozowa",
+    "shortName": "460"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005261",
+    "latitude": 180307241,
+    "longitude": 72267887,
+    "name": "Blokowa",
+    "shortName": "461"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005258",
+    "latitude": 180263218,
+    "longitude": 72423770,
+    "name": "Pleszów",
+    "shortName": "458"
+  },
+  {
+    "category": "tram",
+    "id": "6350927454370005257",
+    "latitude": 180258540,
+    "longitude": 72375333,
+    "name": "Koksochemia",
+    "shortName": "457"
+  }
+]}

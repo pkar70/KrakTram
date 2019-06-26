@@ -9,185 +9,19 @@ Imports System.Xml.Serialization
 ''' <summary>
 ''' Provides application-specific behavior to supplement the default Application class.
 ''' </summary>
+
 NotInheritable Class App
     Inherits Application
 
     ' Public Shared oStops As New XmlDocument
     Public Shared oStops As New Przystanki
+    Public Shared oFavour As New FavStopList
     Public Shared mdLat As Double = 100
     Public Shared mdLong, mSpeed As Double
-
-    <XmlType("stop")>
-    Public Class Przystanek
-        <XmlAttribute()>
-        Public Property Cat As String
-        <XmlAttribute()>
-        Public Property Lat As Double
-        <XmlAttribute()>
-        Public Property Lon As Double
-        <XmlAttribute()>
-        Public Property Name As String
-        <XmlAttribute()>
-        Public Property id As String
-    End Class
-
-    Public Class Przystanki
-        Private Itemy = New Collection(Of Przystanek)
-        ' Add
-        Private Sub Add(sCat As String, dLatTtss As Double, dLonTtss As Double, sName As String, sId As String)
-            Dim oNew = New Przystanek
-            oNew.Cat = sCat
-            oNew.id = sId
-            oNew.Name = sName
-            oNew.Lat = dLatTtss / 3600000.0
-            oNew.Lon = dLonTtss / 3600000.0
-            Itemy.Add(oNew)
-        End Sub
-        ' Delete
-        ' New
-        Private Async Function Save() As Task
-
-            Dim oFile As StorageFile = Await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(
-            "stops1.xml", CreationCollisionOption.ReplaceExisting)
-
-            If oFile Is Nothing Then Exit Function
-
-            Dim oSer = New XmlSerializer(GetType(Collection(Of Przystanek)))
-            Dim oStream = Await oFile.OpenStreamForWriteAsync
-            oSer.Serialize(oStream, Itemy)
-            oStream.Dispose()   ' == fclose
-
-
-
-        End Function
-
-        ' Load
-        Private Async Function Load() As Task(Of Boolean)
-            ' ret=false gdy nie jest wczytane
-
-            Dim oObj As StorageFile = Await ApplicationData.Current.LocalCacheFolder.TryGetItemAsync(
-            "stops1.xml")
-            If oObj Is Nothing Then Return False
-            Dim oFile = TryCast(oObj, StorageFile)
-
-            Dim oSer = New XmlSerializer(GetType(Collection(Of Przystanek)))
-            Dim oStream = Await oFile.OpenStreamForReadAsync
-            Itemy = TryCast(oSer.Deserialize(oStream), Collection(Of Przystanek))
-
-            Return True
-        End Function
-
-        Private Async Function Import() As Task(Of Boolean)
-            ' ret=false gdy nieudane wczytanie z sieci
-
-            If Not NetworkInterface.GetIsNetworkAvailable() Then
-                DialogBoxRes("resErrorNoNetwork")
-                Return False
-            End If
-
-            Dim oHttp As New HttpClient()
-            Dim sTmp As String = ""
-            oHttp.Timeout = TimeSpan.FromSeconds(10)
-
-            Dim bError = False
-
-            Try
-                sTmp = Await oHttp.GetStringAsync("http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-648000000&bottom=-324000000&right=648000000&top=324000000")
-            Catch ex As Exception
-                bError = True
-            End Try
-            If bError Then
-                DialogBoxRes("resErrorGetHttp")
-                Return False
-            End If
-
-            ' {"stops": [
-            '{
-            '  "category": "tram",
-            '  "id": "6350927454370005230",
-            '  "latitude": 180367133,
-            '  "longitude": 72043450,
-            '  "name": "Os.Piastów",
-            '  "shortName": "378"
-            '},
-
-            If sTmp.IndexOf("""stops""") < 0 Then
-                DialogBoxRes("resErrorBadTTSSstops")
-                Return False
-            End If
-
-            Dim oJson As JsonObject
-            Try
-                oJson = JsonObject.Parse(sTmp)
-            Catch ex As Exception
-                bError = True
-            End Try
-            If bError Then
-                DialogBox("ERROR: JSON parsing error")
-                Return False
-            End If
-
-            Dim oJsonStops As New JsonArray
-            Try
-                oJsonStops = oJson.GetNamedArray("stops")
-            Catch ex As Exception
-                bError = True
-            End Try
-            If bError Then
-                DialogBox("ERROR: JSON ""stops"" array missing")
-                Return False
-            End If
-
-            If oJsonStops.Count = 0 Then
-                DialogBox("ERROR: JSON 0 obiektów")
-                Return False
-            End If
-
-            Try
-                For Each oVal In oJsonStops
-                    Add(oVal.GetObject.GetNamedString("category"),
-                        oVal.GetObject.GetNamedNumber("latitude"),
-                        oVal.GetObject.GetNamedNumber("longitude"),
-                        oVal.GetObject.GetNamedString("name"),
-                        oVal.GetObject.GetNamedString("shortName"))
-                Next
-            Catch ex As Exception
-                bError = True
-            End Try
-            If bError Then
-                DialogBox("ERROR: at JSON converting")
-                Return False
-            End If
-
-            Await Save()    ' teoretycznie mogloby byc bez Await, zeby sobie w tle robil Save
-            SetSettingsInt("LastLoadStops", CInt(Date.Now.ToString("yyMMdd")))
-
-            Return True
-        End Function
-
-        Public Async Function LoadOrImport(bForceLoad As Boolean) As Task
-
-            Dim iHowOld As Integer
-            Try ' 20171108: czasem przy starcie wylatuje, może tu?
-                iHowOld = CInt(Date.Now.ToString("yyMMdd")) - GetSettingsInt("LastLoadStops")
-            Catch ex As Exception
-                iHowOld = 99
-            End Try
-
-            Dim bReaded = Await Load()  ' True gdy udane wczytanie
-
-            If Not bForceLoad Then
-                If bReaded And iHowOld < 30 Then Return
-            End If
-
-            Await Import()
-
-        End Function
-
-        Public Function GetList() As ICollection(Of Przystanek)
-            Return Itemy
-        End Function
-    End Class
+    Public Shared mbGoGPS As Boolean = False
+    Public Shared mMaxOdl As Double = 20
+    Public Shared msCat As String = "tram"
+    Public Shared moOdjazdy As ListaOdjazdow = New ListaOdjazdow
 
     ''' <summary>
     ''' Invoked when the application is launched normally by the end user.  Other entry points
@@ -206,6 +40,10 @@ NotInheritable Class App
             rootFrame = New Frame()
 
             AddHandler rootFrame.NavigationFailed, AddressOf OnNavigationFailed
+
+            ' PKAR added wedle https://stackoverflow.com/questions/39262926/uwp-hardware-back-press-work-correctly-in-mobile-but-error-with-pc
+            AddHandler rootFrame.Navigated, AddressOf OnNavigatedAddBackButton
+            AddHandler Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested, AddressOf OnBackButtonPressed
 
             If e.PreviousExecutionState = ApplicationExecutionState.Terminated Then
                 ' TODO: Load state from previously suspended application
@@ -227,6 +65,51 @@ NotInheritable Class App
             Window.Current.Activate()
         End If
     End Sub
+
+#Region "BackButton"
+    ' PKAR added wedle https://stackoverflow.com/questions/39262926/uwp-hardware-back-press-work-correctly-in-mobile-but-error-with-pc
+    Private Sub OnNavigatedAddBackButton(sender As Object, e As NavigationEventArgs)
+#If CONFIG = "Debug" Then
+        ' próba wylapywania errorów gdy nic innego tego nie złapie
+        Dim sDebugCatch As String = ""
+        Try
+#End If
+            Dim oFrame As Frame = TryCast(sender, Frame)
+            If oFrame Is Nothing Then Exit Sub
+
+            Dim oNavig As Windows.UI.Core.SystemNavigationManager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView
+
+            If oFrame.CanGoBack Then
+                oNavig.AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Visible
+            Else
+                oNavig.AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Collapsed
+            End If
+
+
+#If CONFIG = "Debug" Then
+        Catch ex As Exception
+            sDebugCatch = ex.Message
+        End Try
+
+        If sDebugCatch <> "" Then
+#Disable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
+            App.DialogBox("DebugCatch in OnNavigatedAddBackButton:" & vbCrLf & sDebugCatch)
+#Enable Warning BC42358
+        End If
+#End If
+
+    End Sub
+
+    Private Sub OnBackButtonPressed(sender As Object, e As Windows.UI.Core.BackRequestedEventArgs)
+        Try
+            TryCast(Window.Current.Content, Frame).GoBack()
+            e.Handled = True
+        Catch ex As Exception
+        End Try
+    End Sub
+#End Region
+
+
 
     ''' <summary>
     ''' Invoked when Navigation to a certain page fails
@@ -250,11 +133,23 @@ NotInheritable Class App
         deferral.Complete()
     End Sub
 
+    Public Shared Function GetLangString(sMsg As String) As String
+        If sMsg = "" Then Return ""
+
+        Dim sRet As String = sMsg
+        Try
+            sRet = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
+        Catch
+        End Try
+        Return sRet
+    End Function
+
+
     Public Shared Async Sub DialogBox(sMsg As String)
         Dim oMsg As New MessageDialog(sMsg)
         Await oMsg.ShowAsync
     End Sub
-    Public Shared Async Sub DialogBoxRes(sMsg As String)
+    Public Shared Async Function DialogBoxRes(sMsg As String) As Task
         ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
         Dim sTxt As String
         Try
@@ -264,7 +159,19 @@ NotInheritable Class App
         End Try
         Dim oMsg As New MessageDialog(sTxt)
         Await oMsg.ShowAsync
-    End Sub
+    End Function
+
+    Public Shared Async Function DialogBoxResWait(sMsg As String) As Task
+        ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
+        Dim sTxt As String
+        Try
+            sTxt = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
+        Catch ex As Exception
+            sTxt = "Some error occured"
+        End Try
+        Dim oMsg As New MessageDialog(sTxt)
+        Await oMsg.ShowAsync
+    End Function
 
     'Public Shared Async Sub DialogBoxResYN(sMsg As String) As Task(Of Integer)
     '    With Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
@@ -276,137 +183,46 @@ NotInheritable Class App
     'End Sub
 
 
-    Public Shared Async Sub CheckLoadStopList(Optional bForceLoad As Boolean = False)
+    Public Shared Async Function DialogBoxInput(sMsgResId As String, Optional sDefaultResId As String = "", Optional sYesResId As String = "resDlgContinue", Optional sNoResId As String = "resDlgCancel") As Task(Of String)
+        Dim sMsg, sYes, sNo, sDefault As String
 
+        sDefault = ""
+
+        With Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
+            sMsg = .GetString(sMsgResId)
+            sYes = .GetString(sYesResId)
+            sNo = .GetString(sNoResId)
+            If sDefaultResId <> "" Then sDefault = .GetString(sDefaultResId)
+        End With
+
+        If sMsg = "" Then sMsg = sMsgResId  ' zabezpieczenie na brak string w resource
+        If sYes = "" Then sYes = sYesResId
+        If sNo = "" Then sNo = sNoResId
+        If sDefault = "" Then sDefault = sDefaultResId
+
+        Dim oInputTextBox = New TextBox
+        oInputTextBox.AcceptsReturn = False
+        oInputTextBox.Text = sDefault
+        Dim oDlg As New ContentDialog
+        oDlg.Content = oInputTextBox
+        oDlg.PrimaryButtonText = sYes
+        oDlg.SecondaryButtonText = sNo
+        oDlg.Title = sMsg
+
+        Dim oCmd = Await oDlg.ShowAsync
+        If oCmd <> ContentDialogResult.Primary Then Return ""
+
+        Return oInputTextBox.Text
+
+    End Function
+
+    Public Shared Async Function CheckLoadStopList(Optional bForceLoad As Boolean = False) As Task
         Await oStops.LoadOrImport(bForceLoad)
-        'Dim bReaded As Boolean = False
-        'Dim bError = False  ' 20171108: zeby nie bylo DialogBox (async sub) w ramach Try/Catch
+    End Function
 
-        'Dim oObj = ApplicationData.Current.LocalCacheFolder.TryGetItemAsync("stops.xml")
-
-        'Dim oFile = TryCast(oObj, StorageFile)
-        'If oFile IsNot Nothing Then
-        '    Dim sTxt As String = Await FileIO.ReadTextAsync(oFile)
-        '    Try
-        '        oStops.LoadXml(sTxt)
-        '        bReaded = True
-        '    Catch ex As Exception
-        '        bError = True
-        '    End Try
-        '    If bError Then DialogBox("ERROR loading stops")
-        'End If
-
-        'Dim iHowOld As Integer
-        'Try ' 20171108: czasem przy starcie wylatuje, może tu?
-        '    iHowOld = CInt(Date.Now.ToString("yyMMdd")) - GetSettingsInt("LastLoadStops")
-        'Catch ex As Exception
-        '    iHowOld = 99
-        'End Try
-
-        'If Not bForceLoad Then
-        '    If bReaded And iHowOld < 30 Then Exit Sub
-        'End If
-
-        'If Not NetworkInterface.GetIsNetworkAvailable() Then
-        '    DialogBoxRes("resErrorNoNetwork")
-        '    Exit Sub
-        'End If
-
-        'Dim oHttp As New HttpClient()
-        'Dim sTmp As String
-        'oHttp.Timeout = TimeSpan.FromSeconds(10)
-
-        'Try
-        '    sTmp = Await oHttp.GetStringAsync("http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-648000000&bottom=-324000000&right=648000000&top=324000000")
-        'Catch ex As Exception
-        '    bError = True
-        'End Try
-        'If bError Then
-        '    DialogBoxRes("resErrorGetHttp")
-        '    Exit Sub
-        'End If
-
-        '' {"stops": [
-        ''{
-        ''  "category": "tram",
-        ''  "id": "6350927454370005230",
-        ''  "latitude": 180367133,
-        ''  "longitude": 72043450,
-        ''  "name": "Os.Piastów",
-        ''  "shortName": "378"
-        ''},
-
-        'If sTmp.IndexOf("""stops""") < 0 Then
-        '    DialogBoxRes("resErrorBadTTSSstops")
-        '    Exit Sub
-        'End If
-
-        'Dim oJson As JsonObject
-        'Try
-        '    oJson = JsonObject.Parse(sTmp)
-        'Catch ex As Exception
-        '    bError = True
-        'End Try
-        'If bError Then
-        '    DialogBox("ERROR: JSON parsing error")
-        '    Exit Sub
-        'End If
-
-        'Dim oJsonStops As New JsonArray
-        'Try
-        '    oJsonStops = oJson.GetNamedArray("stops")
-        'Catch ex As Exception
-        '    bError = True
-        'End Try
-        'If bError Then
-        '    DialogBox("ERROR: JSON ""stops"" array missing")
-        '    Exit Sub
-        'End If
-
-        'If oJsonStops.Count = 0 Then
-        '    DialogBox("ERROR: JSON 0 obiektów")
-        '    Exit Sub
-        'End If
-
-        'Dim sXml As String = ""
-        'Try
-        '    For Each oVal In oJsonStops
-        '        sXml = sXml & vbCrLf & "<stop "
-        '        sXml = sXml & "cat=""" & oVal.GetObject.GetNamedString("category") & """ "
-        '        sXml = sXml & "latTtss=""" & oVal.GetObject.GetNamedNumber("latitude") & """ "
-        '        sXml = sXml & "lonTtss=""" & oVal.GetObject.GetNamedNumber("longitude") & """ "
-        '        sXml = sXml & "lat=""" & oVal.GetObject.GetNamedNumber("latitude") / 3600000.0 & """ "
-        '        sXml = sXml & "lon=""" & oVal.GetObject.GetNamedNumber("longitude") / 3600000.0 & """ "
-        '        sXml = sXml & "name=""" & oVal.GetObject.GetNamedString("name") & """ "
-        '        sXml = sXml & "id=""" & oVal.GetObject.GetNamedString("shortName") & """ "
-        '        sXml = sXml & " />"
-        '    Next
-        'Catch ex As Exception
-        '    bError = True
-        'End Try
-        'If bError Then
-        '    DialogBox("ERROR: at JSON converting")
-        '    Exit Sub
-        'End If
-
-        'sXml = "<stops>" & sXml & "</stops>"
-
-        'Try
-        '    oStops.LoadXml(sXml)
-
-        '    ' 20171108: zapis pliku tylko gdy mamy poprawny XML
-        '    Dim sampleFile As StorageFile = Await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(
-        '    "stops.xml", CreationCollisionOption.ReplaceExisting)
-        '    Await FileIO.WriteTextAsync(sampleFile, sXml)
-
-        '    SetSettingsInt("LastLoadStops", CInt(Date.Now.ToString("yyMMdd")))
-        'Catch ex As Exception
-        '    bError = True
-        'End Try
-
-        'If bError Then DialogBox("ERROR loading XmlDocument")
-
-    End Sub
+    Public Shared Async Function LoadFavList() As Task
+        Await oFavour.LoadOrImport
+    End Function
 #Region "Get/Set settings"
 
     Public Shared Function GetSettingsString(sName As String, Optional sDefault As String = "") As String
@@ -476,16 +292,21 @@ NotInheritable Class App
     Public Shared Function GPSdistanceDwa(dLat0 As Double, dLon0 As Double, dLat As Double, dLon As Double) As Integer
         ' https://stackoverflow.com/questions/28569246/how-to-get-distance-between-two-locations-in-windows-phone-8-1
 
-        Dim iRadix As Integer = 6371000
-        Dim tLat As Double = (dLat - dLat0) * Math.PI / 180
-        Dim tLon As Double = (dLon - dLon0) * Math.PI / 180
-        Dim a As Double = Math.Sin(tLat / 2) * Math.Sin(tLat / 2) +
+        Try
+            Dim iRadix As Integer = 6371000
+            Dim tLat As Double = (dLat - dLat0) * Math.PI / 180
+            Dim tLon As Double = (dLon - dLon0) * Math.PI / 180
+            Dim a As Double = Math.Sin(tLat / 2) * Math.Sin(tLat / 2) +
             Math.Cos(Math.PI / 180 * dLat0) * Math.Cos(Math.PI / 180 * dLat) *
             Math.Sin(tLon / 2) * Math.Sin(tLon / 2)
-        Dim c As Double = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)))
-        Dim d As Double = iRadix * c
+            Dim c As Double = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)))
+            Dim d As Double = iRadix * c
 
-        Return d
+            Return d
+
+        Catch ex As Exception
+            Return 0    ' nie powinno sie nigdy zdarzyc, ale na wszelki wypadek...
+        End Try
 
     End Function
 
@@ -501,12 +322,16 @@ NotInheritable Class App
 
         mSpeed = App.GetSettingsInt("walkSpeed", 4)
 
-        ' ma byc Favourite
-        If App.mdLat <> 100 Then
-            oPoint.X = mdLat
-            oPoint.Y = mdLong
-            Return oPoint
-        End If
+        ' 20190221: usuwam, bo było że po wybraniu Fav potem nie działa wedle GPS?
+        ' poza tym wywołanie w Odjazdy jest tylko wtedy, gdy wedle GPS,
+        ' i zostaje odwołanie z Setup
+
+        '' ma byc Favourite
+        'If App.mdLat <> 100 Then
+        '    oPoint.X = mdLat
+        '    oPoint.Y = mdLong
+        '    Return oPoint
+        'End If
 
         ' na pewno ma byc wedle GPS
 
@@ -515,40 +340,111 @@ NotInheritable Class App
 
         Dim rVal As GeolocationAccessStatus = Await Geolocator.RequestAccessAsync()
         If rVal <> GeolocationAccessStatus.Allowed Then
-            If Not GetSettingsBool("noGPSshown") Then
-                DialogBoxRes("resErrorNoGPSAllowed")
-                SetSettingsBool("noGPSshown", True)
-            End If
+            'If Not GetSettingsBool("noGPSshown") Then
+            Await DialogBoxRes("resErrorNoGPSAllowed")
+            '    SetSettingsBool("noGPSshown", True)
+            'End If
             Return oPoint
         End If
 
-        Dim oDevGPS = New Geolocator()
+        Dim oDevGPS As Geolocator = New Geolocator()
 
         Dim oPos As Geoposition
         oDevGPS.DesiredAccuracyInMeters = GetSettingsInt("gpsPrec", 75) ' dla 4 km/h; 100 m = 90 sec, 75 m = 67 sec
-        Dim oCacheTime = New TimeSpan(0, 0, 30)  ' minuta ≈ 80 m (ale nie autobusem! wtedy 400 m)
-        Dim oTimeout = New TimeSpan(0, 0, 3)    ' timeout 
-        Dim bErr = False
+        Dim oCacheTime As TimeSpan = New TimeSpan(0, 0, 30)  ' minuta ≈ 80 m (ale nie autobusem! wtedy 400 m)
+        Dim oTimeout As TimeSpan = New TimeSpan(0, 0, 5)    ' timeout 
+        Dim bErr As Boolean = False
         Try
             oPos = Await oDevGPS.GetGeopositionAsync(oCacheTime, oTimeout)
             oPoint.X = oPos.Coordinate.Point.Position.Latitude
             oPoint.Y = oPos.Coordinate.Point.Position.Longitude
 
             Dim dSpeed As Double
-            If oPos.Coordinate.Speed IsNot Nothing Then
+            ' 2018.11.13: dodaję: andalso hasvalue
+            If oPos.Coordinate.Speed IsNot Nothing AndAlso oPos.Coordinate.Speed.HasValue Then
                 If Not System.Double.IsNaN(oPos.Coordinate.Speed) Then
-                    dSpeed = oPos.Coordinate.Speed / 3.6    ' z m/s na km/h
-                    mSpeed = Math.Max(dSpeed, dSpeed - 1)
+                    If oPos.Coordinate.Speed <> 0 Then
+                        dSpeed = oPos.Coordinate.Speed / 3.6    ' z m/s na km/h
+                        mSpeed = Math.Max(dSpeed, dSpeed - 1)   ' co ja tu miałem na myśli??
+                        mSpeed = Math.Max(dSpeed, 1)            ' nie wiem, więc daję to (na wszelki wypadek - ograniczenie na 1 km/h)
+                    End If
                 End If
             End If
         Catch ex As Exception   ' zapewne timeout
             bErr = True
         End Try
-        If bErr Then App.DialogBoxRes("resErrorGettingPos")
+        If bErr Then
+            ' po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
+            ' dodaję zarówno ustalenie oPoint i mSpeed na defaulty, jak i Speed.HasValue
+            Await App.DialogBoxRes("resErrorGettingPos")
+
+            oPoint.X = 50.0 '1985 ' latitude - dane domku, choc mała precyzja
+            oPoint.Y = 19.9 '7872
+            mSpeed = App.GetSettingsInt("walkSpeed", 4)
+        End If
 
         Return oPoint
 
     End Function
 
+#Region "testy sieciowe"
+
+    Public Shared Function IsMobile() As Boolean
+        Return (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily = "Windows.Mobile")
+    End Function
+
+    Public Shared Function IsNetIPavailable(bMsg As Boolean) As Boolean
+        If App.GetSettingsBool("offline") Then Return False
+
+        If Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then Return True
+        If bMsg Then
+#Disable Warning BC42358
+            DialogBox("ERROR: no IP network available")
+#Enable Warning BC42358
+        End If
+        Return False
+    End Function
+
+    Public Shared Function IsCellInet() As Boolean
+        Return Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile
+    End Function
+#End Region
+    Public Shared Function RemoveHtmlTags(sHtml As String) As String
+        Dim iInd0, iInd1 As Integer
+
+        iInd0 = sHtml.IndexOf("<script")
+        If iInd0 > 0 Then
+            iInd1 = sHtml.IndexOf("</script>", iInd0)
+            If iInd1 > 0 Then
+                sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 9)
+            End If
+        End If
+
+        iInd0 = sHtml.IndexOf("<")
+        iInd1 = sHtml.IndexOf(">")
+        While iInd0 > -1
+            If iInd1 > -1 Then
+                sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 1)
+            Else
+                sHtml = sHtml.Substring(0, iInd0)
+            End If
+            sHtml = sHtml.Trim
+
+            iInd0 = sHtml.IndexOf("<")
+            iInd1 = sHtml.IndexOf(">")
+        End While
+
+        sHtml = sHtml.Replace("&nbsp;", " ")
+        sHtml = sHtml.Replace(vbLf, vbCrLf)
+        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+
+        Return sHtml.Trim
+
+    End Function
+
+
 End Class
+
 

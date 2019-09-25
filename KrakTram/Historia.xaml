@@ -20,4 +20,10 @@
         </ScrollViewer>
         <Slider x:Name="uiSlider" HorizontalAlignment="Stretch" Grid.Row="2" Margin="10,0,10,0" />
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar Visibility="Collapsed" Name="uiCommandBar">
+            <AppBarButton Icon="Clock" Label="Opóźnienia" Click="uiOpoznienia_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

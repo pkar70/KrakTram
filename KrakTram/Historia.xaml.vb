@@ -21,10 +21,13 @@ Public NotInheritable Class Historia
     End Sub
 
     Private Sub UstawTitle(iRok As Integer)
-        uiTitle.Text = App.GetLangString("resHistoriaTitle") & " " & iRok
+        uiTitle.Text = GetLangString("resHistoriaTitle") & " " & iRok
     End Sub
 
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+
+        If IsThisMoje() Then uiCommandBar.Visibility = Visibility.Visible
+
         UstawSlider()
         mbBlockSlider = False
 
@@ -70,5 +73,9 @@ Public NotInheritable Class Historia
 
         UstawTitle(iRok)
 
+    End Sub
+
+    Private Sub uiOpoznienia_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Opoznienia))
     End Sub
 End Class

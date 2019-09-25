@@ -17,12 +17,23 @@ Public Class Przystanek
     Public Property Name As String
     <XmlAttribute()>
     Public Property id As String
+    <XmlIgnore>
+    Public Property iSumDelay As Integer
+    <XmlIgnore>
+    Public Property iMaxDelay As Integer
+    <XmlIgnore>
+    Public Property iEntriesCount As Integer
+    <XmlIgnore>
+    Public Property iEntriesTotal As Integer
 End Class
 
 
 
 Public Class Przystanki
     Private moItemy As Collection(Of Przystanek) = New Collection(Of Przystanek)
+
+    Private mdOpoznLastDate As Date = Date.Now.AddDays(-5)
+
     'Private msTyp As String
 
     'Public Sub New(sType As String)
@@ -151,7 +162,7 @@ Public Class Przystanki
         ' ret=false gdy nieudane wczytanie z sieci
 
         If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            App.DialogBoxRes("resErrorNoNetwork")
+            DialogBoxRes("resErrorNoNetwork")
             Return False
         End If
 
@@ -164,22 +175,23 @@ Public Class Przystanki
 
         If sRetMsg <> "" Then
             If sRetMsg.Substring(0, 3) = "res" Then
-                Await App.DialogBoxRes(sRetMsg)
+                Await DialogBoxRes(sRetMsg)
             Else
-                App.DialogBox(sRetMsg)
+                DialogBox(sRetMsg)
             End If
-            Return False    ' error byl, lista pusta
+            ' Return False    ' error byl, lista pusta
+            ' nie konczymy, bo druga lista moze byc ok...
         End If
 
-        If App.GetSettingsBool("settingsAlsoBus") Or True Then  ' wczytujemy zawsze...
+        If GetSettingsBool("settingsAlsoBus") Or True Then  ' wczytujemy zawsze...
 
             sRetMsg = Await ImportMain("http://91.223.13.70/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-648000000&bottom=-324000000&right=648000000&top=324000000")
 
             If sRetMsg <> "" Then
                 If sRetMsg.Substring(0, 3) = "res" Then
-                    Await App.DialogBoxRes(sRetMsg)
+                    Await DialogBoxRes(sRetMsg)
                 Else
-                    App.DialogBox(sRetMsg)
+                    DialogBox(sRetMsg)
                 End If
                 ' byl error - ale tramwaje są, więc kontynuujemy
             End If
@@ -187,9 +199,9 @@ Public Class Przystanki
         End If
 
         Await Save()    ' teoretycznie mogloby byc bez Await, zeby sobie w tle robil Save
-        App.SetSettingsInt("LastLoadStops", CInt(Date.Now.ToString("yyMMdd")))
+        SetSettingsInt("LastLoadStops", CInt(Date.Now.ToString("yyMMdd")))
 
-        If App.GetSettingsBool("pkarmode") Then
+        If GetSettingsBool("pkarmode") Then
             Await Compare(oItemyOld, moItemy)
         End If
 
@@ -200,7 +212,7 @@ Public Class Przystanki
 
         Dim iHowOld As Integer
         Try ' 20171108: czasem przy starcie wylatuje, może tu?
-            iHowOld = CInt(Date.Now.ToString("yyMMdd")) - App.GetSettingsInt("LastLoadStops")
+            iHowOld = CInt(Date.Now.ToString("yyMMdd")) - GetSettingsInt("LastLoadStops")
         Catch ex As Exception
             iHowOld = 99
         End Try
@@ -278,10 +290,217 @@ Public Class Przystanki
         If sDiffsDel <> "" Then sDiffsDel = "Usunięte:" & vbCrLf & sDiffsDel
 
         If sDiffsNew <> "" OrElse sDiffsDel <> "" Then
-            Await App.DialogBoxRes(
-                App.GetLangString("resChangesInStopList") & vbCrLf &
+            Await DialogBoxRes(
+                GetLangString("resChangesInStopList") & vbCrLf &
                 sDiffsDel & vbCrLf & sDiffsNew)
         End If
 
     End Function
+
+
+    Public Async Function OpoznieniaFromHttpAsync(iType As Integer) As Task(Of Boolean)
+        ' policzenie opóźnień, b0 = bus, b1 = tram
+        If mdOpoznLastDate.AddMinutes(5) > Date.Now Then
+            If Not Await DialogBoxYN("Niedawno było, na pewno?") Then Return False
+        End If
+
+        Dim sCat As String
+        Select Case iType
+            Case 1
+                sCat = "tram"
+            Case 2
+                sCat = "bus"
+            Case Else
+                Return False
+        End Select
+
+        ' policz
+        Dim sTxt As String = ""
+
+        For Each oItem As Przystanek In moItemy
+            ' wczytaj dane przystanku
+            If oItem.Cat <> sCat Then Continue For
+
+            sTxt = sTxt & oItem.id & vbTab & "Przystanek: " & oItem.Name & vbCrLf
+
+            Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(oItem.Cat, oItem.id)
+            Dim bError As Boolean = False
+
+            Dim oJsonStops As New Windows.Data.Json.JsonArray
+            Try
+                oJsonStops = oJson.GetNamedArray("actual")
+            Catch ex As Exception
+                bError = True
+            End Try
+            If bError Then
+                'DialogBox("ERROR: JSON ""actual"" array missing")
+                Continue For
+                Return False
+            End If
+
+            oItem.iEntriesCount = 0
+            oItem.iEntriesTotal = oJsonStops.Count
+            oItem.iSumDelay = 0
+            oItem.iMaxDelay = 0
+
+            If oJsonStops.Count = 0 Then Continue For
+
+            ' policz...
+            For Each oVal As Windows.Data.Json.IJsonValue In oJsonStops
+                oItem.iEntriesTotal += 1
+                ' jesli PREDICTED (a nie np. PLANNED), to znaczy że liczymy
+                Dim sPlanTime As String = oVal.GetObject.GetNamedString("plannedTime", "!ERR!")
+                Dim sActTime As String = oVal.GetObject.GetNamedString("actualTime", "!ERR!")
+                Dim sTypCzasu As String = oVal.GetObject.GetNamedString("status", "!ERR!")
+
+                sTxt = sTxt & oItem.id & vbTab &
+                    oVal.GetObject.GetNamedString("patternText", "!ERR!") & vbTab &
+                    oVal.GetObject.GetNamedString("direction", "!error!") & vbTab &
+                    sTypCzasu & vbTab & sPlanTime & vbTab & sActTime
+
+                If sTypCzasu = "PREDICTED" Then
+                    If sPlanTime <> "!ERR!" AndAlso sActTime <> "!ERR!" Then
+                        Dim iAct As Integer = 0
+                        Dim iPlan As Integer = 0
+                        Try
+                            iAct = sActTime.Substring(0, 2) * 60 + sActTime.Substring(3, 2)
+                            iPlan = sPlanTime.Substring(0, 2) * 60 + sPlanTime.Substring(3, 2)
+                        Catch ex As Exception
+
+                        End Try
+
+                        If iAct > 0 AndAlso iPlan > 0 Then
+                            Dim iDelay As Integer = iAct - iPlan
+                            sTxt = sTxt & vbTab & iDelay
+                            oItem.iEntriesCount += 1
+                            oItem.iSumDelay = oItem.iSumDelay + iDelay
+                            oItem.iMaxDelay = Math.Max(oItem.iMaxDelay, iDelay)
+                        End If
+
+                    End If
+                End If
+
+                sTxt = sTxt & vbCrLf
+            Next
+
+            sTxt = sTxt & vbCrLf
+        Next
+
+        ClipPut(sTxt)
+        ' sygnalizacja kiedy bylo ostatnie
+        mdOpoznLastDate = Date.Now
+        Return True
+    End Function
+
+    Public Function OpoznieniaGetStat(iType As Integer, ByRef iSumDelay As Integer, ByRef cItems As Integer, ByRef iMaxDelay As Integer) As Boolean
+        ' iType: 1: tram, 2:bus
+        Dim sCat As String
+        Select Case iType
+            Case 1
+                sCat = "tram"
+            Case 2
+                sCat = "bus"
+            Case Else
+                Return False
+        End Select
+
+        iSumDelay = moItemy.Where(Function(s) s.Cat = sCat).Sum(Function(s) s.iSumDelay)
+        cItems = moItemy.Where(Function(s) s.Cat = sCat).Sum(Function(s) s.iEntriesCount)
+        iMaxDelay = moItemy.Where(Function(s) s.Cat = sCat).Max(Function(s) s.iMaxDelay)
+
+        Return True    ' error
+    End Function
+
+    Public Function OpoznieniaDoMapy(bTram As Boolean, bBus As Boolean, oMapCtrl As Maps.MapControl) As Integer
+        ' iType: 1: tram, 2:bus, 3: wszystko (ale nie 'other')
+        If oMapCtrl Is Nothing Then Return 0
+
+        ' https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/display-poi
+
+        Dim iCnt As Integer = 0
+
+        Dim oBrush2min, oBrush3min, oBrush4min, oBrush5min As SolidColorBrush
+        oBrush2min = New SolidColorBrush(Windows.UI.Colors.Yellow)
+        oBrush3min = oBrush2min
+        oBrush4min = oBrush2min
+        oBrush5min = oBrush2min
+        oBrush2min.Opacity = 0.3
+        oBrush3min.Opacity = 0.4
+        oBrush4min.Opacity = 0.5
+        oBrush5min.Opacity = 0.6
+        Dim oBrush10min, oBrush20min, oBrushMaxmin As SolidColorBrush
+        oBrush10min = New SolidColorBrush(Windows.UI.Colors.OrangeRed)
+        oBrush20min = New SolidColorBrush(Windows.UI.Colors.Red)
+        oBrushMaxmin = New SolidColorBrush(Windows.UI.Colors.DarkRed)
+        oBrush10min.Opacity = 0.5
+        oBrush20min.Opacity = 0.5
+        oBrushMaxmin.Opacity = 0.5
+
+
+        For Each oItem As Przystanek In moItemy
+
+            If oItem.iEntriesCount = 0 Then Continue For
+            Select Case oItem.Cat
+                Case "bus"
+                    If Not bBus Then Continue For
+                Case "tram"
+                    If Not bTram Then Continue For
+                Case Else
+                    Continue For
+            End Select
+
+            Dim oNew As Windows.UI.Xaml.Shapes.Ellipse = New Windows.UI.Xaml.Shapes.Ellipse
+            oNew.Height = 20
+            oNew.Width = 20
+            Dim dAvgDelay As Double = 0
+
+            dAvgDelay = oItem.iSumDelay / oItem.iEntriesCount
+
+            If dAvgDelay < 1 Then Continue For
+
+            If dAvgDelay > 2 Then
+                If dAvgDelay > 3 Then
+                    If dAvgDelay > 4 Then
+                        If dAvgDelay > 5 Then
+                            If dAvgDelay > 10 Then
+                                If dAvgDelay > 20 Then
+                                    oNew.Fill = oBrushMaxmin
+                                Else ' 10 < x < 20
+                                    oNew.Fill = oBrush20min
+                                End If
+                            Else ' 5 < x < 10
+                                oNew.Fill = oBrush10min
+                            End If
+                        Else ' 4 < x < 5
+                            oNew.Fill = oBrush5min
+                        End If
+                    Else ' 3 < x < 4
+                        oNew.Fill = oBrush4min
+                    End If
+                Else ' 2 < x < 3
+                    oNew.Fill = oBrush3min
+                End If
+            Else ' 1 < x < 2
+                oNew.Fill = oBrush2min
+            End If
+
+            Dim oPosition As Windows.Devices.Geolocation.BasicGeoposition
+            oPosition = New Windows.Devices.Geolocation.BasicGeoposition
+            oPosition.Latitude = oItem.Lat
+            oPosition.Longitude = oItem.Lon
+            Dim oPoint As Windows.Devices.Geolocation.Geopoint
+            oPoint = New Windows.Devices.Geolocation.Geopoint(oPosition)
+
+            iCnt += 1
+            oMapCtrl.Children.Add(oNew)
+
+            'shared member - ale skąd wie jaka mapa? nie można dwu wyświetlić?
+            Windows.UI.Xaml.Controls.Maps.MapControl.SetLocation(oNew, oPoint)
+            Windows.UI.Xaml.Controls.Maps.MapControl.SetNormalizedAnchorPoint(oNew, New Point(0.5, 0.5))
+        Next
+
+        Return iCnt
+
+    End Function
+
 End Class

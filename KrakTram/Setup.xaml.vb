@@ -21,16 +21,16 @@ Public NotInheritable Class Setup
     End Sub
 
     Private Sub bOk_Click(sender As Object, e As RoutedEventArgs)
-        App.SetSettingsInt("maxOdl", uiMaxOdlSld.Value)
-        App.SetSettingsInt("walkSpeed", uiWalkSpeedSld.Value)
-        App.SetSettingsInt("alsoNext", uiAlsoNextSld.Value)
-        App.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
-        App.SetSettingsString("favPlaces", oXmlPlaces.GetXml)
+        SetSettingsInt("maxOdl", uiMaxOdlSld.Value)
+        SetSettingsInt("walkSpeed", uiWalkSpeedSld.Value)
+        SetSettingsInt("alsoNext", uiAlsoNextSld.Value)
+        SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
+        SetSettingsString("favPlaces", oXmlPlaces.GetXml)
 
-        If uiAlsoBus.IsOn AndAlso Not App.GetSettingsBool("settingsAlsoBus") Then
+        If uiAlsoBus.IsOn AndAlso Not GetSettingsBool("settingsAlsoBus") Then
             ' koniecznosc przeladowania przystankow - mozliwe ze :)
         End If
-        App.SetSettingsBool("settingsAlsoBus", uiAlsoBus.IsOn)
+        SetSettingsBool("settingsAlsoBus", uiAlsoBus.IsOn)
 
         Me.Frame.GoBack()
     End Sub
@@ -44,10 +44,10 @@ Public NotInheritable Class Setup
     End Sub
 
     Private Sub Setup_Loaded(sender As Object, e As RoutedEventArgs)
-        uiMaxOdlSld.Value = App.GetSettingsInt("maxOdl", 1000)
-        uiWalkSpeedSld.Value = App.GetSettingsInt("walkSpeed", 4)
-        uiAlsoNextSld.Value = App.GetSettingsInt("alsoNext", 5)
-        uiGPSPrecSld.Value = App.GetSettingsInt("gpsPrec", 75)
+        uiMaxOdlSld.Value = GetSettingsInt("maxOdl", 1000)
+        uiWalkSpeedSld.Value = GetSettingsInt("walkSpeed", 4)
+        uiAlsoNextSld.Value = GetSettingsInt("alsoNext", 5)
+        uiGPSPrecSld.Value = GetSettingsInt("gpsPrec", 75)
 
         uiPositionLat.Visibility = Visibility.Collapsed
         uiPositionLong.Visibility = Visibility.Collapsed
@@ -56,7 +56,7 @@ Public NotInheritable Class Setup
 
         uiPositionLat.Text = App.mdLat
         uiPositionLong.Text = App.mdLong
-        uiAlsoBus.IsOn = App.GetSettingsBool("settingsAlsoBus")
+        uiAlsoBus.IsOn = GetSettingsBool("settingsAlsoBus")
         'Setup_SizeChanged(sender, Nothing) ' wielkosc WebView
 
         'ReloadFavPlaces()
@@ -99,7 +99,7 @@ Public NotInheritable Class Setup
             iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon)
             If iOdl < uiMaxOdlSld.Value Then
                 sXml = sXml & "<item name='" & oNode.Name
-                If App.GetSettingsBool("settingsAlsoBus") Then
+                If GetSettingsBool("settingsAlsoBus") Then
                     If oNode.Cat = "bus" Then
                         sXml = sXml & " (A)"
                     Else
@@ -182,14 +182,14 @@ Public NotInheritable Class Setup
         'sTxt = sTxt.Replace("]", "")
 
         If sTxt.Length < 4 Then
-            Await App.DialogBoxRes("resErrorNazwaZaKrotka")
+            Await DialogBoxRes("resErrorNazwaZaKrotka")
             Exit Sub
         End If
 
         Dim dLat, dLon As Double
         If Not Double.TryParse(uiPositionLong.Text, dLon) OrElse
                 Not Double.TryParse(uiPositionLat.Text, dLat) Then
-            Await App.DialogBoxRes("resBadFloat")
+            Await DialogBoxRes("resBadFloat")
             Exit Sub
         End If
 
@@ -198,7 +198,7 @@ Public NotInheritable Class Setup
         Else
             If dLon < 19 Or dLon > 21 Or
             dLat < 49 Or dLat > 51 Then
-                Await App.DialogBoxRes("resErrorPozaKrakowem")
+                Await DialogBoxRes("resErrorPozaKrakowem")
                 Exit Sub
             End If
 
@@ -361,7 +361,7 @@ Public NotInheritable Class Setup
         uiGPSPrecTxt.Text = uiGPSPrecSld.Value & " m"
 
         ' musi od razu, żeby zaraz zaczęło działać (np. przy przestawianiu odleglosci od przystanku)
-        App.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
+        SetSettingsInt("gpsPrec", uiGPSPrecSld.Value)
     End Sub
 
     Private Sub uiPage_LostFocus(sender As Object, e As RoutedEventArgs) Handles uiPage.LostFocus

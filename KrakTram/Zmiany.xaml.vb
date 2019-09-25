@@ -93,7 +93,7 @@ Public NotInheritable Class Zmiany
     Private Async Function WczytajTrase() As Task(Of Boolean)
 
         If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            Await App.DialogBoxRes("resErrorNoNetwork")
+            Await DialogBoxRes("resErrorNoNetwork")
             Return ""
         End If
 
@@ -112,7 +112,7 @@ Public NotInheritable Class Zmiany
             bError = True
         End Try
         If bError Then
-            Await App.DialogBoxRes("resErrorGetHttp")
+            Await DialogBoxRes("resErrorGetHttp")
             Return ""
         End If
 
@@ -125,17 +125,17 @@ Public NotInheritable Class Zmiany
 
             sPage = sPage.Substring(iInd)
             iInd = sPage.IndexOf("</")
-            oNew.sLinie = App.RemoveHtmlTags(sPage.Substring(0, iInd))
+            oNew.sLinie = RemoveHtmlTags(sPage.Substring(0, iInd))
 
             iInd = sPage.IndexOf("<div class=""przedz")
             sPage = sPage.Substring(iInd)
             iInd = sPage.IndexOf("</")
-            oNew.sCzas = App.RemoveHtmlTags(sPage.Substring(0, iInd))
+            oNew.sCzas = RemoveHtmlTags(sPage.Substring(0, iInd))
 
             iInd = sPage.IndexOf("<h2 class=""tyt")
             sPage = sPage.Substring(iInd)
             iInd = sPage.IndexOf("</")
-            oNew.sTytul = App.RemoveHtmlTags(sPage.Substring(0, iInd))
+            oNew.sTytul = RemoveHtmlTags(sPage.Substring(0, iInd))
 
             iInd = sPage.IndexOf("<div class=""hide")
             sPage = sPage.Substring(iInd)

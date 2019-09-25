@@ -49,7 +49,7 @@ Public Class FavStopList
         Add("franc3", 50.059781, 19.9339632, 500)
         Add("widok", 50.0789713, 19.8816113, 500)
         Save(False)
-        App.SetSettingsBool("pkarmode", True, True) ' roaming data
+        SetSettingsBool("pkarmode", True, True) ' roaming data
     End Sub
 
     ' Load
@@ -86,9 +86,9 @@ Public Class FavStopList
     End Function
 
     Private Async Function Import() As Task(Of Boolean)
-        Dim sOldVers As String = App.GetSettingsString("favPlaces")
+        Dim sOldVers As String = GetSettingsString("favPlaces")
         If sOldVers.Length < 25 Then    ' "<places></places>
-            App.SetSettingsString("favPlaces", "")
+            SetSettingsString("favPlaces", "")
             Return False
         End If
 
@@ -101,7 +101,7 @@ Public Class FavStopList
             bError = True
         End Try
         If bError Then
-            App.DialogBox("ERROR loading favourites list")
+            DialogBox("ERROR loading favourites list")
             Return False
         End If
 
@@ -113,8 +113,8 @@ Public Class FavStopList
         Next
 
         Await Save(True)
-        App.SetSettingsString("favPlaces", "")
-        App.DialogBoxRes("resImportedOldFav")
+        SetSettingsString("favPlaces", "")
+        DialogBoxRes("resImportedOldFav")
         Return True
     End Function
 
@@ -122,7 +122,7 @@ Public Class FavStopList
     Public Async Function LoadOrImport() As Task
 
         If Await Load() Then Exit Function
-        Import()
+        Await Import()
 
     End Function
 

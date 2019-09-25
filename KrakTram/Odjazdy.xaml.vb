@@ -23,7 +23,7 @@ Public NotInheritable Class Odjazdy
     Private Async Function WczytajPokazDane(bForce As Boolean) As Task
 
         If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            Await App.DialogBoxRes("resErrorNoNetwork")
+            Await DialogBoxRes("resErrorNoNetwork")
             Exit Function
         End If
 
@@ -40,7 +40,7 @@ Public NotInheritable Class Odjazdy
     Private Async Function CzytanieTabliczek() As Task
         If App.mbGoGPS Then
             ' wedle GPS
-            App.mMaxOdl = App.GetSettingsInt("maxOdl", 1000)
+            App.mMaxOdl = GetSettingsInt("maxOdl", 1000)
             ' ustaw wspolrzedne
             uiWorking.Text = "o"
             Dim oPoint As Point = Await App.GetCurrentPoint
@@ -65,7 +65,7 @@ Public NotInheritable Class Odjazdy
         Dim iOdl As Integer
 
         Dim sFilter As String = "tram"
-        If App.GetSettingsBool("settingsAlsoBus") Then sFilter = "all"
+        If GetSettingsBool("settingsAlsoBus") Then sFilter = "all"
 
         For Each oNode As Przystanek In App.oStops.GetList(sFilter)
             uiWorking.Text = "."
@@ -93,11 +93,11 @@ Public NotInheritable Class Odjazdy
     Private Sub WypiszTabele()
 
         If App.moOdjazdy.Count < 1 Then
-            App.DialogBoxRes("resZeroKursow")
+            DialogBoxRes("resZeroKursow")
             Exit Sub
         End If
 
-        Select Case App.GetSettingsInt("sortMode")
+        Select Case GetSettingsInt("sortMode")
             Case 1  ' stop/czas/dir
                 uiListItems.ItemsSource = From c In App.moOdjazdy.GetItems Order By c.Przyst, c.TimeSec, c.Kier Where c.bShow = True
             Case 2  ' dir/stop/czas
@@ -121,7 +121,7 @@ Public NotInheritable Class Odjazdy
         uiSortStop.IsChecked = False
         uiSortCzas.IsChecked = False
 
-        If bInit Then iMode = App.GetSettingsInt("sortMode")
+        If bInit Then iMode = GetSettingsInt("sortMode")
 
         Select Case iMode
             Case 0  ' line
@@ -137,7 +137,7 @@ Public NotInheritable Class Odjazdy
         End Select
 
         If Not bInit Then
-            App.SetSettingsInt("sortMode", iMode)
+            SetSettingsInt("sortMode", iMode)
             WypiszTabele()
         End If
 
@@ -183,7 +183,7 @@ Public NotInheritable Class Odjazdy
         Dim oMFI As MenuFlyoutItem = TryCast(sender, MenuFlyoutItem)
         Dim oItem As JedenOdjazd = TryCast(oMFI.DataContext, JedenOdjazd)
 
-        App.DialogBox(oItem.sRawData)
+        DialogBox(oItem.sRawData)
     End Sub
 
     Private Sub uiExcludeKier_Click(sender As Object, e As RoutedEventArgs)

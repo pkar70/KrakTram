@@ -1,4 +1,16 @@
-﻿
+﻿' progressbar przy czytaniu kolejnych tabliczek
+' dokladniejsze info jak nie dziala (serwer nie odpowiada, blad danych, puste dane; rozroznienie tram/bus)
+' wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
+
+
+' BUG: 20190822 dlaczego pokazuje 'no tram in next hour' przy każdym przystanku tramwajowym?
+' 2019.08.04 wczytanie przystanków tram JSON 0 objects - nie Cancel, tylko próbuje wczytac autobusowe
+
+' 2019.07.27 migracja do pkarmodule
+' 2019.07.27 dla IsThisMoje, statystyka opóźnień - na razie tekstowa
+
+
+' 4.1907 (29 VI)
 ' 2019.06.26 odjazdy:kierunek:contextMenu tylko ten, albo usun ten, kierunek z listy
 
 ' 2019.04.02
@@ -57,12 +69,12 @@ Public NotInheritable Class MainPage
         'uiTester.Text = "50"
         'uiTester.Visibility = Visibility.Collapsed
 
-        App.SetSettingsInt("widthCol0", Math.Max(iWidthLine, iWidthTyp))
-        App.SetSettingsInt("widthCol3", iWidthTime)
+        SetSettingsInt("widthCol0", Math.Max(iWidthLine, iWidthTyp))
+        SetSettingsInt("widthCol3", iWidthTime)
     End Sub
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        App.GetSettingsInt("selectMode", 0)  ' pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
+        GetSettingsInt("selectMode", 0)  ' pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
         KontrolaSzerokosci()
 
         ' zeby nie bylo widac...
@@ -75,7 +87,7 @@ Public NotInheritable Class MainPage
         Await App.CheckLoadStopList()
         uiStopList.ItemsSource = From c In App.oStops.GetList("tram") Order By c.Name Select c.Name
 
-        If App.GetSettingsBool("settingsAlsoBus") Then
+        If GetSettingsBool("settingsAlsoBus") Then
             uiBusStopList.Visibility = Visibility.Visible
             uiGoBusStop.Visibility = Visibility.Visible
             uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Order By c.Name Select c.Name
@@ -109,7 +121,7 @@ Public NotInheritable Class MainPage
         For Each oStop As Przystanek In App.oStops.GetList(sCat)
             If oStop.Name = sName Then
                 App.mbGoGPS = False
-                App.mMaxOdl = App.GetSettingsInt("treatAsSameStop", 150)
+                App.mMaxOdl = GetSettingsInt("treatAsSameStop", 150)
                 App.mdLat = oStop.Lat
                 App.mdLong = oStop.Lon
                 App.msCat = oStop.Cat
@@ -183,7 +195,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Async Sub uiStopList_DoubleTapped(sender As Object, e As DoubleTappedRoutedEventArgs) Handles uiStopList.DoubleTapped
-        Dim sMask As String = Await App.DialogBoxInput("msgEnterName")
+        Dim sMask As String = Await DialogBoxInput("msgEnterName")
 
         If sMask = "" Then
             sMask = sMask.ToLower
@@ -196,7 +208,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Async Sub uiBusStopList_DoubleTapped(sender As Object, e As DoubleTappedRoutedEventArgs) Handles uiBusStopList.DoubleTapped
-        Dim sMask As String = Await App.DialogBoxInput("msgEnterName")
+        Dim sMask As String = Await DialogBoxInput("msgEnterName")
         If sMask = "" Then
             sMask = sMask.ToLower
             uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Order By c.Name Select c.Name

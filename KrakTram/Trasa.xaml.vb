@@ -24,7 +24,7 @@ Public NotInheritable Class Trasa
     End Sub
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        uiTitle.Text = App.GetLangString("resTrasa") & " " & msLinia
+        uiTitle.Text = GetLangString("resTrasa") & " " & msLinia
         If Not Await TryLoadTrasaCache(msLinia) Then
             Dim dVal As Double
             dVal = (Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth)) / 2
@@ -114,7 +114,7 @@ Public NotInheritable Class Trasa
     Private Async Function WczytajTrase(sLinia As String) As Task(Of Boolean)
 
         If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            Await App.DialogBoxRes("resErrorNoNetwork")
+            Await DialogBoxRes("resErrorNoNetwork")
             Return ""
         End If
 
@@ -133,7 +133,7 @@ Public NotInheritable Class Trasa
             bError = True
         End Try
         If bError Then
-            Await App.DialogBoxRes("resErrorGetHttp")
+            Await DialogBoxRes("resErrorGetHttp")
             Return ""
         End If
 
@@ -151,7 +151,7 @@ Public NotInheritable Class Trasa
         If iInd < 10 Then Return False
         sPage = sPage.Substring(0, iInd - 1)
 
-        sPage = App.RemoveHtmlTags(sPage)
+        sPage = RemoveHtmlTags(sPage)
         Dim aArr As String() = sPage.Split(vbLf)
         Dim iNum As Integer = 0
 
@@ -182,7 +182,7 @@ Public NotInheritable Class Trasa
         For Each oStop As Przystanek In App.oStops.GetList
             If oStop.Name = sStop Then
                 App.mbGoGPS = False
-                App.mMaxOdl = App.GetSettingsInt("treatAsSameStop", 150)
+                App.mMaxOdl = GetSettingsInt("treatAsSameStop", 150)
                 App.mdLat = oStop.Lat
                 App.mdLong = oStop.Lon
                 App.moOdjazdy.Clear()

@@ -36,43 +36,45 @@ Public Class ListaOdjazdow
         moOdjazdy.Clear()
     End Sub
 
-    Private Async Function WebPageAsync(sUri As String, bNoRedir As Boolean) As Task(Of String)
-        Dim sTmp As String = ""
 
-        If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            App.DialogBoxRes("resErrorNoNetwork")
-            Return ""
-        End If
+    ' przemigrowane do App, bo wykorzystywane takze w innym miejscu
+    'Private Async Function WebPageAsync(sUri As String, bNoRedir As Boolean) As Task(Of String)
+    '    Dim sTmp As String = ""
 
-        Dim oHttp As System.Net.Http.HttpClient
-        If bNoRedir Then
-            Dim oHCH As System.Net.Http.HttpClientHandler = New System.Net.Http.HttpClientHandler
-            oHCH.AllowAutoRedirect = False
-            oHttp = New System.Net.Http.HttpClient(oHCH)
-        Else
-            oHttp = New System.Net.Http.HttpClient()
-        End If
+    '    If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
+    '        DialogBoxRes("resErrorNoNetwork")
+    '        Return ""
+    '    End If
 
-        Dim sPage As String = ""
+    '    Dim oHttp As System.Net.Http.HttpClient
+    '    If bNoRedir Then
+    '        Dim oHCH As System.Net.Http.HttpClientHandler = New System.Net.Http.HttpClientHandler
+    '        oHCH.AllowAutoRedirect = False
+    '        oHttp = New System.Net.Http.HttpClient(oHCH)
+    '    Else
+    '        oHttp = New System.Net.Http.HttpClient()
+    '    End If
 
-
-        Dim bError As Boolean = False
-
-        oHttp.Timeout = TimeSpan.FromSeconds(8)
+    '    Dim sPage As String = ""
 
 
-        Try
-            sPage = Await oHttp.GetStringAsync(New Uri(sUri))
-        Catch ex As Exception
-            bError = True
-        End Try
-        If bError Then
-            App.DialogBoxRes("resErrorGetHttp")
-            Return ""
-        End If
+    '    Dim bError As Boolean = False
 
-        Return sPage
-    End Function
+    '    oHttp.Timeout = TimeSpan.FromSeconds(8)
+
+
+    '    Try
+    '        sPage = Await oHttp.GetStringAsync(New Uri(sUri))
+    '    Catch ex As Exception
+    '        bError = True
+    '    End Try
+    '    If bError Then
+    '        DialogBoxRes("resErrorGetHttp")
+    '        Return ""
+    '    End If
+
+    '    Return sPage
+    'End Function
 
 
     Private Shared Function VehicleId2VehicleType68(sTmp As String) As String
@@ -143,27 +145,30 @@ Public Class ListaOdjazdow
 
     Public Async Function WczytajTabliczke(sCat As String, iId As Integer, iOdl As Integer) As Task
 
-        Dim sUrl As String
-        If sCat = "bus" Then
-            sUrl = "http://91.223.13.70"
-        Else
-            sUrl = "http://www.ttss.krakow.pl"
-        End If
-        sUrl = sUrl & "/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop="
-        Dim sPage As String = Await WebPageAsync(sUrl & iId, False)
-        If sPage = "" Then Exit Function
+        'Dim sUrl As String
+        'If sCat = "bus" Then
+        '    sUrl = "http://91.223.13.70"
+        'Else
+        '    sUrl = "http://www.ttss.krakow.pl"
+        'End If
+        'sUrl = sUrl & "/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop="
+        'Dim sPage As String = Await App.WebPageAsync(sUrl & iId, False)
+        'If sPage = "" Then Exit Function
 
         Dim bError As Boolean
-        Dim oJson As Windows.Data.Json.JsonObject = Nothing
-        Try
-            oJson = Windows.Data.Json.JsonObject.Parse(sPage)
-        Catch ex As Exception
-            bError = True
-        End Try
-        If bError Then
-            App.DialogBox("ERROR: JSON parsing error - tablica")
-            Exit Function
-        End If
+        'Dim oJson As Windows.Data.Json.JsonObject = Nothing
+        'Try
+        '    oJson = Windows.Data.Json.JsonObject.Parse(sPage)
+        'Catch ex As Exception
+        '    bError = True
+        'End Try
+        'If bError Then
+        '    DialogBox("ERROR: JSON parsing error - tablica")
+        '    Exit Function
+        'End If
+
+        Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(sCat, iId)
+        If oJson Is Nothing Then Return
 
         Dim oJsonStops As New Windows.Data.Json.JsonArray
         Try
@@ -172,13 +177,13 @@ Public Class ListaOdjazdow
             bError = True
         End Try
         If bError Then
-            App.DialogBox("ERROR: JSON ""actual"" array missing")
-            Exit Function
+            DialogBox("ERROR: JSON ""actual"" array missing")
+            Return
         End If
 
         If oJsonStops.Count = 0 Then
             ' przeciez tabliczka moze byc pusta (po kursach, przystanek nieczynny...)
-            Exit Function
+            Return
         End If
 
         ' Dim iMinSec As Integer = 3600 * iOdl / (App.GetSettingsInt("walkSpeed", 4) * 1000)
@@ -192,7 +197,7 @@ Public Class ListaOdjazdow
         End If
 
 
-        Dim bPkarMode As Boolean = App.GetSettingsBool("pkarmode")
+        Dim bPkarMode As Boolean = GetSettingsBool("pkarmode")
 
 
         For Each oVal As Windows.Data.Json.IJsonValue In oJsonStops
@@ -217,8 +222,8 @@ Public Class ListaOdjazdow
                     oNew.Odl = iOdl
                     oNew.TimeSec = iCurrSec
                     oNew.odlMin = iMinSec \ 60
-                    oNew.uiCol1 = App.GetSettingsInt("widthCol0")
-                    oNew.uiCol3 = App.GetSettingsInt("widthCol3")
+                    oNew.uiCol1 = GetSettingsInt("widthCol0")
+                    oNew.uiCol3 = GetSettingsInt("widthCol3")
 
                     oNew.sPrzystCzas = oNew.Przyst & " (" & oNew.Odl & " m, " & oNew.odlMin & " min)"
 
@@ -239,7 +244,7 @@ Public Class ListaOdjazdow
                     For Each oTmp As JedenOdjazd In moOdjazdy
                         If oTmp.Kier = oNew.Kier AndAlso oTmp.Linia = oNew.Linia Then
                             Dim iOldSec As Integer = oTmp.TimeSec
-                            If iCurrSec > iOldSec + 60 * App.GetSettingsInt("alsoNext", 5) Then
+                            If iCurrSec > iOldSec + 60 * GetSettingsInt("alsoNext", 5) Then
                                 bBylo = True
                                 Exit For
                             End If

@@ -66,50 +66,6 @@ NotInheritable Class App
         End If
     End Sub
 
-#Region "BackButton"
-    ' PKAR added wedle https://stackoverflow.com/questions/39262926/uwp-hardware-back-press-work-correctly-in-mobile-but-error-with-pc
-    Private Sub OnNavigatedAddBackButton(sender As Object, e As NavigationEventArgs)
-#If CONFIG = "Debug" Then
-        ' próba wylapywania errorów gdy nic innego tego nie złapie
-        Dim sDebugCatch As String = ""
-        Try
-#End If
-            Dim oFrame As Frame = TryCast(sender, Frame)
-            If oFrame Is Nothing Then Exit Sub
-
-            Dim oNavig As Windows.UI.Core.SystemNavigationManager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView
-
-            If oFrame.CanGoBack Then
-                oNavig.AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Visible
-            Else
-                oNavig.AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Collapsed
-            End If
-
-
-#If CONFIG = "Debug" Then
-        Catch ex As Exception
-            sDebugCatch = ex.Message
-        End Try
-
-        If sDebugCatch <> "" Then
-#Disable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
-            App.DialogBox("DebugCatch in OnNavigatedAddBackButton:" & vbCrLf & sDebugCatch)
-#Enable Warning BC42358
-        End If
-#End If
-
-    End Sub
-
-    Private Sub OnBackButtonPressed(sender As Object, e As Windows.UI.Core.BackRequestedEventArgs)
-        Try
-            TryCast(Window.Current.Content, Frame).GoBack()
-            e.Handled = True
-        Catch ex As Exception
-        End Try
-    End Sub
-#End Region
-
-
 
     ''' <summary>
     ''' Invoked when Navigation to a certain page fails
@@ -133,45 +89,45 @@ NotInheritable Class App
         deferral.Complete()
     End Sub
 
-    Public Shared Function GetLangString(sMsg As String) As String
-        If sMsg = "" Then Return ""
+    'Public Shared Function GetLangString(sMsg As String) As String
+    '    If sMsg = "" Then Return ""
 
-        Dim sRet As String = sMsg
-        Try
-            sRet = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
-        Catch
-        End Try
-        Return sRet
-    End Function
+    '    Dim sRet As String = sMsg
+    '    Try
+    '        sRet = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
+    '    Catch
+    '    End Try
+    '    Return sRet
+    'End Function
 
 
-    Public Shared Async Sub DialogBox(sMsg As String)
-        Dim oMsg As New MessageDialog(sMsg)
-        Await oMsg.ShowAsync
-    End Sub
-    Public Shared Async Function DialogBoxRes(sMsg As String) As Task
-        ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
-        Dim sTxt As String
-        Try
-            sTxt = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
-        Catch ex As Exception
-            sTxt = "Some error occured"
-        End Try
-        Dim oMsg As New MessageDialog(sTxt)
-        Await oMsg.ShowAsync
-    End Function
+    'Public Shared Async Sub DialogBox(sMsg As String)
+    '    Dim oMsg As New MessageDialog(sMsg)
+    '    Await oMsg.ShowAsync
+    'End Sub
+    'Public Shared Async Function DialogBoxRes(sMsg As String) As Task
+    '    ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
+    '    Dim sTxt As String
+    '    Try
+    '        sTxt = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
+    '    Catch ex As Exception
+    '        sTxt = "Some error occured"
+    '    End Try
+    '    Dim oMsg As New MessageDialog(sTxt)
+    '    Await oMsg.ShowAsync
+    'End Function
 
-    Public Shared Async Function DialogBoxResWait(sMsg As String) As Task
-        ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
-        Dim sTxt As String
-        Try
-            sTxt = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
-        Catch ex As Exception
-            sTxt = "Some error occured"
-        End Try
-        Dim oMsg As New MessageDialog(sTxt)
-        Await oMsg.ShowAsync
-    End Function
+    'Public Shared Async Function DialogBoxResWait(sMsg As String) As Task
+    '    ' 20180523, reakcja na niemanie w resources - bo chyba na tym wyleciała app wedle Dashboard (DialogBoxRes.MoveNext)
+    '    Dim sTxt As String
+    '    Try
+    '        sTxt = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(sMsg)
+    '    Catch ex As Exception
+    '        sTxt = "Some error occured"
+    '    End Try
+    '    Dim oMsg As New MessageDialog(sTxt)
+    '    Await oMsg.ShowAsync
+    'End Function
 
     'Public Shared Async Sub DialogBoxResYN(sMsg As String) As Task(Of Integer)
     '    With Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
@@ -183,38 +139,38 @@ NotInheritable Class App
     'End Sub
 
 
-    Public Shared Async Function DialogBoxInput(sMsgResId As String, Optional sDefaultResId As String = "", Optional sYesResId As String = "resDlgContinue", Optional sNoResId As String = "resDlgCancel") As Task(Of String)
-        Dim sMsg, sYes, sNo, sDefault As String
+    'Public Shared Async Function DialogBoxInput(sMsgResId As String, Optional sDefaultResId As String = "", Optional sYesResId As String = "resDlgContinue", Optional sNoResId As String = "resDlgCancel") As Task(Of String)
+    '    Dim sMsg, sYes, sNo, sDefault As String
 
-        sDefault = ""
+    '    sDefault = ""
 
-        With Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
-            sMsg = .GetString(sMsgResId)
-            sYes = .GetString(sYesResId)
-            sNo = .GetString(sNoResId)
-            If sDefaultResId <> "" Then sDefault = .GetString(sDefaultResId)
-        End With
+    '    With Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
+    '        sMsg = .GetString(sMsgResId)
+    '        sYes = .GetString(sYesResId)
+    '        sNo = .GetString(sNoResId)
+    '        If sDefaultResId <> "" Then sDefault = .GetString(sDefaultResId)
+    '    End With
 
-        If sMsg = "" Then sMsg = sMsgResId  ' zabezpieczenie na brak string w resource
-        If sYes = "" Then sYes = sYesResId
-        If sNo = "" Then sNo = sNoResId
-        If sDefault = "" Then sDefault = sDefaultResId
+    '    If sMsg = "" Then sMsg = sMsgResId  ' zabezpieczenie na brak string w resource
+    '    If sYes = "" Then sYes = sYesResId
+    '    If sNo = "" Then sNo = sNoResId
+    '    If sDefault = "" Then sDefault = sDefaultResId
 
-        Dim oInputTextBox = New TextBox
-        oInputTextBox.AcceptsReturn = False
-        oInputTextBox.Text = sDefault
-        Dim oDlg As New ContentDialog
-        oDlg.Content = oInputTextBox
-        oDlg.PrimaryButtonText = sYes
-        oDlg.SecondaryButtonText = sNo
-        oDlg.Title = sMsg
+    '    Dim oInputTextBox = New TextBox
+    '    oInputTextBox.AcceptsReturn = False
+    '    oInputTextBox.Text = sDefault
+    '    Dim oDlg As New ContentDialog
+    '    oDlg.Content = oInputTextBox
+    '    oDlg.PrimaryButtonText = sYes
+    '    oDlg.SecondaryButtonText = sNo
+    '    oDlg.Title = sMsg
 
-        Dim oCmd = Await oDlg.ShowAsync
-        If oCmd <> ContentDialogResult.Primary Then Return ""
+    '    Dim oCmd = Await oDlg.ShowAsync
+    '    If oCmd <> ContentDialogResult.Primary Then Return ""
 
-        Return oInputTextBox.Text
+    '    Return oInputTextBox.Text
 
-    End Function
+    'End Function
 
     Public Shared Async Function CheckLoadStopList(Optional bForceLoad As Boolean = False) As Task
         Await oStops.LoadOrImport(bForceLoad)
@@ -225,68 +181,68 @@ NotInheritable Class App
     End Function
 #Region "Get/Set settings"
 
-    Public Shared Function GetSettingsString(sName As String, Optional sDefault As String = "") As String
-        Dim sTmp As String
+    'Public Shared Function GetSettingsString(sName As String, Optional sDefault As String = "") As String
+    '    Dim sTmp As String
 
-        sTmp = sDefault
+    '    sTmp = sDefault
 
-        If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
-            sTmp = ApplicationData.Current.RoamingSettings.Values(sName).ToString
-        End If
-        If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
-            sTmp = ApplicationData.Current.LocalSettings.Values(sName).ToString
-        End If
+    '    If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
+    '        sTmp = ApplicationData.Current.RoamingSettings.Values(sName).ToString
+    '    End If
+    '    If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
+    '        sTmp = ApplicationData.Current.LocalSettings.Values(sName).ToString
+    '    End If
 
-        Return sTmp
+    '    Return sTmp
 
-    End Function
+    'End Function
 
-    Public Shared Function GetSettingsInt(sName As String, Optional iDefault As Integer = 0) As Integer
-        Dim sTmp As Integer
+    'Public Shared Function GetSettingsInt(sName As String, Optional iDefault As Integer = 0) As Integer
+    '    Dim sTmp As Integer
 
-        sTmp = iDefault
+    '    sTmp = iDefault
 
-        If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
-            sTmp = CInt(ApplicationData.Current.RoamingSettings.Values(sName).ToString)
-        End If
-        If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
-            sTmp = CInt(ApplicationData.Current.LocalSettings.Values(sName).ToString)
-        End If
+    '    If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
+    '        sTmp = CInt(ApplicationData.Current.RoamingSettings.Values(sName).ToString)
+    '    End If
+    '    If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
+    '        sTmp = CInt(ApplicationData.Current.LocalSettings.Values(sName).ToString)
+    '    End If
 
-        Return sTmp
+    '    Return sTmp
 
-    End Function
+    'End Function
 
-    Public Shared Function GetSettingsBool(sName As String, Optional iDefault As Boolean = False) As Boolean
-        Dim sTmp As Boolean
+    'Public Shared Function GetSettingsBool(sName As String, Optional iDefault As Boolean = False) As Boolean
+    '    Dim sTmp As Boolean
 
-        sTmp = iDefault
+    '    sTmp = iDefault
 
-        If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
-            sTmp = CBool(ApplicationData.Current.RoamingSettings.Values(sName).ToString)
-        End If
-        If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
-            sTmp = CBool(ApplicationData.Current.LocalSettings.Values(sName).ToString)
-        End If
+    '    If ApplicationData.Current.RoamingSettings.Values.ContainsKey(sName) Then
+    '        sTmp = CBool(ApplicationData.Current.RoamingSettings.Values(sName).ToString)
+    '    End If
+    '    If ApplicationData.Current.LocalSettings.Values.ContainsKey(sName) Then
+    '        sTmp = CBool(ApplicationData.Current.LocalSettings.Values(sName).ToString)
+    '    End If
 
-        Return sTmp
+    '    Return sTmp
 
-    End Function
+    'End Function
 
-    Public Shared Sub SetSettingsString(sName As String, sValue As String, Optional bRoam As Boolean = False)
-        If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue
-        ApplicationData.Current.LocalSettings.Values(sName) = sValue
-    End Sub
+    'Public Shared Sub SetSettingsString(sName As String, sValue As String, Optional bRoam As Boolean = False)
+    '    If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue
+    '    ApplicationData.Current.LocalSettings.Values(sName) = sValue
+    'End Sub
 
-    Public Shared Sub SetSettingsInt(sName As String, sValue As Integer, Optional bRoam As Boolean = False)
-        If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue.ToString
-        ApplicationData.Current.LocalSettings.Values(sName) = sValue.ToString
-    End Sub
+    'Public Shared Sub SetSettingsInt(sName As String, sValue As Integer, Optional bRoam As Boolean = False)
+    '    If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue.ToString
+    '    ApplicationData.Current.LocalSettings.Values(sName) = sValue.ToString
+    'End Sub
 
-    Public Shared Sub SetSettingsBool(sName As String, sValue As Boolean, Optional bRoam As Boolean = False)
-        If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue.ToString
-        ApplicationData.Current.LocalSettings.Values(sName) = sValue.ToString
-    End Sub
+    'Public Shared Sub SetSettingsBool(sName As String, sValue As Boolean, Optional bRoam As Boolean = False)
+    '    If bRoam Then ApplicationData.Current.RoamingSettings.Values(sName) = sValue.ToString
+    '    ApplicationData.Current.LocalSettings.Values(sName) = sValue.ToString
+    'End Sub
 #End Region
 
     Public Shared Function GPSdistanceDwa(dLat0 As Double, dLon0 As Double, dLat As Double, dLon As Double) As Integer
@@ -320,7 +276,7 @@ NotInheritable Class App
     Public Shared Async Function GetCurrentPoint() As Task(Of Point)
         Dim oPoint As Point
 
-        mSpeed = App.GetSettingsInt("walkSpeed", 4)
+        mSpeed = GetSettingsInt("walkSpeed", 4)
 
         ' 20190221: usuwam, bo było że po wybraniu Fav potem nie działa wedle GPS?
         ' poza tym wywołanie w Odjazdy jest tylko wtedy, gdy wedle GPS,
@@ -376,11 +332,11 @@ NotInheritable Class App
         If bErr Then
             ' po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
             ' dodaję zarówno ustalenie oPoint i mSpeed na defaulty, jak i Speed.HasValue
-            Await App.DialogBoxRes("resErrorGettingPos")
+            Await DialogBoxRes("resErrorGettingPos")
 
             oPoint.X = 50.0 '1985 ' latitude - dane domku, choc mała precyzja
             oPoint.Y = 19.9 '7872
-            mSpeed = App.GetSettingsInt("walkSpeed", 4)
+            mSpeed = GetSettingsInt("walkSpeed", 4)
         End If
 
         Return oPoint
@@ -389,62 +345,125 @@ NotInheritable Class App
 
 #Region "testy sieciowe"
 
-    Public Shared Function IsMobile() As Boolean
-        Return (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily = "Windows.Mobile")
-    End Function
+    '    Public Shared Function IsMobile() As Boolean
+    '        Return (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily = "Windows.Mobile")
+    '    End Function
 
-    Public Shared Function IsNetIPavailable(bMsg As Boolean) As Boolean
-        If App.GetSettingsBool("offline") Then Return False
+    '    Public Shared Function IsNetIPavailable(bMsg As Boolean) As Boolean
+    '        If App.GetSettingsBool("offline") Then Return False
 
-        If Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then Return True
-        If bMsg Then
-#Disable Warning BC42358
-            DialogBox("ERROR: no IP network available")
-#Enable Warning BC42358
-        End If
-        Return False
-    End Function
+    '        If Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then Return True
+    '        If bMsg Then
+    '#Disable Warning BC42358
+    '            DialogBox("ERROR: no IP network available")
+    '#Enable Warning BC42358
+    '        End If
+    '        Return False
+    '    End Function
 
-    Public Shared Function IsCellInet() As Boolean
-        Return Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile
-    End Function
+    '    Public Shared Function IsCellInet() As Boolean
+    '        Return Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile
+    '    End Function
 #End Region
-    Public Shared Function RemoveHtmlTags(sHtml As String) As String
-        Dim iInd0, iInd1 As Integer
+    'Public Shared Function RemoveHtmlTags(sHtml As String) As String
+    '    Dim iInd0, iInd1 As Integer
 
-        iInd0 = sHtml.IndexOf("<script")
-        If iInd0 > 0 Then
-            iInd1 = sHtml.IndexOf("</script>", iInd0)
-            If iInd1 > 0 Then
-                sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 9)
-            End If
+    '    iInd0 = sHtml.IndexOf("<script")
+    '    If iInd0 > 0 Then
+    '        iInd1 = sHtml.IndexOf("</script>", iInd0)
+    '        If iInd1 > 0 Then
+    '            sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 9)
+    '        End If
+    '    End If
+
+    '    iInd0 = sHtml.IndexOf("<")
+    '    iInd1 = sHtml.IndexOf(">")
+    '    While iInd0 > -1
+    '        If iInd1 > -1 Then
+    '            sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 1)
+    '        Else
+    '            sHtml = sHtml.Substring(0, iInd0)
+    '        End If
+    '        sHtml = sHtml.Trim
+
+    '        iInd0 = sHtml.IndexOf("<")
+    '        iInd1 = sHtml.IndexOf(">")
+    '    End While
+
+    '    sHtml = sHtml.Replace("&nbsp;", " ")
+    '    sHtml = sHtml.Replace(vbLf, vbCrLf)
+    '    sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+    '    sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+    '    sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
+
+    '    Return sHtml.Trim
+
+    'End Function
+
+    Public Shared Async Function WczytajTabliczke(sCat As String, iId As Integer) As Task(Of Windows.Data.Json.JsonObject)
+
+        Dim sUrl As String
+        If sCat = "bus" Then
+            sUrl = "http://91.223.13.70"
+        Else
+            sUrl = "http://www.ttss.krakow.pl"
+        End If
+        sUrl = sUrl & "/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop="
+        Dim sPage As String = Await WebPageAsync(sUrl & iId, False)
+        If sPage = "" Then Return Nothing
+
+        Dim bError As Boolean
+        Dim oJson As Windows.Data.Json.JsonObject = Nothing
+        Try
+            oJson = Windows.Data.Json.JsonObject.Parse(sPage)
+        Catch ex As Exception
+            bError = True
+        End Try
+        If bError Then
+            DialogBox("ERROR: JSON parsing error - tablica")
+            Return Nothing
         End If
 
-        iInd0 = sHtml.IndexOf("<")
-        iInd1 = sHtml.IndexOf(">")
-        While iInd0 > -1
-            If iInd1 > -1 Then
-                sHtml = sHtml.Remove(iInd0, iInd1 - iInd0 + 1)
-            Else
-                sHtml = sHtml.Substring(0, iInd0)
-            End If
-            sHtml = sHtml.Trim
-
-            iInd0 = sHtml.IndexOf("<")
-            iInd1 = sHtml.IndexOf(">")
-        End While
-
-        sHtml = sHtml.Replace("&nbsp;", " ")
-        sHtml = sHtml.Replace(vbLf, vbCrLf)
-        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
-        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
-        sHtml = sHtml.Replace(vbCrLf & vbCrLf, vbCrLf)
-
-        Return sHtml.Trim
-
+        Return oJson
     End Function
 
+    Public Shared Async Function WebPageAsync(sUri As String, bNoRedir As Boolean) As Task(Of String)
+        Dim sTmp As String = ""
 
+        If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
+            DialogBoxRes("resErrorNoNetwork")
+            Return ""
+        End If
+
+        Dim oHttp As System.Net.Http.HttpClient
+        If bNoRedir Then
+            Dim oHCH As System.Net.Http.HttpClientHandler = New System.Net.Http.HttpClientHandler
+            oHCH.AllowAutoRedirect = False
+            oHttp = New System.Net.Http.HttpClient(oHCH)
+        Else
+            oHttp = New System.Net.Http.HttpClient()
+        End If
+
+        Dim sPage As String = ""
+
+
+        Dim bError As Boolean = False
+
+        oHttp.Timeout = TimeSpan.FromSeconds(8)
+
+
+        Try
+            sPage = Await oHttp.GetStringAsync(New Uri(sUri))
+        Catch ex As Exception
+            bError = True
+        End Try
+        If bError Then
+            DialogBoxRes("resErrorGetHttp")
+            Return ""
+        End If
+
+        Return sPage
+    End Function
 End Class
 
 

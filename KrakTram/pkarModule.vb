@@ -324,11 +324,15 @@ Public Module pkar
         Return sRet
     End Function
 
+    Public Async Function DialogBoxRes(sMsg As String, sErrData As String) As Task
+        sMsg = GetLangString(sMsg) & " " & sErrData
+        Await DialogBox(sMsg)
+    End Function
+
     Public Async Function DialogBoxRes(sMsg As String) As Task
         sMsg = GetLangString(sMsg)
         Await DialogBox(sMsg)
     End Function
-
 
     Public Async Sub DialogBoxError(iNr As Integer, sMsg As String)
         Dim sTxt As String = GetLangString("errAnyError")

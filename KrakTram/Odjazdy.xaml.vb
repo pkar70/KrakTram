@@ -31,7 +31,7 @@ Public NotInheritable Class Odjazdy
 
         If App.moOdjazdy.Count = 0 OrElse bForce Then Await CzytanieTabliczek()
 
-        WypiszTabele()
+        WypiszTabele(True)
 
         uiGoTtssBar.IsEnabled = True
 
@@ -83,18 +83,27 @@ Public NotInheritable Class Odjazdy
                         uiWorking.Text = "|"
                 End Select
 
-                Await App.moOdjazdy.WczytajTabliczke(oNode.Cat, CInt(oNode.id), iOdl)
+                Dim sErrData As String = oNode.Name
+                If GetSettingsBool("settingsAlsoBus") Then
+                    If oNode.Cat = "bus" Then
+                        sErrData &= " (bus)"
+                    Else
+                        sErrData &= " (tram)"
+                    End If
+                End If
 
-                WypiszTabele()  ' w trakcie - pokazujemy na raty, zeby cos sie dzialo
+                Await App.moOdjazdy.WczytajTabliczke(oNode.Cat, sErrData, CInt(oNode.id), iOdl)
+
+                WypiszTabele(False)  ' w trakcie - pokazujemy na raty, zeby cos sie dzialo
             End If
         Next
     End Function
 
-    Private Sub WypiszTabele()
+    Private Sub WypiszTabele(bShowZero As Boolean)
 
         If App.moOdjazdy.Count < 1 Then
-            DialogBoxRes("resZeroKursow")
-            Exit Sub
+            If bShowZero Then DialogBoxRes("resZeroKursow")
+            Return
         End If
 
         Select Case GetSettingsInt("sortMode")
@@ -138,7 +147,7 @@ Public NotInheritable Class Odjazdy
 
         If Not bInit Then
             SetSettingsInt("sortMode", iMode)
-            WypiszTabele()
+            WypiszTabele(True)
         End If
 
     End Sub
@@ -193,7 +202,7 @@ Public NotInheritable Class Odjazdy
         If oItem Is Nothing Then Return
 
         App.moOdjazdy.FiltrWedleKierunku(True, oItem.Kier)
-        WypiszTabele()
+        WypiszTabele(True)
     End Sub
 
     Private Sub uiOnlyThisKier_Click(sender As Object, e As RoutedEventArgs)
@@ -203,6 +212,6 @@ Public NotInheritable Class Odjazdy
         If oItem Is Nothing Then Return
 
         App.moOdjazdy.FiltrWedleKierunku(False, oItem.Kier)
-        WypiszTabele()
+        WypiszTabele(True)
     End Sub
 End Class

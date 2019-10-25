@@ -143,7 +143,7 @@ Public Class ListaOdjazdow
     End Function
 
 
-    Public Async Function WczytajTabliczke(sCat As String, iId As Integer, iOdl As Integer) As Task
+    Public Async Function WczytajTabliczke(sCat As String, sErrData As String, iId As Integer, iOdl As Integer) As Task
 
         'Dim sUrl As String
         'If sCat = "bus" Then
@@ -167,7 +167,7 @@ Public Class ListaOdjazdow
         '    Exit Function
         'End If
 
-        Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(sCat, iId)
+        Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(sCat, sErrData, iId)
         If oJson Is Nothing Then Return
 
         Dim oJsonStops As New Windows.Data.Json.JsonArray
@@ -177,7 +177,7 @@ Public Class ListaOdjazdow
             bError = True
         End Try
         If bError Then
-            DialogBox("ERROR: JSON ""actual"" array missing")
+            DialogBox("ERROR: JSON ""actual"" array missing in " & sErrData)
             Return
         End If
 

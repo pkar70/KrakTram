@@ -1,0 +1,148 @@
+﻿<Page
+    x:Class="KrakTram.Odjazdy"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KrakTram"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win" Loaded="Page_Loaded" >
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="uiWorking" Text=" " FontSize="10" Margin="10,5,5,5" HorizontalAlignment="Right" VerticalAlignment="Top" />
+
+        <ListView Grid.Row="1" x:Name="uiListItems" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid  HorizontalAlignment="Stretch" Margin="0,5,0,0" BorderThickness="2" BorderBrush="Blue" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"  />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="{Binding Linia, Mode=OneWay }" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman"   />
+                            <TextBlock Grid.Row="1" Text="{Binding Typ, Mode=OneWay }" FontSize="12" HorizontalAlignment="Center" Width="{Binding uiCol1, Mode=OneWay }" Margin="2,0,2,1"/>
+
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Sort" Click="bSortByLine_Click"  />
+                                    <MenuFlyoutItem x:Uid="uiShowStops" Text="Przystanki" Click="uiShowStops_Click"/>
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
+
+
+                        </Grid>
+
+                        <Grid Grid.Column="1" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" BorderThickness="1" BorderBrush="Blue" Margin="1,1,1,1" >
+                                <TextBlock Text="{Binding Kier, Mode=OneWay }"  FontSize="18" FontWeight="Bold"  VerticalAlignment="Center"  FontFamily="Times New Roman" Padding="2,0,0,0">
+                                    <TextBlock.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Text="Sort" Click="bSortByKier_Click"  />
+                                            <MenuFlyoutItem Text="exclude" x:Uid="uiExcludeKier" Click="uiExcludeKier_Click"  />
+                                            <MenuFlyoutItem Text="only" x:Uid="uiOnlyThisKier" Click="uiOnlyThisKier_Click"  />
+                                        </MenuFlyout>
+                                    </TextBlock.ContextFlyout>
+                                </TextBlock>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding sPrzystCzas, Mode=OneWay }"  FontSize="12" Margin="0,2,0,2" Padding="4,0,0,0" >
+                                <TextBlock.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Sort" Click="bSortByStop_Click"  />
+                                    </MenuFlyout>
+                                </TextBlock.ContextFlyout>
+                            </TextBlock>
+                        </Grid>
+
+                        <Grid Grid.Column="2" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1" />
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text=" " FontSize="1" Width="{Binding uiCol3, Mode=OneWay }" />
+                            <TextBlock Grid.Row="1" Text="{Binding Mins, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" >
+                                <TextBlock.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Sort" Click="bSortByCzas_Click"/>
+                                        <MenuFlyoutSeparator/>
+                                        <MenuFlyoutItem Text="{Binding PlanTime, Mode=OneWay }" />
+                                        <MenuFlyoutItem Text="{Binding ActTime, Mode=OneWay }" />
+                                        <MenuFlyoutSeparator Visibility="{Binding bPkarMode, Mode=OneWay }"/>
+                                        <MenuFlyoutItem Text="Raw data" Visibility="{Binding bPkarMode, Mode=OneWay }" Click="uiRawData_Click"/>
+                                    </MenuFlyout>
+                                </TextBlock.ContextFlyout>
+                            </TextBlock>
+
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        </Grid>
+
+        <not_win:Grid Grid.Row="1" Name="uiAndroBottom" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" >
+                <AppBarButton Icon="Sort" Label="Sort" >
+                    <AppBarButton.Flyout>
+                        <MenuFlyout>
+                            <ToggleMenuFlyoutItem x:Name="uiSortLine" x:Uid="resSortLine" Text="byLine" Click="bSortByLine_Click" IsChecked="True"/>
+                            <ToggleMenuFlyoutItem x:Name="uiSortStop" x:Uid="resSortStop" Text="byStop" Click="bSortByStop_Click"/>
+                            <ToggleMenuFlyoutItem x:Name="uiSortKier" x:Uid="resSortKier" Text="byKier" Click="bSortByKier_Click"/>
+                            <ToggleMenuFlyoutItem x:Name="uiSortCzas" x:Uid="resSortCzas" Text="byTime" Click="bSortByCzas_Click"/>
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton x:Name="uiGoTtssBar" x:Uid="resGoTtss" Icon="Refresh" Label="Wczytaj TTSS" Click="uiGetData_Click"/>
+                <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" />
+            </StackPanel>
+        </not_win:Grid>
+    </Grid>
+    <Page.BottomAppBar>
+        <win:CommandBar ClosedDisplayMode="Minimal" >
+            <AppBarButton Icon="Sort" Label="Sort" >
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <ToggleMenuFlyoutItem x:Name="uiSortLine" x:Uid="resSortLine" Text="byLine" Click="bSortByLine_Click" IsChecked="True"/>
+                        <ToggleMenuFlyoutItem x:Name="uiSortStop" x:Uid="resSortStop" Text="byStop" Click="bSortByStop_Click"/>
+                        <ToggleMenuFlyoutItem x:Name="uiSortKier" x:Uid="resSortKier" Text="byKier" Click="bSortByKier_Click"/>
+                        <ToggleMenuFlyoutItem x:Name="uiSortCzas" x:Uid="resSortCzas" Text="byTime" Click="bSortByCzas_Click"/>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarButton x:Name="uiGoTtssBar" x:Uid="resGoTtss" Icon="Refresh" Label="Wczytaj TTSS" Click="uiGetData_Click"/>
+            <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" />
+        </win:CommandBar>
+
+    </Page.BottomAppBar>
+
+</Page>

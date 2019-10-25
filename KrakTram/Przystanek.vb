@@ -323,7 +323,7 @@ Public Class Przystanki
 
             sTxt = sTxt & oItem.id & vbTab & "Przystanek: " & oItem.Name & vbCrLf
 
-            Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(oItem.Cat, oItem.id)
+            Dim oJson As Windows.Data.Json.JsonObject = Await App.WczytajTabliczke(oItem.Cat, oItem.Name, oItem.id)
             Dim bError As Boolean = False
 
             Dim oJsonStops As New Windows.Data.Json.JsonArray

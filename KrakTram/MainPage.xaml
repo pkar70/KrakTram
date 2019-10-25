@@ -17,12 +17,13 @@
 
         <TextBlock HorizontalAlignment="Center" FontSize="18" Text="Krak Tram" />
 
-        <TextBlock Grid.Row="1" x:Name="uiTesterLinia" Text="50" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
-        <TextBlock Grid.Row="1" x:Name="uiTesterTyp" Text="2014N" FontSize="12"  HorizontalAlignment="Left" FontFamily="Times New Roman" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
-        <TextBlock Grid.Row="1" x:Name="uiTesterCzas" Text="22 min" FontSize="22"  HorizontalAlignment="Left" FontFamily="Times New Roman"  VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <!--<TextBlock Grid.Row="1" Name="uiTesterLinia" Text="50" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <TextBlock Grid.Row="1" Name="uiTesterTyp" Text="2014N" FontSize="12"  HorizontalAlignment="Left" FontFamily="Times New Roman" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <TextBlock Grid.Row="1" Name="uiTesterCzas" Text="22 min" FontSize="22"  HorizontalAlignment="Left" FontFamily="Times New Roman"  VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/> -->
 
         <Grid Grid.Row="2" HorizontalAlignment="Center" >
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -35,23 +36,38 @@
             
             <Button FontSize="18" Content="GPS" HorizontalAlignment="Center"  Margin="10,10,10,30" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="2" Grid.Row="0" />
 
-            <ComboBox x:Uid="resFavour" x:Name="uiFavList" Grid.Row="1" Header="Ulubione" />
-            <Button x:Uid="resGoStop" Grid.Row="1" Grid.Column="1" Margin="15,10,0,10" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />
+            <ComboBox x:Uid="resFavour" Name="uiFavList" Grid.Row="1" Header="Ulubione" SelectionChanged="uiFavList_SelectionChanged"/>
+            <Button x:Uid="resGoStop" Content="Go" Grid.Row="1" Grid.Column="1" Margin="15,10,0,10" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="1" Grid.Column="2" Name="uiUnPin" Margin="15,10,0,10" Click="uiUnPin_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <SymbolIcon Symbol="Delete" />
+            </Button>
 
-            <ComboBox x:Uid="resAll" x:Name="uiStopList" Grid.Row="2" Header="Wszystkie" Margin="0,20,0,15" />
-            <Button x:Uid="resGoStop" Grid.Row="2" Grid.Column="1" Margin="15,10,0,25"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
+            <ComboBox x:Uid="resAll" Name="uiStopList" Grid.Row="2" Header="Wszystkie" Margin="0,20,0,15" DoubleTapped="uiStopList_DoubleTapped" SelectionChanged="uiStopList_SelectionChanged"/>
+            <Button x:Uid="resGoStop" Content="Go" Grid.Row="2" Grid.Column="1" Margin="15,10,0,25"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,10" Name="uiPinTram"  Click="uiPinTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <SymbolIcon Symbol="Pin" />
+            </Button>
+            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,10" Name="uiSearchTram"  Click="uiSearchTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <SymbolIcon Symbol="Zoom" />
+            </Button>
 
-            <ComboBox x:Uid="resBusStops" x:Name="uiBusStopList" Grid.Row="3" Header="Bus" Margin="0,0,0,15" Visibility="Collapsed" />
-            <Button x:Uid="resGoStop" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,0,0,25"  Visibility="Collapsed"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
+            <ComboBox x:Uid="resBusStops" Name="uiBusStopList" Grid.Row="3" Header="Bus" Margin="0,0,0,15" Visibility="Collapsed" SelectionChanged="uiStopList_SelectionChanged" DoubleTapped="uiBusStopList_DoubleTapped"/>
+            <Button x:Uid="resGoStop" Content="Go" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,0,0,25"  Visibility="Collapsed"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,10" Name="uiPinBus" Click="uiPinBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <SymbolIcon Symbol="Pin" />
+            </Button>
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,10" Name="uiSearchBus"  Click="uiSearchBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <SymbolIcon Symbol="Zoom" />
+            </Button>
 
         </Grid>
         
     </Grid>
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal" >
-            <AppBarButton x:Uid="uiUnpin" Icon="UnPin" x:Name="uiUnpin" Label="Del fav" Click="uiUnPin_Click" Visibility="Collapsed" />
-            <AppBarButton x:Uid="uiPin" Icon="Pin" x:Name="uiPin" Label="Add fav" Click="uiPin_Click" Visibility="Collapsed" />
-            <AppBarButton x:Uid="uiChanges" Icon="Shuffle" x:Name="uiChanges" Label="Changes" Click="uiChanges_Click" />
+           <!-- <AppBarButton x:Uid="uiUnpin" Icon="UnPin" x:Name="uiUnpin" Label="Del fav" Click="uiUnPin_Click" Visibility="Collapsed" />
+            <AppBarButton x:Uid="uiPin" Icon="Pin" x:Name="uiPin" Label="Add fav" Click="uiPin_Click" Visibility="Collapsed" /> -->
+            <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />
             <AppBarButton x:Uid="uiHistoria" Icon="Clock" Label="Historia" Click="uiHist_Click" />
             <AppBarSeparator x:Name="uiAppSep" Visibility="Collapsed"/>
             <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click"  />

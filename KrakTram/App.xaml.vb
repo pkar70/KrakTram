@@ -400,7 +400,7 @@ NotInheritable Class App
 
     'End Function
 
-    Public Shared Async Function WczytajTabliczke(sCat As String, iId As Integer) As Task(Of Windows.Data.Json.JsonObject)
+    Public Shared Async Function WczytajTabliczke(sCat As String, sErrData As String, iId As Integer) As Task(Of Windows.Data.Json.JsonObject)
 
         Dim sUrl As String
         If sCat = "bus" Then
@@ -409,7 +409,7 @@ NotInheritable Class App
             sUrl = "http://www.ttss.krakow.pl"
         End If
         sUrl = sUrl & "/internetservice/services/passageInfo/stopPassages/stop?mode=departure&stop="
-        Dim sPage As String = Await WebPageAsync(sUrl & iId, False)
+        Dim sPage As String = Await WebPageAsync(sUrl & iId, sErrData, False)
         If sPage = "" Then Return Nothing
 
         Dim bError As Boolean
@@ -420,18 +420,18 @@ NotInheritable Class App
             bError = True
         End Try
         If bError Then
-            DialogBox("ERROR: JSON parsing error - tablica")
+            DialogBox("ERROR: JSON parsing error - tablica in " & sErrData)
             Return Nothing
         End If
 
         Return oJson
     End Function
 
-    Public Shared Async Function WebPageAsync(sUri As String, bNoRedir As Boolean) As Task(Of String)
+    Public Shared Async Function WebPageAsync(sUri As String, sErrData As String, bNoRedir As Boolean) As Task(Of String)
         Dim sTmp As String = ""
 
         If Not Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() Then
-            DialogBoxRes("resErrorNoNetwork")
+            DialogBoxRes("resErrorNoNetwork", sErrData)
             Return ""
         End If
 
@@ -458,7 +458,7 @@ NotInheritable Class App
             bError = True
         End Try
         If bError Then
-            DialogBoxRes("resErrorGetHttp")
+            DialogBoxRes("resErrorGetHttp", sErrData)
             Return ""
         End If
 

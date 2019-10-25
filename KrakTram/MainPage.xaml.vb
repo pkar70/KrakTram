@@ -1,13 +1,20 @@
-﻿' progressbar przy czytaniu kolejnych tabliczek
-' dokladniejsze info jak nie dziala (serwer nie odpowiada, blad danych, puste dane; rozroznienie tram/bus)
+﻿
+' ewentualnie:
+' progressbar przy czytaniu kolejnych tabliczek
 ' wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
 
+' 2019.10.25
+' mainpage: buttony Pin/Unpin przy Combo, a nie w BottomAppBar
+' mainpage: buttony z lupką (search)
+' czytanie danych: przy błędzie pokazuje o który przystanek chodzi
+' czytanie danych: DialogBox 'zero kursow' nie jest pokazywany przy wczytywaniu tabliczek pojedynczych, tylko raz (globalnie)
 
 ' BUG: 20190822 dlaczego pokazuje 'no tram in next hour' przy każdym przystanku tramwajowym?
 ' 2019.08.04 wczytanie przystanków tram JSON 0 objects - nie Cancel, tylko próbuje wczytac autobusowe
 
-' 2019.07.27 migracja do pkarmodule
-' 2019.07.27 dla IsThisMoje, statystyka opóźnień - na razie tekstowa
+' 2019.07.27
+' migracja do pkarmodule
+' dla IsThisMoje, statystyka opóźnień - na razie tekstowa
 
 
 ' 4.1907 (29 VI)
@@ -37,10 +44,7 @@ Public NotInheritable Class MainPage
 
     Private msStopName As String = ""
 
-    Private Sub bSetup_Click(sender As Object, e As RoutedEventArgs)
-        Me.Frame.Navigate(GetType(Setup), "MAIN")
-    End Sub
-
+#If False Then
     Private Sub KontrolaSzerokosci()
         ' kontrola szerokosci dla pola lewego (linia, typ)
         Dim iWidthLine, iWidthTyp, iWidthTime As Integer
@@ -72,14 +76,17 @@ Public NotInheritable Class MainPage
         SetSettingsInt("widthCol0", Math.Max(iWidthLine, iWidthTyp))
         SetSettingsInt("widthCol3", iWidthTime)
     End Sub
+#End If
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         GetSettingsInt("selectMode", 0)  ' pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
-        KontrolaSzerokosci()
+        ' KontrolaSzerokosci()
 
         ' zeby nie bylo widac...
         uiBusStopList.Visibility = Visibility.Collapsed
         uiGoBusStop.Visibility = Visibility.Collapsed
+        HideAppPins()
+        HideSearchButtons()
 
         Await App.LoadFavList
         uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
@@ -95,6 +102,86 @@ Public NotInheritable Class MainPage
 
     End Sub
 
+    Private Sub HideAppPins()
+        uiUnPin.Visibility = Visibility.Collapsed
+        uiPinTram.Visibility = Visibility.Collapsed
+        uiPinBus.Visibility = Visibility.Collapsed
+        uiAppSep.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub HideSearchButtons()
+        uiSearchTram.Visibility = Visibility.Collapsed
+        If uiPinTram.Visibility = Visibility.Collapsed Then
+            uiSearchTram.Visibility = Visibility.Visible
+        End If
+        If Not GetSettingsBool("settingsAlsoBus") Then Return
+
+        uiSearchBus.Visibility = Visibility.Collapsed
+        If uiPinBus.Visibility = Visibility.Collapsed Then
+            uiSearchBus.Visibility = Visibility.Visible
+        End If
+
+    End Sub
+
+    Private Sub uiFavList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiFavList.SelectionChanged
+        HideAppPins()
+        uiUnPin.Visibility = Visibility.Visible
+    End Sub
+
+    Private Sub uiUnPin_Click(sender As Object, e As RoutedEventArgs)
+        ' usun z Fav
+        Dim sName As String = uiFavList.SelectedItem
+        App.oFavour.Del(sName)
+        App.oFavour.Save(False)
+        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
+        ' HideAppPins()
+        uiUnPin.Visibility = Visibility.Collapsed
+    End Sub
+
+
+    Private Sub uiPin_Click(sender As Object, e As RoutedEventArgs)
+        If msStopName = "" Then Exit Sub
+
+        ' dodaj do Fav
+        ' Dim sName As String = uiStopList.SelectedItem
+        Dim oPrzyst As Przystanek = App.oStops.GetItem(msStopName)
+        If oPrzyst Is Nothing Then Exit Sub
+
+        App.oFavour.Add(msStopName, oPrzyst.Lat, oPrzyst.Lon, 150)  ' odl 150, zeby byl tram/bus
+        App.oFavour.Save(False)
+
+        msStopName = "" ' powtorka buttonu nie zadziała
+
+        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
+        HideAppPins()
+    End Sub
+
+
+    Private Sub uiStopList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiStopList.SelectionChanged, uiBusStopList.SelectionChanged
+        Dim oCombo As ComboBox = TryCast(sender, ComboBox)
+        HideAppPins()
+
+        msStopName = TryCast(sender, ComboBox).SelectedItem
+
+        If oCombo.Name = "uiBusStopList" Then
+            uiSearchBus.Visibility = Visibility.Collapsed
+            uiPinBus.Visibility = Visibility.Visible
+        Else
+            uiSearchTram.Visibility = Visibility.Collapsed
+            uiPinTram.Visibility = Visibility.Visible
+        End If
+
+    End Sub
+
+    Private Sub uiPinBus_Click(sender As Object, e As RoutedEventArgs)
+        uiPin_Click(Nothing, Nothing)
+    End Sub
+
+    Private Sub uiPinTram_Click(sender As Object, e As RoutedEventArgs)
+        uiPin_Click(Nothing, Nothing)
+    End Sub
+
+#Region "GoOdjazdy"
     Private Sub bGetGPS_Click(sender As Object, e As RoutedEventArgs)
         App.mbGoGPS = True    ' zgodnie z GPS prosze postapic (jak do tej pory)
         App.moOdjazdy.Clear()
@@ -139,61 +226,15 @@ Public NotInheritable Class MainPage
         GoStop(sStop, "tram")
     End Sub
 
-    Private Sub HideAppPins()
-        uiUnpin.Visibility = Visibility.Collapsed
-        uiPin.Visibility = Visibility.Collapsed
-        uiAppSep.Visibility = Visibility.Collapsed
-    End Sub
-
-    Private Sub uiUnPin_Click(sender As Object, e As RoutedEventArgs)
-        ' usun z Fav
-        Dim sName As String = uiFavList.SelectedItem
-        App.oFavour.Del(sName)
-        App.oFavour.Save(False)
-        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
-        HideAppPins()
-    End Sub
-
-    Private Sub uiPin_Click(sender As Object, e As RoutedEventArgs)
-        If msStopName = "" Then Exit Sub
-
-        ' dodaj do Fav
-        ' Dim sName As String = uiStopList.SelectedItem
-        Dim oPrzyst As Przystanek = App.oStops.GetItem(msStopName)
-        If oPrzyst Is Nothing Then Exit Sub
-
-        App.oFavour.Add(msStopName, oPrzyst.Lat, oPrzyst.Lon, 150)  ' odl 150, zeby byl tram/bus
-        App.oFavour.Save(False)
-
-        msStopName = "" ' powtorka buttonu nie zadziała
-
-        uiFavList.ItemsSource = From c In App.oFavour.GetList Order By c.Name Select c.Name
-        HideAppPins()
-    End Sub
-
-    Private Sub uiFavList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiFavList.SelectionChanged
-        HideAppPins()
-        uiUnpin.Visibility = Visibility.Visible
-    End Sub
-
-    Private Sub uiStopList_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles uiStopList.SelectionChanged, uiBusStopList.SelectionChanged
-        HideAppPins()
-
-        msStopName = TryCast(sender, ComboBox).SelectedItem
-        uiPin.Visibility = Visibility.Visible
-    End Sub
-
-    Private Sub uiHist_Click(sender As Object, e As RoutedEventArgs)
-        Me.Frame.Navigate(GetType(Historia))
-    End Sub
-
     Private Sub uiGoBusStop_Click(sender As Object, e As RoutedEventArgs)
         If uiBusStopList.SelectedValue Is Nothing Then Exit Sub
         ' KontrolaSzerokosci()
         Dim sStop As String = uiBusStopList.SelectedValue.ToString
         GoStop(sStop, "bus")
     End Sub
+#End Region
 
+#Region "Wyszukiwanie"
     Private Async Sub uiStopList_DoubleTapped(sender As Object, e As DoubleTappedRoutedEventArgs) Handles uiStopList.DoubleTapped
         Dim sMask As String = Await DialogBoxInput("msgEnterName")
 
@@ -211,6 +252,7 @@ Public NotInheritable Class MainPage
         Dim sMask As String = Await DialogBoxInput("msgEnterName")
         If sMask = "" Then
             sMask = sMask.ToLower
+
             uiBusStopList.ItemsSource = From c In App.oStops.GetList("bus") Order By c.Name Select c.Name
         Else
             sMask = sMask.ToLower
@@ -219,7 +261,30 @@ Public NotInheritable Class MainPage
 
     End Sub
 
+    Private Sub uiSearchBus_Click(sender As Object, e As RoutedEventArgs)
+        uiBusStopList_DoubleTapped(Nothing, Nothing)
+    End Sub
+
+    Private Sub uiSearchTram_Click(sender As Object, e As RoutedEventArgs)
+        uiStopList_DoubleTapped(Nothing, Nothing)
+    End Sub
+
+#End Region
+
+#Region "AppBar (podstrony)"
     Private Sub uiChanges_Click(sender As Object, e As RoutedEventArgs)
         Me.Frame.Navigate(GetType(Zmiany))
     End Sub
+
+    Private Sub uiHist_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Historia))
+    End Sub
+
+    Private Sub bSetup_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Setup), "MAIN")
+    End Sub
+
+
+#End Region
+
 End Class

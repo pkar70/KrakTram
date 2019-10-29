@@ -91,8 +91,8 @@
             <AppBarButton Icon="Accept" Label="Ok" Click="bOk_Click"/>
             <AppBarSeparator/>
             <AppBarButton x:Name="uiReloadStop" x:Uid="resGoRefresh" Icon="Refresh" Label="Przystanki" Click="bLoadStops_Click"/>
-            <AppBarSeparator/>
-            <AppBarButton x:Uid="resGoRate" Icon="OutlineStar" Label="Rate"  />
+            <win:AppBarSeparator/>
+            <win:AppBarButton x:Uid="resGoRate" Icon="OutlineStar" Label="Rate"  />
         </win:CommandBar>
 
     </Page.BottomAppBar>

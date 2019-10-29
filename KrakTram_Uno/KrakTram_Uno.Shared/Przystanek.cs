@@ -204,7 +204,7 @@ public partial class Przystanki
 
     private async System.Threading.Tasks.Task<string> ImportMain(string sUrl)
     {
-        var oHttp = new System.Net.Http.HttpClient();
+        System.Net.Http.HttpClient oHttp = new System.Net.Http.HttpClient();
         string sTmp = "";
         oHttp.Timeout = TimeSpan.FromSeconds(10);
 
@@ -214,9 +214,11 @@ public partial class Przystanki
         }
         catch 
         {
+            oHttp.Dispose();
             return "resErrorGetHttp";
         }
 
+        oHttp.Dispose();
         // {"stops": [
         // {
         // "category": "tram",

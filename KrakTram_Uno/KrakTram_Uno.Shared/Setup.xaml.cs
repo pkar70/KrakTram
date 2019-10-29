@@ -19,7 +19,7 @@ namespace KrakTram
         private string msRunType;
 
         protected override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
-        {
+        {// MAIN lub ODJAZD
             msRunType = e.Parameter.ToString();
         }
 
@@ -31,9 +31,9 @@ namespace KrakTram
             p.k.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value);
             //p.k.SetSettingsString("favPlaces", oXmlPlaces.GetXml());
 
-            if (uiAlsoBus.IsOn && !p.k.GetSettingsBool("settingsAlsoBus"))
-            {
-            }
+            //if (uiAlsoBus.IsOn && !p.k.GetSettingsBool("settingsAlsoBus"))
+            //{ // było do doczytania przystanków autobusowych
+            //}
             p.k.SetSettingsBool("settingsAlsoBus", uiAlsoBus.IsOn);
 
             this.Frame.GoBack();
@@ -63,6 +63,8 @@ namespace KrakTram
             uiPositionLat.Text = App.mdLat.ToString();
             uiPositionLong.Text = App.mdLong.ToString();
             uiAlsoBus.IsOn = p.k.GetSettingsBool("settingsAlsoBus");
+
+            if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
 #if false
@@ -432,6 +434,7 @@ namespace KrakTram
 
         private void uiAlsoBus_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            p.k.SetSettingsBool("settingsAlsoBus", uiAlsoBus.IsOn);
             eMaxOdl_Changed(null, null);
         }
     }

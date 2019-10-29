@@ -7,6 +7,10 @@
  progressbar przy czytaniu kolejnych tabliczek
  wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
 
+ 2019.10.29
+  guzik Position (otwieranie panelu override GPS) jest tylko przy Setup z Main, a nie z Odjazdy
+  Setup: po zmianie bus/tram odświeżał listę, ale nie uwzględniał nowego ustawienia AlsoBus
+
  2019.10.26
  gdy podczas startu app, w cache lista_przystanków.Count < 1, to wymuś odczyt
 

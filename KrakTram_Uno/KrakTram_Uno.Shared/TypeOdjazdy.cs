@@ -224,14 +224,14 @@ namespace KrakTram
             // Exit Function
             // End If
 
-            Windows.Data.Json.JsonObject oJson = await KrakTram.App.WczytajTabliczke(sCat, sErrData, iId);
+            Newtonsoft.Json.Linq.JObject oJson = await KrakTram.App.WczytajTabliczke(sCat, sErrData, iId);
             if (oJson == null)
                 return;
 
-            Windows.Data.Json.JsonArray oJsonStops = new Windows.Data.Json.JsonArray();
+            Newtonsoft.Json.Linq.JArray oJsonStops = new Newtonsoft.Json.Linq.JArray();
             try
             {
-                oJsonStops = oJson.GetNamedArray("actual");
+                oJsonStops = (Newtonsoft.Json.Linq.JArray)oJson["actual"];
             }
             catch 
             {
@@ -260,9 +260,10 @@ namespace KrakTram
             bool bPkarMode = p.k.GetSettingsBool("pkarmode");
 
 
-            foreach (Windows.Data.Json.IJsonValue oVal in oJsonStops)
+            foreach (Newtonsoft.Json.Linq.JObject oVal in oJsonStops)
             {
-                int iCurrSec = (int)oVal.GetObject().GetNamedNumber("actualRelativeTime", 0);
+                int iCurrSec = 0;
+                try { iCurrSec = (int)oVal["actualRelativeTime"]; } catch { }
 
                 if (iCurrSec > iMinSec)
                 {
@@ -270,18 +271,25 @@ namespace KrakTram
 
                     try
                     {
-                        oNew.Linia = oVal.GetObject().GetNamedString("patternText", "!ERR!");
+                        oNew.Linia = "!ERR!";
+                        try { oNew.Linia = (string)oVal["patternText"]; } catch { }
 
                         oNew.iLinia = 999;   // trafia na koniec
                         int argresult = oNew.iLinia;
                         int.TryParse(oNew.Linia, out argresult);
 
-                        oNew.Typ = VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
-                        oNew.Kier = oVal.GetObject().GetNamedString("direction", "!error!");
-                        oNew.Mins = oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
-                        oNew.PlanTime = "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
-                        oNew.ActTime = "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
-                        oNew.Przyst = oJson.GetObject().GetNamedString("stopName", "!error!");
+                        oNew.Typ = "!ERR!"; //  VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
+                        try { oNew.Typ = (string)oVal["vehicleId"]; } catch { }
+                        oNew.Kier = "!error!"; // oVal.GetObject().GetNamedString("direction", "!error!");
+                        try { oNew.Kier = (string)oVal["direction"]; } catch { }
+                        oNew.Mins = "!ERR!"; //  oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
+                        try { oNew.Mins = (string)oVal["mixedTime"]; } catch { }
+                        oNew.PlanTime = "!ERR!"; // "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
+                        try { oNew.PlanTime = (string)oVal["plannedTime"]; } catch { }
+                        oNew.ActTime = "!ERR!"; // "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
+                        try { oNew.ActTime = (string)oVal["actualTime"]; } catch { }
+                        oNew.Przyst = "!error!"; // oJson.GetObject().GetNamedString("stopName", "!error!");
+                        try { oNew.Przyst = (string)oVal["stopName"]; } catch { }
                         oNew.Odl = iOdl;
                         oNew.TimeSec = iCurrSec;
                         oNew.odlMin = iMinSec / 60;

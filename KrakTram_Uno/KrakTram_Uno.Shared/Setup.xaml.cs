@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 
 namespace KrakTram
@@ -64,34 +65,9 @@ namespace KrakTram
             uiAlsoBus.IsOn = p.k.GetSettingsBool("settingsAlsoBus");
         }
 
-
-
-        private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+#if false
+        private string ListaBliskichPrzystankowHTMLxslt(Windows.Foundation.Point oPoint)
         {
-            if (uiMaxOdlTxt == null)
-                return;
-            uiMaxOdlTxt.Text = uiMaxOdlSld.Value + " m";
-
-            // oPoint - albo narzucony, albo z GPS
-            Windows.Foundation.Point oPoint = new Windows.Foundation.Point();
-            if (App.mdLat == 100)
-                oPoint = await App.GetCurrentPoint();
-            else
-            {
-                oPoint.X = App.mdLat;
-                oPoint.Y = App.mdLong;
-            }
-
-            // Dim sHtml As string = "<html><body>"
-            // Dim iOdl As Integer
-            // For Each oNode In App.oStops.SelectNodes("//stop")
-            // iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.SelectSingleNode("@lat").NodeValue, oNode.SelectSingleNode("@lon").NodeValue)
-            // If iOdl < uiMaxOdlSld.Value Then
-            // sHtml = sHtml & "<li><b>" & oNode.SelectSingleNode("@name").NodeValue & "</b>, " & iOdl & " metrów"
-            // End If
-            // Next
-            // sHtml = sHtml & "</body></html>"
-
             string sXml = "<root>";
             int iOdl;
             int iCnt = 0;
@@ -122,9 +98,7 @@ namespace KrakTram
 
             sXml = sXml + "</root>";
 
-            if (iCnt > 0)
-            {
-
+            if (iCnt < 1) return "*" + iMinOdl;
 
                 // tester: http://xslttest.appspot.com/
                 string sXslt = @"
@@ -153,15 +127,92 @@ namespace KrakTram
                 var oXmlDoc = new Windows.Data.Xml.Dom.XmlDocument();
                 oXmlDoc.LoadXml(sXml);
                 sTmp = oXP.TransformToString(oXmlDoc.DocumentElement);
+
+            return sTmp;
+        }
+#endif
+
+        private string ListaBliskichPrzystankowHTMLlinq(Windows.Foundation.Point oPoint)
+        {
+            int iOdl;
+            //int iCnt = 0;
+            int iMinOdl = 100000;
+
+            System.Collections.ObjectModel.Collection<Przystanek> oItemy = new System.Collections.ObjectModel.Collection<Przystanek>();
+
+            foreach (Przystanek oNode in App.oStops.GetList("all"))
+            {
+                iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon);
+                if (iOdl < uiMaxOdlSld.Value)
+                {
+                    Przystanek oNew = new Przystanek();
+                    oNew.Name = oNode.Name;
+
+                    oNew.iSumDelay = iOdl;
+                    if (p.k.GetSettingsBool("settingsAlsoBus"))
+                    {
+                        if (oNode.Cat == "bus")
+                            oNew.Name = oNew.Name + " (A)";
+                        else
+                            oNew.Name += " (T)";
+                    }
+                    oNew.iMaxDelay = (int)(60 * iOdl / (uiWalkSpeedSld.Value * 1000));
+                    oItemy.Add(oNew);
+                }
+                iMinOdl = Math.Min(iMinOdl, iOdl);
             }
+
+            if (oItemy.Count < 1) return "*" + iMinOdl;
+
+            string sTmpLBPHL = "<html><body><ul>";
+            foreach (Przystanek oNode in from c in oItemy orderby c.iSumDelay select c)
+            {
+                sTmpLBPHL = sTmpLBPHL + "<li><b>" + oNode.Name + "</b>, " + oNode.iSumDelay + " m (" + oNode.iMaxDelay + " min)</li>\n";
+            }
+            sTmpLBPHL += "</ul></body></html>";
+
+            return sTmpLBPHL;
+
+        }
+
+
+        private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (uiMaxOdlTxt == null)
+                return;
+            uiMaxOdlTxt.Text = uiMaxOdlSld.Value + " m";
+
+            // oPoint - albo narzucony, albo z GPS
+            Windows.Foundation.Point oPoint = new Windows.Foundation.Point();
+            if (App.mdLat == 100)
+                oPoint = await App.GetCurrentPoint();
             else
             {
-                sTmp = p.k.GetLangString("resNearestStop");
+                oPoint.X = App.mdLat;
+                oPoint.Y = App.mdLong;
+            }
+
+            // Dim sHtml As string = "<html><body>"
+            // Dim iOdl As Integer
+            // For Each oNode In App.oStops.SelectNodes("//stop")
+            // iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.SelectSingleNode("@lat").NodeValue, oNode.SelectSingleNode("@lon").NodeValue)
+            // If iOdl < uiMaxOdlSld.Value Then
+            // sHtml = sHtml & "<li><b>" & oNode.SelectSingleNode("@name").NodeValue & "</b>, " & iOdl & " metrów"
+            // End If
+            // Next
+            // sHtml = sHtml & "</body></html>"
+
+            string sTmp = ListaBliskichPrzystankowHTMLlinq(oPoint);
+            if(sTmp.Length<1 | sTmp.Substring(0,1) == "*")
+            {
+                string sMsg = p.k.GetLangString("resNearestStop");
+                int iMinOdl = 10000;
+                int.TryParse(sTmp.Substring(1), out iMinOdl);
                 if (iMinOdl < 10000)
-                    sTmp = sTmp.Replace("###", iMinOdl.ToString() + " m");
+                    sMsg = sMsg.Replace("###", iMinOdl.ToString() + " m");
                 else
-                    sTmp = sTmp.Replace("###", (int)(iMinOdl / 1000) + " km");
-                sTmp = "<html><body><b>" + sTmp + "</b></body></html>";
+                    sMsg = sMsg.Replace("###", (int)(iMinOdl / 1000) + " km");
+                sTmp = "<html><body><b>" + sMsg + "</b></body></html>";
             }
 
             uiSetupWebView.NavigateToString(sTmp);

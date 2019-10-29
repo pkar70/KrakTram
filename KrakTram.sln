@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "KrakTram", "KrakTram\KrakTram.vbproj", "{30F93BA6-BFB5-40FA-9E54-C178A278FA00}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "KrakTram_VB", "KrakTram\KrakTram_VB.vbproj", "{30F93BA6-BFB5-40FA-9E54-C178A278FA00}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "KrakTram_Uno.Shared", "KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
 EndProject

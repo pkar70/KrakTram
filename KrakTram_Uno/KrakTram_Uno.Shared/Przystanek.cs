@@ -300,9 +300,20 @@ public partial class Przystanki
         if (!bForceLoad)
             bReaded = await Load();  // True gdy udane wczytanie; nie ma sensu czytac gdy wymuszamy import
 
+        int iCos;
+        iCos = moItemy.Count;
+        iCos = GetList().Count;
+        iCos = GetList("bus").Count;
+        iCos = GetList("all").Count;
+
+
+        // 2019.10.26: gdy lista pusta, to jednak wczytaj...
+        if (bReaded && moItemy.Count < 1) bReaded = false;      // jak jest puste w ogole
+        if (bReaded && GetList().Count < 1) bReaded = false;    // jak są puste tramwaje (a autobusy są)
+
         if (!bForceLoad)
         {
-            if (bReaded & iHowOld < 30)
+            if (bReaded && iHowOld < 30)
                 return;
         }
 
@@ -414,13 +425,15 @@ public partial class Przystanki
 
             int iId = 0;
             int.TryParse(oItem.id, out iId);
-            Windows.Data.Json.JsonObject oJson = await KrakTram.App.WczytajTabliczke(oItem.Cat, oItem.Name, iId);
+            Newtonsoft.Json.Linq.JObject oJson = await KrakTram.App.WczytajTabliczke(oItem.Cat, oItem.Name, iId);
             bool bError = false;
 
-            var oJsonStops = new Windows.Data.Json.JsonArray();
+
+            Newtonsoft.Json.Linq.JArray oJsonStops = new Newtonsoft.Json.Linq.JArray();
+
             try
             {
-                oJsonStops = oJson.GetNamedArray("actual");
+                oJsonStops = (Newtonsoft.Json.Linq.JArray)oJson["actual"];
             }
             catch 
             {
@@ -442,15 +455,25 @@ public partial class Przystanki
                 continue;
 
             // policz...
-            foreach (Windows.Data.Json.IJsonValue oVal in oJsonStops)
+            foreach (Newtonsoft.Json.Linq.JObject oVal in oJsonStops)
             {
                 oItem.iEntriesTotal += 1;
                 // jesli PREDICTED (a nie np. PLANNED), to znaczy że liczymy
-                string sPlanTime = oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
-                string sActTime = oVal.GetObject().GetNamedString("actualTime", "!ERR!");
-                string sTypCzasu = oVal.GetObject().GetNamedString("status", "!ERR!");
+                string sPlanTime = "!ERR!";
+                string sActTime = "!ERR!";
+                string sTypCzasu = "!ERR!";
 
-                sTxt = sTxt + oItem.id + "\t" + oVal.GetObject().GetNamedString("patternText", "!ERR!") + "\t" + oVal.GetObject().GetNamedString("direction", "!error!") + "\t" + sTypCzasu + "\t" + sPlanTime + "\t" + sActTime;
+                try { sPlanTime = (string)oVal["plannedTime"]; } catch { }
+                try { sActTime = (string)oVal["actualTime"]; } catch { }
+                try { sTypCzasu = (string)oVal["status"]; } catch { }
+
+                string sPattTxt = "!ERR!";
+                try { sPattTxt = (string)oVal["patternText"]; } catch { }
+                string sDirect = "!error!";
+                try { sDirect = (string)oVal["direction"]; } catch { }
+
+
+                sTxt = sTxt + oItem.id + "\t" + sPattTxt + "\t" + sDirect + "\t" + sTypCzasu + "\t" + sPlanTime + "\t" + sActTime;
 
                 if ((sTypCzasu ?? "") == "PREDICTED")
                 {

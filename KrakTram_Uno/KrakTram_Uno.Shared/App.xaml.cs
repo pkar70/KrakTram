@@ -247,6 +247,7 @@ namespace KrakTram
                 return oPoint;
             }
 
+            // https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0/33866959'
             Windows.Devices.Geolocation.Geolocator oDevGPS = new Windows.Devices.Geolocation.Geolocator();
 
             Windows.Devices.Geolocation.Geoposition oPos;
@@ -294,7 +295,7 @@ namespace KrakTram
             return oPoint;
         }
 
-        public static async System.Threading.Tasks.Task<Windows.Data.Json.JsonObject> WczytajTabliczke(string sCat, string sErrData, int iId)
+        public static async System.Threading.Tasks.Task<Newtonsoft.Json.Linq.JObject> WczytajTabliczke(string sCat, string sErrData, int iId)
         {
             string sUrl;
             if ((sCat ?? "") == "bus")
@@ -307,10 +308,10 @@ namespace KrakTram
                 return null;
 
             bool bError = false;
-            Windows.Data.Json.JsonObject oJson = null;
+            Newtonsoft.Json.Linq.JObject oJson = null;
             try
             {
-                oJson = Windows.Data.Json.JsonObject.Parse(sPage);
+                oJson = Newtonsoft.Json.Linq.JObject.Parse(sPage);
             }
             catch 
             {

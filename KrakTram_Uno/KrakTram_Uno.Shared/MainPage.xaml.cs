@@ -7,6 +7,9 @@
  progressbar przy czytaniu kolejnych tabliczek
  wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
 
+ 2019.10.26
+ gdy podczas startu app, w cache lista_przystanków.Count < 1, to wymuś odczyt
+
  2019.10.25
  mainpage: buttony Pin/Unpin przy Combo, a nie w BottomAppBar
  mainpage: buttony z lupką (search)
@@ -17,6 +20,10 @@
  migracja do C# - udana
  likwidacja catch(Exception ex) » catch - żeby ograniczyc liczbę Warningów
  częściowo dodane await do DialogBoxów - żeby ograniczyc liczbę Warningów
+
+ GITsync
+
+  migracja z Windows.Data.Json do Newtonsoft.Json.Linq
 
  BUG: 20190822 dlaczego pokazuje 'no tram in next hour' przy każdym przystanku tramwajowym?
  2019.08.04 wczytanie przystanków tram JSON 0 objects - nie Cancel, tylko próbuje wczytac autobusowe
@@ -87,7 +94,7 @@ namespace KrakTram
         private string msStopName = "";
 
         /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
-private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             p.k.SetSettingsInt("selectMode", 0);  // pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
                                                   // KontrolaSzerokosci()

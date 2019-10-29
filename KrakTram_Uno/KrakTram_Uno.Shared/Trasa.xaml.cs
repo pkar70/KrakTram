@@ -160,7 +160,7 @@ namespace KrakTram
                 return false;
             }
 
-            Windows.Web.Http.HttpClient oHttp = new Windows.Web.Http.HttpClient();
+            System.Net.Http.HttpClient oHttp = new System.Net.Http.HttpClient();
 
             string sPage = "";
 

@@ -52,7 +52,9 @@ namespace KrakTram
             Windows.Storage.StorageFile oFile;
             try
             {   // Uno tu protestuje (unimplemented), ale przecież ta strona jest tylko pod UWP
+#pragma warning disable Uno0001 // Uno type or member is not implemented
                 oFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(oPicUri);
+#pragma warning restore Uno0001 // Uno type or member is not implemented
             }
             catch
             {

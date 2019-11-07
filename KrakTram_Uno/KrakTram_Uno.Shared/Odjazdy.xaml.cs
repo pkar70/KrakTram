@@ -61,11 +61,13 @@ namespace KrakTram
                 // wedle GPS
                 App.mMaxOdl = p.k.GetSettingsInt("maxOdl", 1000);
                 // ustaw wspolrzedne
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = "o";
                 Windows.Foundation.Point oPoint = await App.GetCurrentPoint();
                 App.mdLat = oPoint.X;
                 App.mdLong = oPoint.Y;
                 uiWorking.Text = " ";
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
             else
             {
@@ -90,6 +92,7 @@ namespace KrakTram
 
             foreach (Przystanek oNode in App.oStops.GetList(sFilter))
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = ".";
                 iOdl = App.GPSdistanceDwa(dLat, dLon, oNode.Lat, oNode.Lon);
                 if (iOdl < dOdl)
@@ -108,6 +111,7 @@ namespace KrakTram
                                 break;
                         case 0:
                                 uiWorking.Text = "|";
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                                 break;
                     }
 
@@ -121,7 +125,7 @@ namespace KrakTram
                     }
 
                     int iId;
-                    int.TryParse(oNode.id, out iId);
+                    if(!int.TryParse(oNode.id, out iId)) iId=0;
                     await App.moOdjazdy.WczytajTabliczke(oNode.Cat, sErrData, iId, iOdl);
 
                     WypiszTabele(false);  // w trakcie - pokazujemy na raty, zeby cos sie dzialo

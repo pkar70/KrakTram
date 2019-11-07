@@ -92,12 +92,12 @@ namespace KrakTram
 
         private static string VehicleId2VehicleType68(string sTmp)
         {
-            if (sTmp.Length < 15)
+            if (string.IsNullOrEmpty(sTmp) || sTmp.Length < 15)
                 return "";
             if ((sTmp.Substring(0, 15) ?? "") != "635218529567218")
                 return "";
-            int id = 0;
-            int.TryParse(sTmp.Substring(15), out id);
+            int id;
+            if (!int.TryParse(sTmp.Substring(15), out id)) id = 0;
             id -= 736;
             if (id == 831)
                 id = 216;
@@ -134,14 +134,14 @@ namespace KrakTram
 
         private static string VehicleId2VehicleType11(string sTmp)
         {
-            if (sTmp.Length < 15)
+            if (string.IsNullOrEmpty(sTmp) || sTmp.Length < 15)
                 return "";
             if ((sTmp.Substring(0, 15) ?? "") != "-11889502973096")
                 return "";
             // 123456789.12345
 
-            int id = 0;
-            int.TryParse(sTmp.Substring(15), out id);
+            int id;
+            if(!int.TryParse(sTmp.Substring(15), out id)) id=0;
             if (id == 46005)
                 return "405N";
             if (id < 46021)
@@ -274,22 +274,32 @@ namespace KrakTram
                         oNew.Linia = "!ERR!";
                         try { oNew.Linia = (string)oVal["patternText"]; } catch { }
 
-                        oNew.iLinia = 999;   // trafia na koniec
-                        int argresult = oNew.iLinia;
-                        int.TryParse(oNew.Linia, out argresult);
+                        int argresult = 0;
+                        if (int.TryParse(oNew.Linia, out argresult))
+                            oNew.iLinia = argresult;
+                        else
+                            oNew.iLinia = 9999;  // trafia na koniec
+
 
                         oNew.Typ = "!ERR!"; //  VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
-                        try { oNew.Typ = (string)oVal["vehicleId"]; } catch { }
+                        try
+                        {
+                            oNew.Typ = (string)oVal["vehicleId"];
+                            oNew.Typ = VehicleId2VehicleType(oNew.Typ);
+                        }
+                        catch { }
+
                         oNew.Kier = "!error!"; // oVal.GetObject().GetNamedString("direction", "!error!");
                         try { oNew.Kier = (string)oVal["direction"]; } catch { }
                         oNew.Mins = "!ERR!"; //  oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
                         try { oNew.Mins = (string)oVal["mixedTime"]; } catch { }
+                        oNew.Mins = oNew.Mins.Replace("%UNIT_MIN%", "min").Replace("Min", "min");
                         oNew.PlanTime = "!ERR!"; // "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
                         try { oNew.PlanTime = (string)oVal["plannedTime"]; } catch { }
                         oNew.ActTime = "!ERR!"; // "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
                         try { oNew.ActTime = (string)oVal["actualTime"]; } catch { }
                         oNew.Przyst = "!error!"; // oJson.GetObject().GetNamedString("stopName", "!error!");
-                        try { oNew.Przyst = (string)oVal["stopName"]; } catch { }
+                        try { oNew.Przyst = (string)oJson["stopName"]; } catch { }
                         oNew.Odl = iOdl;
                         oNew.TimeSec = iCurrSec;
                         oNew.odlMin = iMinSec / 60;

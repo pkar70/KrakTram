@@ -10,61 +10,65 @@
     mc:Ignorable="d not_win" Loaded="Page_Loaded" >
 
     <Grid>
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions>   <!-- symulacja BottomAppBar dla Android, do usuniecia jak Uno bedzie miało obsługę BottomAB -->
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="2*"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock HorizontalAlignment="Center" FontSize="18" Text="Krak Tram" />
-
-        <!--<TextBlock Grid.Row="1" Name="uiTesterLinia" Text="50" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
-        <TextBlock Grid.Row="1" Name="uiTesterTyp" Text="2014N" FontSize="12"  HorizontalAlignment="Left" FontFamily="Times New Roman" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
-        <TextBlock Grid.Row="1" Name="uiTesterCzas" Text="22 min" FontSize="22"  HorizontalAlignment="Left" FontFamily="Times New Roman"  VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/> -->
-
-        <Grid Grid.Row="2" HorizontalAlignment="Center" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- 0: tytul -->
+            <RowDefinition Height="Auto"/>  <!-- 1: wersja -->
+            <RowDefinition Height="1*"/>    <!-- 2: spacer -->
+            <RowDefinition Height="Auto"/>  <!-- 3: wlasciwa czesc -->
+            <RowDefinition Height="3*"/>    <!-- 4: spacer -->
             </Grid.RowDefinitions>
 
-            <Button FontSize="18" Content="GPS" HorizontalAlignment="Center"  Margin="10,10,10,30" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="2" Grid.Row="0" />
+        <TextBlock HorizontalAlignment="Center" FontSize="24" Text="Krak Tram" />
+        <TextBlock HorizontalAlignment="Center" Grid.Row="1" FontSize="12" Text=" " Name="uiVersion" Margin="0,5,0,0"/>
+
+        <!-- testety konieczne do wyrownywania szerokosci na stronie odjazdow -->
+        <TextBlock Grid.Row="2" Name="uiTesterLinia" Text="50" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <TextBlock Grid.Row="2" Name="uiTesterTyp" Text="2014N" FontSize="12"  HorizontalAlignment="Left" FontFamily="Times New Roman" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <TextBlock Grid.Row="2" Name="uiTesterCzas" Text="22 min" FontSize="22"  HorizontalAlignment="Left" FontFamily="Times New Roman"  VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/> 
+
+        <!-- wlasciwa strona -->
+        <Grid Grid.Row="3" HorizontalAlignment="Center" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" /> <!-- combo -->
+            <ColumnDefinition Width="Auto" /> <!-- show -->
+            <ColumnDefinition Width="Auto" /> <!-- pin/search -->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- GPS -->
+            <RowDefinition Height="Auto"/> <!-- fav -->
+            <RowDefinition Height="Auto"/> <!-- tram -->
+            <RowDefinition Height="Auto"/> <!-- bus -->
+        </Grid.RowDefinitions>
+
+            <Button FontSize="18" Content="GPS" HorizontalAlignment="Center" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
 
             <ComboBox x:Uid="resFavour" Name="uiFavList" Grid.Row="1" Header="Ulubione" SelectionChanged="uiFavList_SelectionChanged"/>
-            <Button x:Uid="resGoStop" Content="Go" Grid.Row="1" Grid.Column="1" Margin="15,10,0,10" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />
-            <Button Grid.Row="1" Grid.Column="2" Name="uiUnPin" Margin="15,10,0,10" Click="uiUnPin_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <Button x:Uid="resGoStop" Content="Go" Grid.Row="1" Grid.Column="1" Margin="15,0,0,0" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="1" Grid.Column="2" Name="uiUnPin" Margin="15,0,0,0" Click="uiUnPin_Click" VerticalAlignment="Bottom" Visibility="Collapsed">
                 <SymbolIcon Symbol="Delete" />
             </Button>
 
-            <ComboBox x:Uid="resAll" Name="uiStopList" Grid.Row="2" Header="Wszystkie" Margin="0,20,0,15" DoubleTapped="uiStopList_DoubleTapped" SelectionChanged="uiStopList_SelectionChanged"/>
-            <Button x:Uid="resGoStop" Content="Go" Grid.Row="2" Grid.Column="1" Margin="15,10,0,25"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
-            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,25" Name="uiPinTram"  Click="uiPinTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <ComboBox x:Uid="resAll" Name="uiStopList" Grid.Row="2" Header="Tram" Margin="0,20,0,15" DoubleTapped="uiStopList_DoubleTapped" SelectionChanged="uiStopList_SelectionChanged"/>
+            <Button x:Uid="resGoStop" Content="Go" Grid.Row="2" Grid.Column="1" Margin="15,10,0,15"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,15" Name="uiPinTram"  Click="uiPinTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
                 <SymbolIcon Symbol="Pin" />
             </Button>
-            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,25" Name="uiSearchTram"  Click="uiSearchTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,15" Name="uiSearchTram"  Click="uiSearchTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
                 <SymbolIcon Symbol="Zoom" />
             </Button>
 
             <ComboBox x:Uid="resBusStops" Name="uiBusStopList" Grid.Row="3" Header="Bus" Margin="0,0,0,15" Visibility="Collapsed" SelectionChanged="uiStopList_SelectionChanged" DoubleTapped="uiBusStopList_DoubleTapped"/>
-            <Button x:Uid="resGoStop" Content="Go" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,0,0,25"  Visibility="Collapsed"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
-            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,25" Name="uiPinBus" Click="uiPinBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <Button x:Uid="resGoStop" Content="Go" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,10,0,15"  Visibility="Collapsed"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiPinBus" Click="uiPinBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
                 <SymbolIcon Symbol="Pin" />
             </Button>
-            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,25" Name="uiSearchBus"  Click="uiSearchBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiSearchBus"  Click="uiSearchBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
                 <SymbolIcon Symbol="Zoom" />
             </Button>
 
@@ -74,12 +78,13 @@
         
         </Grid>
         <not_win:Grid Grid.Row="1" Name="uiAndroBottom" Margin="0,10,0,0">
-            <StackPanel Orientation="Horizontal" >
-                <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />
+            <!--<CommandBar Style="{StaticResource XamlCommandBar}"> -->
+                <StackPanel Orientation="Horizontal" >
+                <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />                <!-- Style="{StaticResource XamlAppBarButton}"-->
                 <AppBarSeparator />
-                <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click"  />
-            </StackPanel>
-
+                <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" Style="{StaticResource XamlAppBarButton}" />
+                </StackPanel> 
+            <!--</CommandBar> -->
         </not_win:Grid>
     </Grid>
     <Page.BottomAppBar>

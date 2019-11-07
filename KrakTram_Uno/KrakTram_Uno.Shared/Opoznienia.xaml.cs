@@ -43,8 +43,10 @@ namespace KrakTram
         {
             if (iCount == 0)
             {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiDelay.Text = "--";
                 uiData.Text = "--";
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                 return;
             }
 
@@ -120,7 +122,9 @@ namespace KrakTram
             uiMapka.Center = new Windows.Devices.Geolocation.Geopoint(oPosition);
             uiMapka.ZoomLevel = 12;
             // Uno tu protestuje Unimplemented, ale przecież to jest strona tylko dla mnie, a więc na UWP jedynie
+#pragma warning disable Uno0001 // Uno type or member is not implemented
             uiMapka.Style = Windows.UI.Xaml.Controls.Maps.MapStyle.Road;
+#pragma warning restore Uno0001 // Uno type or member is not implemented
         }
     }
 }

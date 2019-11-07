@@ -13,6 +13,13 @@ namespace KrakTram.Droid
         )]
     public class MainActivity : Windows.UI.Xaml.ApplicationActivity
     {
+        // https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565
+        // że niby Main.cs to załatwi?
+        //protected override void OnCreate(Bundle savedInstanceState )
+        //{
+        //    Android.Support.V7.App.AppCompatActivity.SetTheme(R.style.AppTheme);
+        //    base.OnCreate(savedInstanceState);
+        //}
     }
 }
 

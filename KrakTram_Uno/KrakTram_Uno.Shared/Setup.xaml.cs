@@ -4,9 +4,14 @@ using System.Linq;
 
 namespace KrakTram
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
+    public class BliskiStop
+    {
+        public string sNazwa { get; set; }
+        public string sDane { get; set; }
+        public int iOdl { get; set; }
+    }
+
     public sealed partial class Setup : Windows.UI.Xaml.Controls.Page
     {
         public Setup()
@@ -20,7 +25,10 @@ namespace KrakTram
 
         protected override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {// MAIN lub ODJAZD
-            msRunType = e.Parameter.ToString();
+            if (e is null)
+                msRunType = "MAIN";
+            else
+                msRunType = e.Parameter.ToString();
         }
 
         private void bOk_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -48,8 +56,16 @@ namespace KrakTram
             uiReloadStop.IsEnabled = true;
         }
 
-        private void Setup_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+
+            // poniewaz dla Uno i tak nie ma precyzji GPS, mozna to usunac z ekranu robiąc miejsce
+            if (!p.k.GetPlatform("uwp"))
+            {
+                uiGPSPrecSld.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiGPSPrecTxt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
+
             uiMaxOdlSld.Value = p.k.GetSettingsInt("maxOdl", 1000);
             uiWalkSpeedSld.Value = p.k.GetSettingsInt("walkSpeed", 4);
             uiAlsoNextSld.Value = p.k.GetSettingsInt("alsoNext", 5);
@@ -132,8 +148,6 @@ namespace KrakTram
 
             return sTmp;
         }
-#endif
-
         private string ListaBliskichPrzystankowHTMLlinq(Windows.Foundation.Point oPoint)
         {
             int iOdl;
@@ -176,9 +190,57 @@ namespace KrakTram
             return sTmpLBPHL;
 
         }
+#endif
 
+        private void ListaBliskichPrzystankowListView(Windows.Foundation.Point oPoint)
+        {
+            int iOdl;
+            //int iCnt = 0;
+            int iMinOdl = 100000;
 
-        private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+            System.Collections.ObjectModel.Collection<BliskiStop > oItemy = new System.Collections.ObjectModel.Collection<BliskiStop>();
+
+            foreach (Przystanek oNode in App.oStops.GetList("all"))
+            {
+                iOdl = App.GPSdistanceDwa(oPoint.X, oPoint.Y, oNode.Lat, oNode.Lon);
+                if (iOdl < uiMaxOdlSld.Value)
+                {
+                    BliskiStop oNew = new BliskiStop();
+                    oNew.sNazwa = oNode.Name;
+                    oNew.iOdl = iOdl;
+
+                    if (p.k.GetSettingsBool("settingsAlsoBus"))
+                    {
+                        if (oNode.Cat == "bus")
+                            oNew.sNazwa += " (A)";
+                        else
+                            oNew.sNazwa += " (T)";
+                    }
+                    else
+                        if (oNode.Cat == "bus") continue;   // dla tramwajów - tylko tramwajowe ma pokazywać
+
+                    oNew.sDane = iOdl + " m (" + (int)(60 * iOdl / (uiWalkSpeedSld.Value * 1000)) + " min)";
+                    oItemy.Add(oNew);
+                }
+                iMinOdl = Math.Min(iMinOdl, iOdl);
+            }
+
+            if (oItemy.Count < 1)
+            {
+                BliskiStop oNew = new BliskiStop();
+                string sMsg = p.k.GetLangString("resNearestStop");
+                if (iMinOdl < 10000)
+                    sMsg = sMsg.Replace("###", iMinOdl.ToString() + " m");
+                else
+                    sMsg = sMsg.Replace("###", (int)(iMinOdl / 1000) + " km");
+                oNew.sNazwa = sMsg;
+                oItemy.Add(oNew);
+            }
+
+            uiListItems.ItemsSource = from c in oItemy orderby c.iOdl select c;
+        }
+
+    private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             if (uiMaxOdlTxt == null)
                 return;
@@ -204,20 +266,22 @@ namespace KrakTram
             // Next
             // sHtml = sHtml & "</body></html>"
 
-            string sTmp = ListaBliskichPrzystankowHTMLlinq(oPoint);
-            if(sTmp.Length<1 | sTmp.Substring(0,1) == "*")
-            {
-                string sMsg = p.k.GetLangString("resNearestStop");
-                int iMinOdl = 10000;
-                int.TryParse(sTmp.Substring(1), out iMinOdl);
-                if (iMinOdl < 10000)
-                    sMsg = sMsg.Replace("###", iMinOdl.ToString() + " m");
-                else
-                    sMsg = sMsg.Replace("###", (int)(iMinOdl / 1000) + " km");
-                sTmp = "<html><body><b>" + sMsg + "</b></body></html>";
-            }
 
-            uiSetupWebView.NavigateToString(sTmp);
+            ListaBliskichPrzystankowListView(oPoint);
+            //string sTmp = ListaBliskichPrzystankowHTMLlinq(oPoint);
+            //if(sTmp.Length<1 | sTmp.Substring(0,1) == "*")
+            //{
+            //    string sMsg = p.k.GetLangString("resNearestStop");
+            //    int iMinOdl = 10000;
+            //    int.TryParse(sTmp.Substring(1), out iMinOdl);
+            //    if (iMinOdl < 10000)
+            //        sMsg = sMsg.Replace("###", iMinOdl.ToString() + " m");
+            //    else
+            //        sMsg = sMsg.Replace("###", (int)(iMinOdl / 1000) + " km");
+            //    sTmp = "<html><body><b>" + sMsg + "</b></body></html>";
+            //}
+
+            //uiSetupWebView.NavigateToString(sTmp);
         }
 
         private void uiWalk_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
@@ -251,7 +315,7 @@ namespace KrakTram
                 return;
             }
 
-            double dLat = default(double), dLon = default(double);
+            double dLat, dLon;
             if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
             {
                 await p.k.DialogBoxRes("resBadFloat");

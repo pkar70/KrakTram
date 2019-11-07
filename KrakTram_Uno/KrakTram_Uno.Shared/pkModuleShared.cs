@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 /*
+
+
+### GetAppVers() - sprawdzic nowszy Uno.UI, bo juz chyba jest to implemented
  
 2019.10.25
 * Clipboard dla UWP idzie jak poprzednio, dla UWP - bez NuGet (żeby nie trzeba było dodawać Reference jak app jest tylko UWP)
@@ -590,6 +593,7 @@ namespace p
 
         public static bool GetPlatform(string sPlatform)
         {
+            if (string.IsNullOrEmpty(sPlatform)) return false;
             if (GetPlatform().ToLower() == sPlatform.ToLower()) return true;
             return false;
         }
@@ -643,6 +647,7 @@ namespace p
 
         public static string GetAppVers()
         {
+	// moze byc zmienione, bo powinno juz dzialac (dla Android i dla iOS), Commits on Oct 29, 2019
 #if NETFX_CORE
             return Windows.ApplicationModel.Package.Current.Id.Version.Major + "." +
                 Windows.ApplicationModel.Package.Current.Id.Version.Minor + "." + 

@@ -9,4 +9,10 @@
 		<item name="android:windowNoTitle">true</item>
 
 	</style>
+<!-- https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565 -->
+   <style name="AppTheme.Launcher">
+    <item name="android:windowBackground">@drawable/SplashScreen</item>
+    <!-- Optional, on Android 5+ you can modify the colorPrimaryDark color to match the windowBackground color for further branding-->
+    <!-- <item name="colorPrimaryDark">@android:color/white</item> -->
+  </style>
 </resources>

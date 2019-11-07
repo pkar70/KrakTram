@@ -77,7 +77,9 @@ public partial class FavStopList
 
         var oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<FavStop>));
         Stream oStream = await oFile.OpenStreamForReadAsync();
-        Itemy = oSer.Deserialize(oStream) as System.Collections.ObjectModel.Collection<FavStop>;
+        System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+        Itemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<FavStop>;
+        oXmlReader.Dispose();
         bDirty = false;
         return true;
     }

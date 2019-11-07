@@ -1,20 +1,36 @@
 ﻿using System.Linq;
-//using Windows.UI.Xaml;
-//using Windows.UI.Xaml.Controls;
-//using Windows.UI.Xaml.Input;
 
 /* ewentualnie:
  progressbar przy czytaniu kolejnych tabliczek
  wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
+ android: nie działa ContextMenuFlyout!
+ android: nie ma fontu Times!
 
- 2019.10.29
+
+2019.11.07
+ mainpage: zmiana Header combo na "tram", gdy są także autobusy
+ mainpage: jesli po Search jest tylko jeden, to go od razu robi Select
+ mainpage:Android: nie wypelnia combo przystankow, bo trwa to za dlugo - daje tam '--use search', zeby przyspieszyc pokazanie strony (na Android: dopiero po Loaded)
+ setup: lista bliskich przystankow, sortowana wedle odleglosci (przywrocenie funkcjonalnosci ktora byla w XSLT)
+ trasa: po wczytaniu trasy (refresh), jak jest to nieudane, to nie wylatuje z bledem 
+ trasa: dla Uno, musi byc System.net.httpclient, co oznacza serie problemów z redirect- rozwiazane
+ mainpage: szerokość Combo bus i tram są kopiowane z fav (bo to jest szersze...)
+    
+2019.11.06
+  mainpage: pokazywanie numeru wersji
+
+2019.11.05
+  setup: przeróbka z HTMLview na ListView (z nadzieją że na Android będzie lepiej wyglądało, nie takie malutkie)
+  odjazdy:no_win: dodaje Margin, bo Padding nie działa?
+
+2019.10.29
   guzik Position (otwieranie panelu override GPS) jest tylko przy Setup z Main, a nie z Odjazdy
   Setup: po zmianie bus/tram odświeżał listę, ale nie uwzględniał nowego ustawienia AlsoBus
 
- 2019.10.26
+2019.10.26
  gdy podczas startu app, w cache lista_przystanków.Count < 1, to wymuś odczyt
 
- 2019.10.25
+2019.10.25
  mainpage: buttony Pin/Unpin przy Combo, a nie w BottomAppBar
  mainpage: buttony z lupką (search)
  czytanie danych: przy błędzie pokazuje o który przystanek chodzi
@@ -96,18 +112,26 @@ namespace KrakTram
         }
 
         private string msStopName = "";
+        private bool mbAndroAdd = false;
+        private bool mbSkalowane = false;
 
-        /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            uiVersion.Text = "v. " + p.k.GetAppVers();
+
             p.k.SetSettingsInt("selectMode", 0);  // pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
-                                                  // KontrolaSzerokosci()
+            KontrolaSzerokosci();
 
             // zeby nie bylo widac...
             uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             HideAppPins();
             HideSearchButtons();
+            if (!p.k.GetPlatform("uwp"))
+            {
+                // inicjalizacja dla Androida, gdy nie ma jeszcze danych
+
+            }
 
             await App.LoadFavList();
             uiFavList.ItemsSource = from c in App.oFavour.GetList()
@@ -115,18 +139,86 @@ namespace KrakTram
                                     select c.Name;
 
             await App.CheckLoadStopList();
-            uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
-                                     orderby c.Name
-                                     select c.Name;
+            if (p.k.GetPlatform("uwp"))
+            {
+                uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
+                                         orderby c.Name
+                                         select c.Name;
+            }
+            else
+            {
+                mbAndroAdd = true;
+                uiStopList.Items.Add(p.k.GetLangString("resUseSearch"));
+                uiStopList.SelectedIndex = 0;
+            }
+            uiStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80);  // Max dla Android, bo wtedy chyba NaN
 
             if (p.k.GetSettingsBool("settingsAlsoBus"))
             {
+                uiStopList.Header = "Tram";
                 uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiBusStopList.ItemsSource = from c in App.oStops.GetList("bus")
-                                            orderby c.Name
-                                            select c.Name;
+
+                if (p.k.GetPlatform("uwp"))
+                {
+                    uiBusStopList.ItemsSource = from c in App.oStops.GetList("bus")
+                                                orderby c.Name
+                                                select c.Name;
+                }
+                else
+                {
+                    mbAndroAdd = true;
+                    uiBusStopList.Items.Add(p.k.GetLangString("resUseSearch"));
+                    uiBusStopList.SelectedIndex = 0;
+                }
+
+                uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
             }
+
+            mbAndroAdd = false;
+        }
+
+        private void KontrolaSzerokosci()
+        {
+        // kontrola szerokosci dla pola lewego (linia, typ)
+        int iWidthLine, iWidthTyp, iWidthTime;
+
+            uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            if((int)uiTesterTyp.ActualWidth < 10)
+            {
+                // znaczy android, i mamy nieustalone!
+                // niech pozostanie poprzednia wartosc (a nóż byla juz ustawiona poprawnie)
+                uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                return;
+            }
+            iWidthTyp = (int)uiTesterTyp.ActualWidth;  // typ
+            uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+            uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            iWidthLine = (int)uiTesterLinia.ActualWidth;  //linia
+            uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+            uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            iWidthTime = (int)uiTesterCzas.ActualWidth;  // czas
+            uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+            mbSkalowane = true;
+            //'uiTester.FontSize = 9
+            //'uiTester.Text = "2014N"
+            //'iWidth = uiTester.ActualWidth   'typ
+            //'uiTester.FontSize = 20
+            //'uiTester.Text = "22 min"
+            //'iWidth2 = uiTester.ActualWidth  'linia
+
+            //'uiTester.FontSize = 28
+            //'uiTester.FontWeight = Windows.UI.Text.FontWeights.Bold
+            //'uiTester.Text = "50"
+            //'uiTester.Visibility = Visibility.Collapsed
+
+            p.k.SetSettingsInt("widthCol0", System.Math.Max(iWidthLine, iWidthTyp));
+            p.k.SetSettingsInt("widthCol3", iWidthTime);
         }
 
         private void HideAppPins()
@@ -142,10 +234,12 @@ namespace KrakTram
             uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             if (uiPinTram.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
                 uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            if (!p.k.GetSettingsBool("settingsAlsoBus"))
-                return;
 
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            if (!p.k.GetSettingsBool("settingsAlsoBus"))
+                    return;
+
             if (uiPinBus.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
                 uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
@@ -195,10 +289,15 @@ namespace KrakTram
 
         private void uiStopList_SelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
         {
-            Windows.UI.Xaml.Controls.ComboBox oCombo = sender as Windows.UI.Xaml.Controls.ComboBox;
-            HideAppPins();
 
-            msStopName = (sender as Windows.UI.Xaml.Controls.ComboBox).SelectedItem.ToString();
+            if (mbAndroAdd) return;
+            Windows.UI.Xaml.Controls.ComboBox oCombo = sender as Windows.UI.Xaml.Controls.ComboBox;
+
+            if (oCombo.SelectedItem == null)
+                return;
+
+            HideAppPins();
+            msStopName = oCombo.SelectedItem.ToString();
 
             if (oCombo.Name == "uiBusStopList")
             {
@@ -226,6 +325,7 @@ namespace KrakTram
         {
             App.mbGoGPS = true;    // zgodnie z GPS prosze postapic (jak do tej pory)
             App.moOdjazdy.Clear();
+            if(!mbSkalowane) KontrolaSzerokosci();  // dla Android 
             this.Frame.Navigate(typeof(Odjazdy));
         }
 
@@ -244,6 +344,7 @@ namespace KrakTram
                     App.mdLat = oStop.Lat;
                     App.mdLong = oStop.Lon;
                     App.moOdjazdy.Clear();
+                    if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
                     this.Frame.Navigate(typeof(Odjazdy));
                 }
             }
@@ -261,6 +362,7 @@ namespace KrakTram
                     App.mdLong = oStop.Lon;
                     App.msCat = oStop.Cat;
                     App.moOdjazdy.Clear();
+                    if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
                     this.Frame.Navigate(typeof(Odjazdy));
                 }
             }
@@ -303,6 +405,13 @@ namespace KrakTram
                                          orderby c.Name
                                          select c.Name;
             }
+
+            if(uiStopList.Items.Count == 1)
+            {
+                uiStopList.SelectedIndex = 0;
+                uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiPinTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            }
         }
 
         private async void uiBusStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
@@ -323,6 +432,12 @@ namespace KrakTram
                                             where c.Name.ToLower().Contains(sMask)
                                             orderby c.Name
                                             select c.Name;
+            }
+            if (uiBusStopList.Items.Count == 1)
+            {
+                uiBusStopList.SelectedIndex = 0;
+                uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
             }
         }
 

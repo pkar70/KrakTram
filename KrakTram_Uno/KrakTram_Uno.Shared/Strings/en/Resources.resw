@@ -199,7 +199,7 @@
     <value>[locator]</value>
   </data>
   <data name="resErrorNoGPSAllowed" xml:space="preserve">
-    <value>Location service inaccessible - using test data</value>
+    <value>Location service inaccessible (check system permission for app) - using test data</value>
   </data>
   <data name="resSettGPSPrec.Header" xml:space="preserve">
     <value>Location precision</value>
@@ -277,7 +277,7 @@
     <value>only tram</value>
   </data>
   <data name="uiAlsoBus.OnContent" xml:space="preserve">
-    <value>bus &amp; tram (experimental)</value>
+    <value>bus &amp; tram</value>
   </data>
   <data name="msgEnterName" xml:space="preserve">
     <value>Fragment of stop's name:</value>
@@ -302,5 +302,8 @@
   </data>
   <data name="uiOnlyThisKier.Text" xml:space="preserve">
     <value>Only this direction</value>
+  </data>
+  <data name="resUseSearch" xml:space="preserve">
+    <value>-- use Search</value>
   </data>
 </root>

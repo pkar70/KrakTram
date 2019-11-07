@@ -44,13 +44,18 @@ namespace KrakTram
 
         protected override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            string[] aParams = e.Parameter.ToString().Split('|');
-            if (aParams.GetUpperBound(0) > -1)
-                msLinia = aParams[0];
-            if (aParams.GetUpperBound(0) > 0)
-                msKier = aParams[1];
-            if (aParams.GetUpperBound(0) > 1)
-                msStop = aParams[2];
+            if (e is null)
+                msLinia = "50";
+            else
+            {
+                string[] aParams = e.Parameter.ToString().Split('|');
+                if (aParams.GetUpperBound(0) > -1)
+                    msLinia = aParams[0];
+                if (aParams.GetUpperBound(0) > 0)
+                    msKier = aParams[1];
+                if (aParams.GetUpperBound(0) > 1)
+                    msStop = aParams[2];
+            }
         }
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -120,7 +125,9 @@ namespace KrakTram
             Stream oStream = await oObj.OpenStreamForReadAsync();
             try
             {
-                moStopsy = oSer.Deserialize(oStream) as System.Collections.ObjectModel.Collection<JedenStop>;
+                System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+                moStopsy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<JedenStop>;
+                oXmlReader.Dispose();
             }
             catch 
             {
@@ -160,23 +167,40 @@ namespace KrakTram
                 return false;
             }
 
-            System.Net.Http.HttpClient oHttp = new System.Net.Http.HttpClient();
+            System.Net.Http.HttpClientHandler oHCH = new System.Net.Http.HttpClientHandler();
+            oHCH.AllowAutoRedirect = false;
+            oHCH.CookieContainer = new System.Net.CookieContainer();
+            oHCH.UseCookies = true;
+
+            System.Net.Http.HttpClient oHttp = new System.Net.Http.HttpClient(oHCH);
 
             string sPage = "";
 
             bool bError = false;
 
             // oHttp.Timeout = TimeSpan.FromSeconds(8)
-            // timeout jest tylko w System.Net.http, ale tam nie działa ("The HTTP redirect request failed")
-
+            // timeout jest tylko w System.Net.http, ale tam nie działa ("The HTTP redirect request failed"), 302
+            // a z drugiej strony, dla Uno musi byc System.Net a nie Windows :)
+            Uri oUri = new Uri("http://rozklady.mpk.krakow.pl/?lang=PL&linia=" + sLinia);
             try
             {
-                sPage = await oHttp.GetStringAsync(new Uri("http://rozklady.mpk.krakow.pl/?lang=PL&linia=" + sLinia));
+                System.Net.Http.HttpResponseMessage oHttResp = await oHttp.GetAsync(oUri);
+                if(oHttResp.StatusCode == System.Net.HttpStatusCode.Found )
+                {
+                    oHttResp = await oHttp.GetAsync(oHttResp.RequestMessage.RequestUri );
+                }
+                // sPage = await oHttp.GetStringAsync(oUri);
+
+                if (oHttResp.IsSuccessStatusCode)
+                    sPage = await oHttResp.Content.ReadAsStringAsync();
             }
             catch 
             {
                 bError = true;
             }
+            oHttp.Dispose();
+            oHCH.Dispose();
+
             if (bError)
             {
                 await p.k.DialogBoxRes("resErrorGetHttp");
@@ -265,7 +289,11 @@ namespace KrakTram
         private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
-            await WczytajTrase(msLinia);
+            if (!(await WczytajTrase(msLinia))) return;
+
+            if (moStopsy is null || moStopsy.Count < 1) // podwojne zabezpieczenie :)
+                return;
+
             uiListStops.ItemsSource = from c in moStopsy
                                       orderby c.iMin
                                       select c;

@@ -172,7 +172,8 @@ namespace KrakTram
         {
             try
             {
-                (Window.Current.Content as Frame).GoBack();
+                if ((Window.Current.Content as Frame).CanGoBack)
+                        (Window.Current.Content as Frame).GoBack();
                 e.Handled = true;
             }
             catch 
@@ -181,6 +182,7 @@ namespace KrakTram
         }
 
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static Przystanki oStops = new Przystanki();
         public static FavStopList oFavour = new FavStopList();
         public static double mdLat = 100;
@@ -189,6 +191,7 @@ namespace KrakTram
         public static double mMaxOdl = 20;
         public static string msCat = "tram";
         public static ListaOdjazdow moOdjazdy = new ListaOdjazdow();
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         public static async System.Threading.Tasks.Task CheckLoadStopList(bool bForceLoad = false)
         {
@@ -224,6 +227,7 @@ namespace KrakTram
 
         public static int GPSdistance(Windows.Devices.Geolocation.Geoposition oPos, double dLat, double dLon)
         {
+            if (oPos is null) return 0;
             return App.GPSdistanceDwa(oPos.Coordinate.Point.Position.Latitude, oPos.Coordinate.Point.Position.Longitude, dLat, dLon);
         }
 
@@ -233,8 +237,8 @@ namespace KrakTram
 
             mSpeed = p.k.GetSettingsInt("walkSpeed", 4);
 
-            oPoint.X = 50.0; // 1985 ' latitude - dane domku, choc mała precyzja
-            oPoint.Y = 19.9; // 7872
+            oPoint.X = 50.01; // 1985 ' latitude - dane domku, choc mała precyzja
+            oPoint.Y = 19.97; // 7872   dla Android dodałem drugą cyfrę po kropce, żeby default miał tramwaje
 
             Windows.Devices.Geolocation.GeolocationAccessStatus rVal;
             rVal = await Windows.Devices.Geolocation.Geolocator.RequestAccessAsync();
@@ -281,6 +285,11 @@ namespace KrakTram
             {
                 bErr = true;
             }
+            
+#if __ANDROID__
+            oDevGPS.Dispose();
+#endif
+
             if (bErr)
             {
                 // po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
@@ -336,10 +345,10 @@ namespace KrakTram
                 return "";
             }
 
+            System.Net.Http.HttpClientHandler oHCH = new System.Net.Http.HttpClientHandler();
             System.Net.Http.HttpClient oHttp;
             if (bNoRedir)
             {
-            System.Net.Http.HttpClientHandler oHCH = new System.Net.Http.HttpClientHandler();
                 oHCH.AllowAutoRedirect = false;
                 oHttp = new System.Net.Http.HttpClient(oHCH);
             }
@@ -362,6 +371,9 @@ namespace KrakTram
             {
                 bError = true;
             }
+            oHttp.Dispose();
+            oHCH.Dispose();
+
             if (bError)
             {
                 p.k.DialogBoxRes("resErrorGetHttp", sErrData);

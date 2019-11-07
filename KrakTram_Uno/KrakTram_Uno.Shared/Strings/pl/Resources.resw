@@ -199,7 +199,7 @@
     <value>[GPS]</value>
   </data>
   <data name="resErrorNoGPSAllowed" xml:space="preserve">
-    <value>Brak dostępu do usługi lokalizacji - używam danych testowych</value>
+    <value>Brak dostępu do usługi lokalizacji (sprawdź w systemie uprawnienia dla aplikacji) - używam danych testowych</value>
   </data>
   <data name="resSettGPSPrec.Header" xml:space="preserve">
     <value>Dokładność lokalizacji</value>
@@ -277,7 +277,7 @@
     <value>tylko tramwaje</value>
   </data>
   <data name="uiAlsoBus.OnContent" xml:space="preserve">
-    <value>tramwaje i autobusy (eksperymentalne)</value>
+    <value>tramwaje i autobusy</value>
   </data>
   <data name="msgEnterName" xml:space="preserve">
     <value>Fragment nazwy:</value>
@@ -302,5 +302,8 @@
   </data>
   <data name="uiOnlyThisKier.Text" xml:space="preserve">
     <value>Tylko ten kierunek</value>
+  </data>
+  <data name="resUseSearch" xml:space="preserve">
+    <value>-- użyj wyszukiwania</value>
   </data>
 </root>

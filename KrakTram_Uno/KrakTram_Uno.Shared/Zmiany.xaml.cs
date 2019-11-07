@@ -97,7 +97,9 @@ namespace KrakTram
             Stream oStream = await oFile.OpenStreamForReadAsync();
             try
             {
-                moLista = oSer.Deserialize(oStream) as System.Collections.ObjectModel.Collection<JednaInfo>;
+                System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+                moLista = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<JednaInfo>;
+                oXmlReader.Dispose();
             }
             catch
             {
@@ -153,6 +155,8 @@ namespace KrakTram
             {
                 bError = true;
             }
+            oHttp.Dispose();
+
             if (bError)
             {
                 await p.k.DialogBoxRes("resErrorGetHttp");

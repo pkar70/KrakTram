@@ -92,7 +92,9 @@ public partial class Przystanki
 
         XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<Przystanek>));
         Stream oStream = await oFile.OpenStreamForReadAsync();
-        moItemy = oSer.Deserialize(oStream) as System.Collections.ObjectModel.Collection<Przystanek>;
+        System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+        moItemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<Przystanek>;
+        oXmlReader.Dispose();
 
         return true;
     }
@@ -275,7 +277,7 @@ public partial class Przystanki
 
         await Save();    // teoretycznie mogloby byc bez Await, zeby sobie w tle robil Save
         int iLastLoad = 0;
-        int.TryParse(DateTime.Now.ToString("yyMMdd"), out iLastLoad);
+        if (!int.TryParse(DateTime.Now.ToString("yyMMdd"), out iLastLoad)) iLastLoad = 0;
         p.k.SetSettingsInt("LastLoadStops", iLastLoad);
 
         if (p.k.GetSettingsBool("pkarmode"))
@@ -289,8 +291,8 @@ public partial class Przystanki
         int iHowOld;
         try // 20171108: czasem przy starcie wylatuje, może tu?
         {
-            int iCurrDate = 0;
-            int.TryParse(DateTime.Now.ToString("yyMMdd"), out iCurrDate);
+            int iCurrDate;
+            if (!int.TryParse(DateTime.Now.ToString("yyMMdd"), out iCurrDate)) iCurrDate = 0;
             iHowOld = iCurrDate - p.k.GetSettingsInt("LastLoadStops");
         }
         catch 
@@ -302,11 +304,11 @@ public partial class Przystanki
         if (!bForceLoad)
             bReaded = await Load();  // True gdy udane wczytanie; nie ma sensu czytac gdy wymuszamy import
 
-        int iCos;
-        iCos = moItemy.Count;
-        iCos = GetList().Count;
-        iCos = GetList("bus").Count;
-        iCos = GetList("all").Count;
+        //int iCos;
+        //iCos = moItemy.Count;
+        //iCos = GetList().Count;
+        //iCos = GetList("bus").Count;
+        //iCos = GetList("all").Count;
 
 
         // 2019.10.26: gdy lista pusta, to jednak wczytaj...
@@ -426,7 +428,7 @@ public partial class Przystanki
             sTxt = sTxt + oItem.id + "\t" + "Przystanek: " + oItem.Name + "\n";
 
             int iId = 0;
-            int.TryParse(oItem.id, out iId);
+            if (!int.TryParse(oItem.id, out iId)) iId = 0;
             Newtonsoft.Json.Linq.JObject oJson = await KrakTram.App.WczytajTabliczke(oItem.Cat, oItem.Name, iId);
             bool bError = false;
 
@@ -487,11 +489,11 @@ public partial class Przystanki
                         {
                             int iMin = 0;
                             int iHrs = 0;
-                            int.TryParse(sActTime.Substring(0, 2), out iHrs);
-                            int.TryParse(sActTime.Substring(3, 2), out iMin);
+                            if(!int.TryParse(sActTime.Substring(0, 2), out iHrs)) iHrs = 0;
+                            if (!int.TryParse(sActTime.Substring(3, 2), out iMin)) iMin = 0;
                             iAct = iHrs * 60 + iMin;
-                            int.TryParse(sPlanTime.Substring(0, 2), out iHrs);
-                            int.TryParse(sPlanTime.Substring(3, 2), out iMin);
+                            if (!int.TryParse(sPlanTime.Substring(0, 2), out iHrs)) iHrs = 0;
+                            if (int.TryParse(sPlanTime.Substring(3, 2), out iMin)) iMin=0;
                             iPlan = iHrs * 60 + iMin;
                         }
                         catch 

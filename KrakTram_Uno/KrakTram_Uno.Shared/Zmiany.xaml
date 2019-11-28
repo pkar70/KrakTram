@@ -20,8 +20,8 @@
             <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition x:Name="uiRowInfo"/>
+            <RowDefinition x:Name="uiRowLista"/>
         </Grid.RowDefinitions>
 
         <ProgressRing x:Name="uiProcesuje" Grid.RowSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
@@ -29,9 +29,10 @@
 
         <TextBlock HorizontalAlignment="Center" FontSize="14" x:Uid="uiZmianyTitle" />
         <TextBlock HorizontalAlignment="Center" x:Name="uiFileDate" FontSize="10" Grid.Row="1"/>
-        <WebView x:Name="uiWebView" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-
-        <ListView Grid.Row="3" x:Name="uiLista" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
+            <Frame  Grid.Row="2" BorderThickness="0,0,0,2" BorderBrush="Blue" >
+                <WebView x:Name="uiWebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Frame> 
+            <ListView Grid.Row="3" x:Name="uiLista" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -41,7 +42,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,5,0,0" Tapped="uiPokaz_Click" >
+                    <Grid Margin="0,5,0,0" Tapped="uiPokaz_Click" BorderBrush="Blue" BorderThickness="0,0,0,1" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"  />
                             <RowDefinition Height="Auto"  />
@@ -73,7 +74,9 @@
 
     <win:Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Icon="Accept" Label="Ok" Click="uiClose_Click"/>
+            <!--<AppBarButton Icon="Accept" Label="Ok" Click="uiClose_Click"/>
+            <AppBarSeparator/> -->
+            <AppBarButton Icon="Find" Label="Szukaj" x:Uid="uiSearch" Click="uiSearch_Click" />
             <AppBarSeparator/>
             <AppBarButton x:Uid="uiRefresh" x:Name="uiReload" Icon="Refresh" Label="Refresh" Click="uiRefresh_Click"/>
         </CommandBar>

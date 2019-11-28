@@ -72,12 +72,22 @@ public partial class Przystanki
         Windows.Storage.StorageFile oFile = await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("stops1.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
         if (oFile == null)
+        {
+            await p.k.DialogBox("ERROR cannot create stops1.xml file?");
             return;
+        }
 
         XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<Przystanek>));
-        System.IO.Stream oStream = await oFile.OpenStreamForWriteAsync();
-        oSer.Serialize(oStream, moItemy);
-        oStream.Dispose();   // == fclose
+        try
+        {
+            System.IO.Stream oStream = await oFile.OpenStreamForWriteAsync();
+            oSer.Serialize(oStream, moItemy);
+            oStream.Dispose();   // == fclose
+        }
+        catch
+        {
+            await p.k.DialogBox("ERROR cannot serialize stops?");
+        }
     }
 
     // Load
@@ -90,13 +100,21 @@ public partial class Przystanki
             return false;
         Windows.Storage.StorageFile oFile = oObj as Windows.Storage.StorageFile;
 
-        XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<Przystanek>));
-        Stream oStream = await oFile.OpenStreamForReadAsync();
-        System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
-        moItemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<Przystanek>;
-        oXmlReader.Dispose();
+        try
+        {
+            XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<Przystanek>));
+            Stream oStream = await oFile.OpenStreamForReadAsync();
+            System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+            moItemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<Przystanek>;
+            oXmlReader.Dispose();
 
-        return true;
+            return true;
+        }
+        catch
+        {
+            await p.k.DialogBox("ERROR reading stops file?");
+            return false;
+        }
     }
 
 
@@ -466,22 +484,32 @@ public partial class Przystanki
                 string sPlanTime = "!ERR!";
                 string sActTime = "!ERR!";
                 string sTypCzasu = "!ERR!";
+                string sPattTxt = "!ERR!";
+                string sDirect = "!error!";
 
                 try { sPlanTime = (string)oVal["plannedTime"]; } catch { }
+                if (string.IsNullOrEmpty(sPlanTime)) sPlanTime = "!ERR!";
+                // ewentualnie:
+                // sPlanTime &&= "!ERR!"
+                // ale to bedzie tylko dla null, a  nie dla empty
+
                 try { sActTime = (string)oVal["actualTime"]; } catch { }
+                if (string.IsNullOrEmpty(sActTime)) sActTime = "!ERR!";
+
                 try { sTypCzasu = (string)oVal["status"]; } catch { }
+                if (string.IsNullOrEmpty(sTypCzasu)) sTypCzasu = "!ERR!";
 
-                string sPattTxt = "!ERR!";
                 try { sPattTxt = (string)oVal["patternText"]; } catch { }
-                string sDirect = "!error!";
-                try { sDirect = (string)oVal["direction"]; } catch { }
+                if (string.IsNullOrEmpty(sPattTxt)) sPattTxt = "!ERR!";
 
+                try { sDirect = (string)oVal["direction"]; } catch { }
+                if (string.IsNullOrEmpty(sDirect)) sDirect = "!error!";
 
                 sTxt = sTxt + oItem.id + "\t" + sPattTxt + "\t" + sDirect + "\t" + sTypCzasu + "\t" + sPlanTime + "\t" + sActTime;
 
-                if ((sTypCzasu ?? "") == "PREDICTED")
+                if (sTypCzasu == "PREDICTED")
                 {
-                    if ((sPlanTime ?? "") != "!ERR!" && (sActTime ?? "") != "!ERR!")
+                    if (sPlanTime != "!ERR!" && sActTime != "!ERR!")
                     {
                         int iAct = 0;
                         int iPlan = 0;

@@ -73,15 +73,23 @@ public partial class FavStopList
         Windows.Storage.StorageFile oObj = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.TryGetItemAsync("favs.xml")) as Windows.Storage.StorageFile;
         if (oObj == null)
             return false;
-        var oFile = oObj as Windows.Storage.StorageFile;
+        Windows.Storage.StorageFile oFile = oObj as Windows.Storage.StorageFile;
 
-        var oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<FavStop>));
-        Stream oStream = await oFile.OpenStreamForReadAsync();
-        System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
-        Itemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<FavStop>;
-        oXmlReader.Dispose();
-        bDirty = false;
-        return true;
+        try
+        {
+            XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<FavStop>));
+            Stream oStream = await oFile.OpenStreamForReadAsync();
+            System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
+            Itemy = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<FavStop>;
+            oXmlReader.Dispose();
+            bDirty = false;
+            return true;
+        }
+        catch
+        {
+            await p.k.DialogBox("ERROR reading fav file?");
+            return false;
+        }
     }
 
     public async System.Threading.Tasks.Task Save(bool bForce)
@@ -92,13 +100,23 @@ public partial class FavStopList
         Windows.Storage.StorageFile oFile = await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("favs.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
         if (oFile == null)
+        {
+            await p.k.DialogBox("ERROR cannot create favs.xml file?");
             return;
+        }
 
-        var oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<FavStop>));
-        Stream oStream = await oFile.OpenStreamForWriteAsync();
-        oSer.Serialize(oStream, Itemy);
-        oStream.Dispose();   // == fclose
-        bDirty = false;
+        try
+        {
+            XmlSerializer oSer = new XmlSerializer(typeof(System.Collections.ObjectModel.Collection<FavStop>));
+            Stream oStream = await oFile.OpenStreamForWriteAsync();
+            oSer.Serialize(oStream, Itemy);
+            oStream.Dispose();   // == fclose
+            bDirty = false;
+        }
+        catch
+        {
+            await p.k.DialogBox("ERROR cannot serialize favs?");
+        }
     }
 
     private async System.Threading.Tasks.Task<bool> Import()

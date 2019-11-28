@@ -306,4 +306,16 @@
   <data name="resUseSearch" xml:space="preserve">
     <value>-- użyj wyszukiwania</value>
   </data>
+  <data name="msgSearchReroute" xml:space="preserve">
+    <value>Tekst do szukania:</value>
+  </data>
+  <data name="uiSearch.Label" xml:space="preserve">
+    <value>Szukaj...</value>
+  </data>
+  <data name="uiAndroAutoTram.OffContent" xml:space="preserve">
+    <value>tramwaj: użyj szukania</value>
+  </data>
+  <data name="uiAndroAutoTram.OnContent" xml:space="preserve">
+    <value>tramwaj: pokaż listę</value>
+  </data>
 </root>

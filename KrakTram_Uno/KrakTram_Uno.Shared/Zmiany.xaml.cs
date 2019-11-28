@@ -48,7 +48,29 @@ namespace KrakTram
             this.Frame.GoBack();
         }
 
-        private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void uiSearch_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            string sMask = await p.k.DialogBoxInput("msgSearchReroute");
+
+            if (string.IsNullOrEmpty(sMask))
+            {
+                uiLista.ItemsSource = moLista;
+            }
+            else
+            {
+                sMask = sMask.ToLower();
+                uiLista.ItemsSource = from c in moLista
+                                      where c.sInfo.ToLower().Contains(sMask)
+                                      select c;
+            }
+
+            if (uiLista.Items.Count == 1)
+                PokazObjazd((uiLista.Items.ElementAt(0) as JednaInfo).sInfo);
+        }
+
+    
+
+    private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
             await WczytajTrase();
@@ -72,6 +94,10 @@ namespace KrakTram
                 uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
 
+#if !__ANDROID__
+            // uiRowInfo.Height = new Windows.UI.Xaml.GridLength { GridUnitType= Windows.UI.Xaml.GridUnitType.Pixel,  }
+            uiRowInfo.MaxHeight = 10;
+#endif 
             if (moLista.Count < 1)
                 return;
             uiLista.ItemsSource = moLista; //  From c In moLista ' Order By c.iMin
@@ -201,16 +227,26 @@ namespace KrakTram
             return true;
         }
 
+        private void PokazObjazd(string sHtml)
+        {
+#if !__ANDROID__
+            uiRowInfo.MaxHeight = 1000;
+#endif 
+
+            sHtml = @"<html>
+                <head><meta name=""viewport"" content=""width=device-width, initial-scale=1.0""></head>
+                <body>" + sHtml + "</body></html>";
+
+            uiWebView.NavigateToString(sHtml);
+
+        }
         private void uiPokaz_Click(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             JednaInfo oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as JednaInfo;
 
             string sHtml = oItem.sInfo;
-            sHtml = @"<html>
-            <head><meta name=""viewport"" content=""width=device-width, initial-scale=1.0""></head>
-            <body>" + sHtml + "</body></html>";
-
-            uiWebView.NavigateToString(sHtml);
+            PokazObjazd(sHtml);
         }
+
     }
 }

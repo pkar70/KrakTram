@@ -15,15 +15,16 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Name="uiGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- 0: tytul -->
             <RowDefinition Height="Auto"/>  <!-- 1: wersja -->
             <RowDefinition Height="1*"/>    <!-- 2: spacer -->
             <RowDefinition Height="Auto"/>  <!-- 3: wlasciwa czesc -->
             <RowDefinition Height="3*"/>    <!-- 4: spacer -->
-            </Grid.RowDefinitions>
+        </Grid.RowDefinitions>
 
+        <ProgressRing x:Name="uiProcesuje" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Grid.RowSpan="5"/>
         <TextBlock HorizontalAlignment="Center" FontSize="24" Text="Krak Tram" />
         <TextBlock HorizontalAlignment="Center" Grid.Row="1" FontSize="12" Text=" " Name="uiVersion" Margin="0,5,0,0"/>
 
@@ -54,8 +55,15 @@
                 <SymbolIcon Symbol="Delete" />
             </Button>
 
-            <ComboBox x:Uid="resAll" Name="uiStopList" Grid.Row="2" Header="Tram" Margin="0,20,0,15" DoubleTapped="uiStopList_DoubleTapped" SelectionChanged="uiStopList_SelectionChanged"/>
-            <Button x:Uid="resGoStop" Content="Go" Grid.Row="2" Grid.Column="1" Margin="15,10,0,15"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
+                <ComboBox x:Uid="resAll" Name="uiStopList" Grid.Row="2" Header="Tram" Margin="0,20,0,15" DoubleTapped="uiStopList_DoubleTapped" SelectionChanged="uiStopList_SelectionChanged">
+                    <!-- https://github.com/unoplatform/uno/issues/556 -->
+                    <!--<not_win:ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel />
+                        </ItemsPanelTemplate>
+                    </not_win:ComboBox.ItemsPanel> -->
+                </ComboBox>
+                <Button x:Uid="resGoStop" Content="Go" Grid.Row="2" Grid.Column="1" Margin="15,10,0,15"  Click="uiGoStop_Click" VerticalAlignment="Bottom" />
             <Button Grid.Row="2" Grid.Column="2" Margin="15,10,0,15" Name="uiPinTram"  Click="uiPinTram_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
                 <SymbolIcon Symbol="Pin" />
             </Button>

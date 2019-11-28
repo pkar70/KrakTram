@@ -257,7 +257,7 @@ namespace KrakTram
                 iMinSec = (int)(3.6 * iOdl / App.mSpeed);
 
 
-            bool bPkarMode = p.k.GetSettingsBool("pkarmode");
+            bool bPkarMode = p.k.GetSettingsBool("pkarmode",p.k.IsThisMoje());
 
 
             foreach (Newtonsoft.Json.Linq.JObject oVal in oJsonStops)
@@ -289,17 +289,29 @@ namespace KrakTram
                         }
                         catch { }
 
-                        oNew.Kier = "!error!"; // oVal.GetObject().GetNamedString("direction", "!error!");
+                        // oVal.GetObject().GetNamedString("direction", "!error!");
                         try { oNew.Kier = (string)oVal["direction"]; } catch { }
-                        oNew.Mins = "!ERR!"; //  oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
+                        if (string.IsNullOrEmpty(oNew.Kier)) oNew.Kier = "!error!";
+
+                        //  oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
                         try { oNew.Mins = (string)oVal["mixedTime"]; } catch { }
+                        if (string.IsNullOrEmpty(oNew.Mins)) oNew.Mins = "!ERR!";
                         oNew.Mins = oNew.Mins.Replace("%UNIT_MIN%", "min").Replace("Min", "min");
-                        oNew.PlanTime = "!ERR!"; // "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
+
+                        // "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
                         try { oNew.PlanTime = (string)oVal["plannedTime"]; } catch { }
-                        oNew.ActTime = "!ERR!"; // "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
+                        if (string.IsNullOrEmpty(oNew.PlanTime)) oNew.PlanTime = "!ERR!";
+                        oNew.PlanTime = "Plan: " + oNew.PlanTime;
+
+                        // "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
                         try { oNew.ActTime = (string)oVal["actualTime"]; } catch { }
-                        oNew.Przyst = "!error!"; // oJson.GetObject().GetNamedString("stopName", "!error!");
+                        if(string.IsNullOrEmpty(oNew.ActTime)) oNew.ActTime = "!ERR!";
+                        oNew.ActTime = "Real: " + oNew.ActTime;
+
+                        // oJson.GetObject().GetNamedString("stopName", "!error!");
                         try { oNew.Przyst = (string)oJson["stopName"]; } catch { }
+                        if (string.IsNullOrEmpty(oNew.Przyst)) oNew.Przyst = "!error!";
+
                         oNew.Odl = iOdl;
                         oNew.TimeSec = iCurrSec;
                         oNew.odlMin = iMinSec / 60;

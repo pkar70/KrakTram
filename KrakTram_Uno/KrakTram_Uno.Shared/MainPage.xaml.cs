@@ -1,11 +1,28 @@
 ﻿using System.Linq;
 
 /* ewentualnie:
- progressbar przy czytaniu kolejnych tabliczek
+ progressbar przy czytaniu kolejnych tabliczek, szczegolnie dla Android? taki półprzezroczysty?
  wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
  android: nie działa ContextMenuFlyout!
  android: nie ma fontu Times!
+ android: nie działa GPS
 
+2019.11.25
+ MainPage: progressring podczas uruchamiania (szczególnie ważne dla Android)
+ MainPage: przy itemsSource=LINQ stosuję LINQ.ToList(), co chyba faktycznie znacznie przyspiesza ładowanie Combo (nie na tyle, by bus także wczytywać)
+ Setup:[andro] dodatkowy ToggleSwitch, wypełnianie listy tramwajów
+ Odjazdy:WypiszTabele: przy itemsSource=LINQ stosuję LINQ.ToList()
+
+2019.11.11
+ MainPage: gdy tylko jedno w Fav, automatyczny select tego
+ MainPage: po zapinowaniu, wraca guzik wyszukiwania przystanku
+ Reroutes: na start, rządek z webview jest likwidowany, przez to jest cały ekran na listę zmian [UWPonly]
+ Reroutes: pasek pomiędzy webview a listą, oraz pomiędzy pozycjami z listy 
+ Reroutes: wyszukiwarka
+ Odjazdy: przywrócenie Real, i Act prefixów przy odjazdach
+ Odjazdy: pkarmode wedle settings (po wpisaniu nazwy punktu), ale z defaultem IsThisMoje
+
+STORE WINDOWS, oraz testowa Android
 
 2019.11.07
  mainpage: zmiana Header combo na "tram", gdy są także autobusy
@@ -115,9 +132,57 @@ namespace KrakTram
         private bool mbAndroAdd = false;
         private bool mbSkalowane = false;
 
+#if false
+        private void policzmy()
+        {
+            // testowanie czasu
+            int iSumLen = 0;
+            int iCntStop = 0;
+            foreach (string sStop in from c in App.oStops.GetList("tram")
+                                     orderby c.Name
+                                     select c.Name)
+            {
+                iSumLen += sStop.Length;
+                iCntStop++;
+            }
+        }
+
+        private void wypelnijmy()
+        {
+            // testowanie czasu
+            uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
+                                     orderby c.Name
+                                     select c.Name;
+        }
+#endif
+
+
+        private void ProgresywnyRing(bool sStart)
+        {
+
+            if (sStart)
+            { double dVal;
+                dVal = (System.Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth)) / 2;
+                if (dVal < 100) dVal = 100; // dla Android - jakby jeszcze nie było
+                uiProcesuje.Width = dVal;
+                uiProcesuje.Height = dVal;
+
+                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiProcesuje.IsActive = true;
+            }
+            else
+            {
+                uiProcesuje.IsActive = false;
+                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
+        }
+
+
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiVersion.Text = "v. " + p.k.GetAppVers();
+
+            // int i = (int)(System.TimeSpan.FromSeconds(20).TotalMilliseconds / 250.0); // i=80
 
             p.k.SetSettingsInt("selectMode", 0);  // pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
             KontrolaSzerokosci();
@@ -127,6 +192,16 @@ namespace KrakTram
             uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             HideAppPins();
             HideSearchButtons();
+
+            ProgresywnyRing(true);
+
+            if (p.k.GetSettingsBool("settingsAlsoBus"))
+            {
+                uiStopList.Header = "Tram";
+                uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            }
+
             if (!p.k.GetPlatform("uwp"))
             {
                 // inicjalizacja dla Androida, gdy nie ma jeszcze danych
@@ -137,33 +212,37 @@ namespace KrakTram
             uiFavList.ItemsSource = from c in App.oFavour.GetList()
                                     orderby c.Name
                                     select c.Name;
+            if (App.oFavour.GetList().Count == 1)
+                uiFavList.SelectedIndex = 0;
+
 
             await App.CheckLoadStopList();
-            if (p.k.GetPlatform("uwp"))
+            if (p.k.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp") )
             {
-                uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
-                                         orderby c.Name
-                                         select c.Name;
+                uiStopList.ItemsSource = (from c in App.oStops.GetList("tram")
+                                          orderby c.Name
+                                          select c.Name).ToList();
             }
             else
             {
                 mbAndroAdd = true;
                 uiStopList.Items.Add(p.k.GetLangString("resUseSearch"));
                 uiStopList.SelectedIndex = 0;
+
             }
-            uiStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80);  // Max dla Android, bo wtedy chyba NaN
 
             if (p.k.GetSettingsBool("settingsAlsoBus"))
             {
-                uiStopList.Header = "Tram";
-                uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                // przeniesione wyzej.
+                //uiStopList.Header = "Tram";
+                //uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                //uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                if (p.k.GetPlatform("uwp"))
+                if ( p.k.GetPlatform("uwp"))
                 {
-                    uiBusStopList.ItemsSource = from c in App.oStops.GetList("bus")
+                    uiBusStopList.ItemsSource = (from c in App.oStops.GetList("bus")
                                                 orderby c.Name
-                                                select c.Name;
+                                                select c.Name).ToList();
                 }
                 else
                 {
@@ -172,8 +251,19 @@ namespace KrakTram
                     uiBusStopList.SelectedIndex = 0;
                 }
 
-                uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
             }
+
+            // dla Android nalezy poczekac z ustalaniem szerokosci
+            if (!p.k.GetPlatform("uwp"))
+            {
+                await System.Threading.Tasks.Task.Delay(500);
+                KontrolaSzerokosci();   // powtarzamy dla Androida - moze juz jest przerysowane...
+            }
+
+            ProgresywnyRing(false);
+
+            uiStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80);  // Max dla Android, bo wtedy chyba NaN
+            uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
 
             mbAndroAdd = false;
         }
@@ -314,11 +404,13 @@ namespace KrakTram
         private void uiPinBus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiPin_Click(null, null);
+            uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void uiPinTram_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiPin_Click(null, null);
+            uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void bGetGPS_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)

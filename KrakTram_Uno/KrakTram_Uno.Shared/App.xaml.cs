@@ -259,6 +259,7 @@ namespace KrakTram
             TimeSpan oCacheTime = new TimeSpan(0, 0, 30);  // minuta ≈ 80 m (ale nie autobusem! wtedy 400 m)
             TimeSpan oTimeout = new TimeSpan(0, 0, 5);    // timeout 
             bool bErr = false;
+            string sErr = "";
 
             try
             {
@@ -281,9 +282,10 @@ namespace KrakTram
                     }
                 }
             }
-            catch 
+            catch (Exception e)
             {
                 bErr = true;
+                sErr = e.Message;
             }
             
 #if __ANDROID__
@@ -294,7 +296,7 @@ namespace KrakTram
             {
                 // po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
                 // dodaję zarówno ustalenie oPoint i mSpeed na defaulty, jak i Speed.HasValue
-                await p.k.DialogBoxRes("resErrorGettingPos");
+                await p.k.DialogBoxRes("resErrorGettingPos",sErr);
 
                 oPoint.X = 50.0; // 1985 ' latitude - dane domku, choc mała precyzja
                 oPoint.Y = 19.9; // 7872

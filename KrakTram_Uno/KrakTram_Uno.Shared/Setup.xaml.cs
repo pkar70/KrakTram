@@ -43,7 +43,7 @@ namespace KrakTram
             //{ // było do doczytania przystanków autobusowych
             //}
             p.k.SetSettingsBool("settingsAlsoBus", uiAlsoBus.IsOn);
-
+            p.k.SetSettingsBool("androAutoTram", uiAndroAutoTram.IsOn);
             this.Frame.GoBack();
         }
 
@@ -79,6 +79,8 @@ namespace KrakTram
             uiPositionLat.Text = App.mdLat.ToString();
             uiPositionLong.Text = App.mdLong.ToString();
             uiAlsoBus.IsOn = p.k.GetSettingsBool("settingsAlsoBus");
+            uiAndroAutoTram.IsOn = p.k.GetSettingsBool("androAutoTram");
+            if (!p.k.GetPlatform("uwp")) uiAndroAutoTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }

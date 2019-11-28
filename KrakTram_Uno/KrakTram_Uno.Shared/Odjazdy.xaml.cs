@@ -146,28 +146,28 @@ namespace KrakTram
             switch (p.k.GetSettingsInt("sortMode"))
             {
                 case 1:  // stop/czas/dir
-                        uiListItems.ItemsSource = from c in App.moOdjazdy.GetItems()
+                        uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
                                                   orderby c.Przyst, c.TimeSec, c.Kier
                                                   where c.bShow == true
-                                                  select c;
+                                                  select c).ToList();
                         break;
                 case 2:  // dir/stop/czas
-                        uiListItems.ItemsSource = from c in App.moOdjazdy.GetItems()
+                        uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
                                                   orderby c.Kier, c.Przyst, c.TimeSec
                                                   where c.bShow == true
-                                                  select c;
+                                                  select c).ToList();
                         break;
                 case 3:   // czas/line
-                        uiListItems.ItemsSource = from c in App.moOdjazdy.GetItems()
+                        uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
                                                   orderby c.TimeSec, c.iLinia
                                                   where c.bShow == true
-                                                  select c;
+                                                  select c).ToList();
                         break;
                 default:
-                        uiListItems.ItemsSource = from c in App.moOdjazdy.GetItems()
+                        uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
                                                   orderby c.iLinia, c.Kier, c.TimeSec
                                                   where c.bShow == true
-                                                  select c;
+                                                  select c).ToList();
                         break;
             }
         }

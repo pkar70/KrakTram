@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 
 /* ewentualnie:
  progressbar przy czytaniu kolejnych tabliczek, szczegolnie dla Android? taki półprzezroczysty?
@@ -6,7 +7,16 @@
  android: nie działa ContextMenuFlyout!
  android: nie ma fontu Times!
  android: nie działa GPS
+ Warning! IsThisMoje chyba nie dziala! Tzn. zwraca windows_phone a nie nazwe Lumia_pkar?
 
+STORE WINDOWS
+
+2019.12.11
+ Nowa strona: WedleMapy.xaml, wybor lokalizacji z okolicy ktorej ma pokazac tabliczki
+
+2019.12.10
+ przeniesienie z Uno do wlasnego MyGeolocator - by mozna bylo sledzic. Poprawki i uzupelnienia w kodzie (ale i tak nie dziala)
+ 
 2019.11.25
  MainPage: progressring podczas uruchamiania (szczególnie ważne dla Android)
  MainPage: przy itemsSource=LINQ stosuję LINQ.ToList(), co chyba faktycznie znacznie przyspiesza ładowanie Combo (nie na tyle, by bus także wczytywać)
@@ -413,7 +423,7 @@ namespace KrakTram
             uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
-        private void bGetGPS_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void bGetGPS_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             App.mbGoGPS = true;    // zgodnie z GPS prosze postapic (jak do tej pory)
             App.moOdjazdy.Clear();
@@ -533,6 +543,8 @@ namespace KrakTram
             }
         }
 
+#pragma warning disable IDE0060 // Remove unused parameter
+
         private void uiSearchBus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiBusStopList_DoubleTapped(null, null);
@@ -549,6 +561,11 @@ namespace KrakTram
             this.Frame.Navigate(typeof(Zmiany));
         }
 
+        private void uiGoMap_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WedleMapy));
+        }
+
         private void uiHist_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(Historia));
@@ -558,5 +575,8 @@ namespace KrakTram
         {
             this.Frame.Navigate(typeof(Setup), "MAIN");
         }
+
+#pragma warning restore IDE0060 // Remove unused parameter
+
     }
 }

@@ -318,4 +318,7 @@
   <data name="uiAndroAutoTram.OnContent" xml:space="preserve">
     <value>tram stops: fill list</value>
   </data>
+  <data name="uiMapInstruction.Text" xml:space="preserve">
+    <value>Choose location (long tap)</value>
+  </data>
 </root>

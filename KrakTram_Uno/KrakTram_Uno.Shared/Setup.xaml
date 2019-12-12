@@ -55,7 +55,9 @@
                 <TextBox x:Uid="resSettName" x:Name="uiPositionName" Grid.Row="1" Header="Name" Margin="10,0,10,0"  Visibility="Collapsed"/>
                 <TextBox x:Uid="resSettLat" x:Name="uiPositionLat" Grid.Row="2" Header="Latitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
                 <TextBox x:Uid="resSettLong" x:Name="uiPositionLong" Grid.Row="3" Header="Longitude" Margin="10,0,10,0" Visibility="Collapsed" MaxLength="10" InputScope="Number"/>
-                <Button x:Name="uiPositionButt" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ok" Margin="10,0,10,0" Visibility="Collapsed" Click="uiPositOk_Click"/>
+
+                <Button x:Name="uiPositionButt" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ok" Margin="10,0,10,0" Visibility="Collapsed" Click="uiPositOk_Click"/>
+                <Button x:Name="uiPositionButtCancel" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Cancel" Margin="10,0,10,0" Visibility="Collapsed" Click="uiPositCancel_Click"/>
 
                 <Slider x:Uid="resSettGPSPrec" Name="uiGPSPrecSld" Grid.Row="4" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Dokładność lokalizacji" Minimum="50" Maximum="150" LargeChange="25" SmallChange="25" StepFrequency="25" TickFrequency="25" Value="75" TickPlacement="BottomRight" ValueChanged="uiGpsPrec_Changed"/>
                 <TextBlock Name="uiGPSPrecTxt" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="75 m" />

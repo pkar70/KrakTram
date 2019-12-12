@@ -47,9 +47,10 @@
             <RowDefinition Height="Auto"/> <!-- bus -->
         </Grid.RowDefinitions>
 
-            <Button FontSize="18" Content="GPS" HorizontalAlignment="Center" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
+            <Button FontSize="18" Content="GPS" HorizontalAlignment="Left" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
+                <Button FontSize="18" Content="Map" HorizontalAlignment="Right" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="uiGoMap_Click" Grid.ColumnSpan="3" Grid.Row="0" />
 
-            <ComboBox x:Uid="resFavour" Name="uiFavList" Grid.Row="1" Header="Ulubione" SelectionChanged="uiFavList_SelectionChanged"/>
+                <ComboBox x:Uid="resFavour" Name="uiFavList" Grid.Row="1" Header="Ulubione" SelectionChanged="uiFavList_SelectionChanged"/>
             <Button x:Uid="resGoStop" Content="Go" Grid.Row="1" Grid.Column="1" Margin="15,0,0,0" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />
             <Button Grid.Row="1" Grid.Column="2" Name="uiUnPin" Margin="15,0,0,0" Click="uiUnPin_Click" VerticalAlignment="Bottom" Visibility="Collapsed">
                 <SymbolIcon Symbol="Delete" />

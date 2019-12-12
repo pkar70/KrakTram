@@ -60,16 +60,17 @@ namespace KrakTram
         {
 
             // poniewaz dla Uno i tak nie ma precyzji GPS, mozna to usunac z ekranu robiąc miejsce
-            if (!p.k.GetPlatform("uwp"))
-            {
-                uiGPSPrecSld.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                uiGPSPrecTxt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            }
+            //if (!p.k.GetPlatform("uwp"))
+            //{
+            //    uiGPSPrecSld.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //    uiGPSPrecTxt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //}
 
             uiMaxOdlSld.Value = p.k.GetSettingsInt("maxOdl", 1000);
             uiWalkSpeedSld.Value = p.k.GetSettingsInt("walkSpeed", 4);
             uiAlsoNextSld.Value = p.k.GetSettingsInt("alsoNext", 5);
-            uiGPSPrecSld.Value = p.k.GetSettingsInt("gpsPrec", 75);
+            // Android: 100 m, bo <100 jest Accuracy.High, a ≥ 100 to juz bedzie .Medium
+            uiGPSPrecSld.Value = p.k.GetSettingsInt("gpsPrec", p.k.GetPlatform(75,100,75,75,75));
 
             uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
@@ -300,6 +301,36 @@ namespace KrakTram
             uiAlsoNextTxt.Text = uiAlsoNextSld.Value + " min";
         }
 
+        private void ShowPositionPanel(bool bShow)
+        {
+            if(bShow)
+            {
+                uiPositionName.Visibility = Windows.UI.Xaml.Visibility.Visible ;
+                // uiPositionFavButt.Visibility = Visibility.Collapsed
+                // 20171019 - usuwamy wiecej, i jeszcze zmieniamy WebView wielkosc
+                uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiPositionButt.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiPositionButtCancel.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            }
+            else
+            {
+                uiPositionName.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                // uiPositionFavButt.Visibility = Visibility.Collapsed
+                // 20171019 - usuwamy wiecej, i jeszcze zmieniamy WebView wielkosc
+                uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiPositionButt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiPositionButtCancel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
+        }
+
+        private async void uiPositCancel_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            ShowPositionPanel(false);
+        }
 
 
         private async void uiPositOk_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -339,13 +370,7 @@ namespace KrakTram
                 App.mdLong = dLon;
             }
 
-            uiPositionName.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            // uiPositionFavButt.Visibility = Visibility.Collapsed
-            // 20171019 - usuwamy wiecej, i jeszcze zmieniamy WebView wielkosc
-            uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            uiPositionButt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            ShowPositionPanel(false);
         }
 #if false
         // Private Async Sub uiPosition_Changed(sender As Object, e As SelectionChangedEventArgs) Handles uiPosition.SelectionChanged
@@ -491,11 +516,7 @@ namespace KrakTram
 
         private void uiOpenPosPanel_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            uiPositionButt.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            uiPositionName.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            ShowPositionPanel(true);
         }
 
         private void uiAlsoBus_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)

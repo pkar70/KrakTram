@@ -318,4 +318,7 @@
   <data name="uiAndroAutoTram.OnContent" xml:space="preserve">
     <value>tramwaj: pokaż listę</value>
   </data>
+  <data name="uiMapInstruction.Text" xml:space="preserve">
+    <value>Wskaż miejsce (dłużej przytrzymaj palec)</value>
+  </data>
 </root>

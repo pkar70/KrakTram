@@ -6,10 +6,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     x:Class="KrakTram.Opoznienia"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d" Loaded="Page_Loaded"    >
 
-    <Grid Margin="5,5,5,5" x:Name="uiGrid">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="5,5,5,5" x:Name="uiGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -24,7 +23,7 @@
             <ColumnDefinition  />
         </Grid.ColumnDefinitions>
 
-        <ProgressRing x:Name="uiProcesuje" Grid.RowSpan="5" Grid.ColumnSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+        <!--<ProgressRing x:Name="uiProcesuje" Grid.RowSpan="5" Grid.ColumnSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />-->
 
         <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="Opóźnienia" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10"  />
 

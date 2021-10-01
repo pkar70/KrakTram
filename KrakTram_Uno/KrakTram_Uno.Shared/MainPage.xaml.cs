@@ -6,8 +6,79 @@ using System;
  wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
  android: nie działa ContextMenuFlyout!
  android: nie ma fontu Times!
- android: nie działa GPS
  Warning! IsThisMoje chyba nie dziala! Tzn. zwraca windows_phone a nie nazwe Lumia_pkar?
+
+    <ikonka kosza - poprawne pokazywanie! jak jest cos wybrane w Combo>
+    <instrukcja: kółeczka doubleclick, click, oraz contextclick?>
+
+Uno STRIP:
+* mapka
+* szybkie wypełnianie Combo
+* contextMenu
+* historia sieci
+
+2021.04
+* próba uproszczenia Settings przez zrobienie Binding (i sprawdzenie czy to działa na Android) - DZIAŁA
+* próba czy można usunąć z Settings\ListView styl (workaround dla Height=0) - dalej NIE DZIAŁA
+* próba czy można dać not_win:CommandBar (było na razie StackPanel) - (niby działa, ale z tym paskiem na dole ma problem - zasłania go)
+
+2021.03
+* 3.6.0-dev.186
+* Uwaga! Android 11.0! [zresztą to wymóg Gogusia, od VIII 2021 new apps mają być 11.0]. Zmiana w Uno 9 XI 2020.
+
+ 
+2020.10.30
+ * przejście na własne Uno oparte o 3.1.6
+ *      more fields in Geoposition	| 4061@20.09.17	| 2020.09.22
+ * pkModuleShared.cs [..\..\..\_mojeSuby\pkarModule-Uno3-1-6.cs]
+ *      ProgRing z tegoż modułu
+
+2020.03.10
+ * trasa zwracało pustą, pewnie referer - bo powtórzenie requesta pomaga.
+
+STORE ANDROID 2002.1
+
+2020.02.12
+ * [Android] przepięcie na Uno.945 z moimi dodatkami - w efekcie pkmodule aktualizacja (było: 3092)
+ * [Android] splashscreen - ale nieudane, bo zostaje na srodku ekranu. Może za długo trwa ładowanie mainpage?
+            wycofuje sie z tego (<!-- --> w 
+            H:\Home\PIOTR\VStudio\_Vs2017\KrakTram\KrakTram_Uno\KrakTram_Uno.Droid\Resources\values\Styles.xml)
+
+2020.01.09
+ * Trasa: gdy wczytana z cache trasa ma zero przystanków, traktuj plik jak nieistniejący
+ * Android: usunięcie stylu co miał być splashscreenem (bo to chyba likwiduje ikonkę, protest z GoogleStore)
+ * Android: powrót do Uno 3092, bo w 409 nie działa DoubleClick
+ * Android: 3092 wymusza pełną własną obsługę Geolocator, GetAppVersion, 
+
+2020.01.07
+ * szukanie przystanku wedle maski - gdy Cancel, i Android, to exit sub (bez pokazywania pełnej listy)
+
+STORE WINDOWS   10.2001.1.0
+STORE ANDROID   10.2001.1.0
+
+2019.12.31
+ * własne tylko Geolocator:RequestAccess, samo pytanie GPSa juz z Uno (mojego zresztą)
+ * dla Android, przyjmuje minimalne szerokości hardcoded, zeby ładniej wyglądąło (skoro nie umie skalować)
+
+2019.12.27
+ * do mapki: dołączam Pedestrian, Transit (choć i tak chyba nie ma efektów)
+ * zoom: 12 na desktop, ale 10 w telefonie, żeby wiecej zmieścic?
+ * Odjazdy: uproszczenie XAML czasu odjazdu (bez pola o wysokosci 1)
+ * MainPage, skalowanie: gdy włączone są także autobusy, szerokość pola jest dla "244", a gdy tylko tramwaje - dla "50"
+    
+2019.12.26
+ * Odjazdy:DoubleTap na linii - przeskok do odjazdów danej linii (skrót, z ominięciem ContextMenu), to działa także na Android
+ * Odjazdy: tam, gdzie ContextMenu był do tekstu, a mógł być do piętro wyżej (Grid), przeniosłem do grid
+ * Trasa: nowe dla Android, skoro skrót z DoubleClick działa
+ * Trasa: DoubleTap na przystanku przeskakuje do tabliczki przystanku (skrót)
+ * Historia, oraz WedleMapy: nie wedle IsThisMoje, ale wedle GetBool z default isthismoje (ustawiane po wpisaniu punktu o nazwie "pkarinit")
+
+2019.12.23
+ * podłączenie nowej kompilacji Uno (z 2.1.0-dev.408) - GetAppVersion, OpenBrowser w pkmodule
+     * dalej nie ma mapy
+     * dalej nie ma szerokości pola w Page_Loaded
+
+STORE ANDROID
 
 STORE WINDOWS
 
@@ -167,25 +238,25 @@ namespace KrakTram
 #endif
 
 
-        private void ProgresywnyRing(bool sStart)
-        {
+        //private void ProgresywnyRing(bool sStart)
+        //{
 
-            if (sStart)
-            { double dVal;
-                dVal = (System.Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth)) / 2;
-                if (dVal < 100) dVal = 100; // dla Android - jakby jeszcze nie było
-                uiProcesuje.Width = dVal;
-                uiProcesuje.Height = dVal;
+        //    if (sStart)
+        //    { double dVal;
+        //        dVal = (System.Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth)) / 2;
+        //        if (dVal < 100) dVal = 100; // dla Android - jakby jeszcze nie było
+        //        uiProcesuje.Width = dVal;
+        //        uiProcesuje.Height = dVal;
 
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiProcesuje.IsActive = true;
-            }
-            else
-            {
-                uiProcesuje.IsActive = false;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            }
-        }
+        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        //        uiProcesuje.IsActive = true;
+        //    }
+        //    else
+        //    {
+        //        uiProcesuje.IsActive = false;
+        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        //    }
+        //}
 
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -203,7 +274,9 @@ namespace KrakTram
             HideAppPins();
             HideSearchButtons();
 
-            ProgresywnyRing(true);
+            p.k.ProgRingInit(true, false);
+
+            p.k.ProgRingShow(true); // ProgresywnyRing(true);
 
             if (p.k.GetSettingsBool("settingsAlsoBus"))
             {
@@ -265,12 +338,13 @@ namespace KrakTram
 
             // dla Android nalezy poczekac z ustalaniem szerokosci
             if (!p.k.GetPlatform("uwp"))
-            {
                 await System.Threading.Tasks.Task.Delay(500);
-                KontrolaSzerokosci();   // powtarzamy dla Androida - moze juz jest przerysowane...
-            }
 
-            ProgresywnyRing(false);
+
+            p.k.ProgRingShow(false); //ProgresywnyRing(false);
+
+            if (!p.k.GetPlatform("uwp"))
+                KontrolaSzerokosci();   // powtarzamy dla Androida - moze juz jest przerysowane...
 
             uiStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80);  // Max dla Android, bo wtedy chyba NaN
             uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
@@ -284,27 +358,35 @@ namespace KrakTram
         int iWidthLine, iWidthTyp, iWidthTime;
 
             uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            if((int)uiTesterTyp.ActualWidth < 10)
+            if ((int)uiTesterTyp.ActualWidth < 10)
             {
                 // znaczy android, i mamy nieustalone!
                 // niech pozostanie poprzednia wartosc (a nóż byla juz ustawiona poprawnie)
                 uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                return;
+
+                iWidthTyp = 40;
+                iWidthLine = 40;
+                iWidthTime = 40;
             }
-            iWidthTyp = (int)uiTesterTyp.ActualWidth;  // typ
-            uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            else
+            {
+                iWidthTyp = (int)uiTesterTyp.ActualWidth;  // typ
+                uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            iWidthLine = (int)uiTesterLinia.ActualWidth;  //linia
-            uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                uiTesterLinia.Text = p.k.GetSettingsBool("settingsAlsoBus") ? "244" : "50";
+                iWidthLine = (int)uiTesterLinia.ActualWidth;  //linia
+                uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            iWidthTime = (int)uiTesterCzas.ActualWidth;  // czas
-            uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                iWidthTime = (int)uiTesterCzas.ActualWidth;  // czas
+                uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            mbSkalowane = true;
+                mbSkalowane = true;
+            }
+
             //'uiTester.FontSize = 9
             //'uiTester.Text = "2014N"
             //'iWidth = uiTester.ActualWidth   'typ
@@ -423,7 +505,7 @@ namespace KrakTram
             uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
-        private async void bGetGPS_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void bGetGPS_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             App.mbGoGPS = true;    // zgodnie z GPS prosze postapic (jak do tej pory)
             App.moOdjazdy.Clear();
@@ -490,10 +572,11 @@ namespace KrakTram
 
         private async void uiStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInput("msgEnterName");
+            string sMask = await p.k.DialogBoxInputAsync("msgEnterName");
 
             if (string.IsNullOrEmpty(sMask))
             {
+                if (!p.k.GetPlatform("uwp")) return;
                 sMask = sMask.ToLower();
                 uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
                                          orderby c.Name
@@ -518,7 +601,7 @@ namespace KrakTram
 
         private async void uiBusStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInput("msgEnterName");
+            string sMask = await p.k.DialogBoxInputAsync("msgEnterName");
             if (string.IsNullOrEmpty(sMask))
             {
                 sMask = sMask.ToLower();

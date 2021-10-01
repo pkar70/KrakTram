@@ -31,12 +31,30 @@ namespace KrakTram
                 msRunType = e.Parameter.ToString();
         }
 
+        private static int ConvertGpsPrecFromAndroid(int iSlider)
+        {
+            if (p.k.GetPlatform("uwp")) return iSlider;
+            if (iSlider < 2) return 75;
+            if (iSlider > 2) return 600;
+            return 200;
+        }
+
+        private static int ConvertGpsPrecToAndroid(int iMetr)
+        {
+            if (p.k.GetPlatform("uwp")) return iMetr;
+            if (iMetr < 100) return 1;
+            if (iMetr > 500) return 3;
+            return 2;
+        }
+
+
         private void bOk_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             p.k.SetSettingsInt("maxOdl", uiMaxOdlSld.Value);
             p.k.SetSettingsInt("walkSpeed", uiWalkSpeedSld.Value);
             p.k.SetSettingsInt("alsoNext", uiAlsoNextSld.Value);
-            p.k.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value);
+
+            p.k.SetSettingsInt("gpsPrec", ConvertGpsPrecFromAndroid((int)uiGPSPrecSld.Value));
             //p.k.SetSettingsString("favPlaces", oXmlPlaces.GetXml());
 
             //if (uiAlsoBus.IsOn && !p.k.GetSettingsBool("settingsAlsoBus"))
@@ -70,7 +88,7 @@ namespace KrakTram
             uiWalkSpeedSld.Value = p.k.GetSettingsInt("walkSpeed", 4);
             uiAlsoNextSld.Value = p.k.GetSettingsInt("alsoNext", 5);
             // Android: 100 m, bo <100 jest Accuracy.High, a ≥ 100 to juz bedzie .Medium
-            uiGPSPrecSld.Value = p.k.GetSettingsInt("gpsPrec", p.k.GetPlatform(75,100,75,75,75));
+            uiGPSPrecSld.Value = ConvertGpsPrecToAndroid(p.k.GetSettingsInt("gpsPrec", p.k.GetPlatform(75,100,75,75,75)));
 
             uiPositionLat.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             uiPositionLong.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
@@ -245,9 +263,9 @@ namespace KrakTram
 
     private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (uiMaxOdlTxt == null)
-                return;
-            uiMaxOdlTxt.Text = uiMaxOdlSld.Value + " m";
+            //if (uiMaxOdlTxt == null)
+            //    return;
+            //TESTBINDING uiMaxOdlTxt.Text = uiMaxOdlSld.Value + " m";
 
             // oPoint - albo narzucony, albo z GPS
             Windows.Foundation.Point oPoint = new Windows.Foundation.Point();
@@ -287,6 +305,8 @@ namespace KrakTram
             //uiSetupWebView.NavigateToString(sTmp);
         }
 
+#if false //TESTBINDING
+ 
         private void uiWalk_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             if (uiWalkSpeedTxt == null)
@@ -300,7 +320,7 @@ namespace KrakTram
                 return;
             uiAlsoNextTxt.Text = uiAlsoNextSld.Value + " min";
         }
-
+#endif 
         private void ShowPositionPanel(bool bShow)
         {
             if(bShow)
@@ -327,7 +347,7 @@ namespace KrakTram
             }
         }
 
-        private async void uiPositCancel_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void uiPositCancel_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             ShowPositionPanel(false);
         }
@@ -344,24 +364,24 @@ namespace KrakTram
 
             if (sTxt.Length < 4)
             {
-                await p.k.DialogBoxRes("resErrorNazwaZaKrotka");
+                await p.k.DialogBoxResAsync("resErrorNazwaZaKrotka");
                 return;
             }
 
             double dLat, dLon;
             if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
             {
-                await p.k.DialogBoxRes("resBadFloat");
+                await p.k.DialogBoxResAsync("resBadFloat");
                 return;
             }
 
-            if ((sTxt ?? "") == "pkarinit")
+            if (sTxt == "pkarinit")
                 App.oFavour.InitPkar();
             else
             {
                 if (dLon < 19 | dLon > 21 | dLat < 49 | dLat > 51)
                 {
-                    await p.k.DialogBoxRes("resErrorPozaKrakowem");
+                    await p.k.DialogBoxResAsync("resErrorPozaKrakowem");
                     return;
                 }
 
@@ -508,10 +528,20 @@ namespace KrakTram
         {
             if (uiGPSPrecTxt == null)
                 return;
-            uiGPSPrecTxt.Text = uiGPSPrecSld.Value + " m";
+
+            if(p.k.GetPlatform("uwp"))
+                uiGPSPrecTxt.Text = uiGPSPrecSld.Value + " m";
+            else
+            {   // dla Android: skwantowany
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+                if (uiGPSPrecSld.Value == 1) uiGPSPrecTxt.Text = "< 100 m";
+                if (uiGPSPrecSld.Value == 2) uiGPSPrecTxt.Text = "normal";
+                if (uiGPSPrecSld.Value == 3) uiGPSPrecTxt.Text = "> 500 m";
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
+            }
 
             // musi od razu, żeby zaraz zaczęło działać (np. przy przestawianiu odleglosci od przystanku)
-            p.k.SetSettingsInt("gpsPrec", uiGPSPrecSld.Value);
+            p.k.SetSettingsInt("gpsPrec", ConvertGpsPrecFromAndroid((int)uiGPSPrecSld.Value));
         }
 
         private void uiOpenPosPanel_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -526,4 +556,21 @@ namespace KrakTram
         }
     }
 
+    public class KonwersjaDouble2Text : Windows.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            double dTmp = (double)value;
+            string sUnit = (string)parameter;
+            if (sUnit == "kph") sUnit = "km/h";
+            return dTmp.ToString() + " " + sUnit;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
+

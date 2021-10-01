@@ -9,7 +9,12 @@
     xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win" Loaded="Page_Loaded" >
 
-    <Grid Margin="5,5,5,5">
+    <UserControl.Resources>
+        <local:KonwersjaDouble2Text x:Key="KonwersjaDouble2Text"/>
+    </UserControl.Resources>
+
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" /> <!-- emulacja BottomAppBar dla Uno -->
             <RowDefinition Height="Auto"/>
@@ -59,17 +64,25 @@
                 <Button x:Name="uiPositionButt" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ok" Margin="10,0,10,0" Visibility="Collapsed" Click="uiPositOk_Click"/>
                 <Button x:Name="uiPositionButtCancel" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Cancel" Margin="10,0,10,0" Visibility="Collapsed" Click="uiPositCancel_Click"/>
 
-                <Slider x:Uid="resSettGPSPrec" Name="uiGPSPrecSld" Grid.Row="4" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Dokładność lokalizacji" Minimum="50" Maximum="150" LargeChange="25" SmallChange="25" StepFrequency="25" TickFrequency="25" Value="75" TickPlacement="BottomRight" ValueChanged="uiGpsPrec_Changed"/>
-                <TextBlock Name="uiGPSPrecTxt" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="75 m" />
+                <Slider x:Uid="resSettGPSPrec" Name="uiGPSPrecSld" Grid.Row="4" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Dokładność lokalizacji" ValueChanged="uiGpsPrec_Changed"
+                        win:Minimum="50" win:Maximum="150" win:LargeChange="25" win:SmallChange="25" win:StepFrequency="25" win:TickFrequency="25" win:Value="75" win:TickPlacement="BottomRight" 
+                        not_win:Minimum="1" not_win:Maximum="3" not_win:Value="2" 
+                        />
+                <TextBlock Name="uiGPSPrecTxt" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiGPSPrecSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=m}" />
 
-                <Slider x:Uid="resSettWalkSld"  x:Name="uiWalkSpeedSld" Grid.Row="5" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Walking speed" Maximum="7" Minimum="1" Value="4" ValueChanged="uiWalk_Changed"/>
-                <TextBlock x:Name="uiWalkSpeedTxt" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="10,5,10,0" VerticalAlignment="Center" Text="4 km/h"/>
+                <!--<Slider x:Uid="resSettWalkSld"  x:Name="uiWalkSpeedSld" Grid.Row="5" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Walking speed" Maximum="7" Minimum="1" Value="4" ValueChanged="uiWalk_Changed"/>-->
+                <Slider x:Uid="resSettWalkSld" x:Name="uiWalkSpeedSld" Grid.Row="5" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Walking speed" Maximum="7" Minimum="1" Value="4" />
+                <TextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiWalkSpeedSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=km/h}"/>
+                <!--<TextBlock x:Name="uiWalkSpeedTxt" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiWalkSpeedSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=km/h}"/>-->
 
-                <Slider x:Uid="resSettNextSld" x:Name="uiAlsoNextSld" Grid.Row="6" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Pokaż kolejny tramwaj gdy za mniej niż" Maximum="10" Minimum="0" StepFrequency="1" Value="5" TickPlacement="BottomRight" ValueChanged="uiNext_Changed"/>
-                <TextBlock x:Name="uiAlsoNextTxt" Grid.Row="6" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="5 min" />
+                <!--<Slider x:Uid="resSettNextSld" x:Name="uiAlsoNextSld" Grid.Row="6" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Pokaż kolejny tramwaj gdy za mniej niż" Maximum="10" Minimum="0" StepFrequency="1" Value="5" TickPlacement="BottomRight" ValueChanged="uiNext_Changed"/>-->
+                <Slider x:Uid="resSettNextSld" x:Name="uiAlsoNextSld" Grid.Row="6" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Pokaż kolejny tramwaj gdy za mniej niż" Maximum="10" Minimum="0" StepFrequency="1" Value="5" TickPlacement="BottomRight" />
+                <TextBlock Grid.Row="6" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiAlsoNextSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=min}" />
+                <!--<TextBlock x:Name="uiAlsoNextTxt" Grid.Row="6" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiAlsoNextSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=min}" />-->
 
                 <Slider x:Uid="resSettMaxOld" x:Name="uiMaxOdlSld" Grid.Row="7" HorizontalAlignment="Stretch" Margin="10,5,10,0" VerticalAlignment="Top" Header="Max odl od przystanku" Maximum="1400" LargeChange="200" SmallChange="100" StepFrequency="100" TickFrequency="200" Value="600" TickPlacement="BottomRight" ValueChanged="eMaxOdl_Changed"/>
-                <TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="400 m" />
+                <TextBlock Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiMaxOdlSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=m}" />
+                <!--<TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="400 m" />-->
 
                 <ToggleSwitch x:Name="uiAlsoBus" x:Uid="uiAlsoBus" Grid.Row="8" OnContent="bus &amp; tram (experimental)" OffContent="only tram" Toggled="uiAlsoBus_Toggled"/>
 
@@ -289,6 +302,11 @@
             </StackPanel>
 
         </not_win:Grid>
+        <!--<not_win:CommandBar Grid.Row="1" >
+            <AppBarButton Icon="Accept" Label="Ok" Click="bOk_Click"/>
+            <AppBarSeparator/>
+            <AppBarButton x:Name="uiReloadStop" x:Uid="resGoRefresh" Icon="Refresh" Label="Przystanki" Click="bLoadStops_Click"/>
+        </not_win:CommandBar>-->
     </Grid>
     <Page.BottomAppBar>
         <win:CommandBar>

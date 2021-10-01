@@ -37,14 +37,21 @@ namespace KrakTram
             // oPoint = New Windows.Devices.Geolocation.Geopoint(oPosition)
 
             uiMapka.Center = new Windows.Devices.Geolocation.Geopoint(oPosition);
+            if (p.k.IsFamilyMobile())
+                uiMapka.ZoomLevel = 10;
+            else
             uiMapka.ZoomLevel = 12;
-            if (p.k.IsThisMoje())
+
+            uiMapka.PedestrianFeaturesVisible = true;
+            uiMapka.TransitFeaturesVisible = true;
+            uiMapka.TransitFeaturesEnabled = true; // od 14393, ale że not implemented?
+            
+            // Uno Unimplemented
+#if NETFX_CORE
+            if (p.k.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
                 uiMapka.MapServiceToken = "rDu5Hj5dykMMBblRgIaq~AalqbgIUph7UvMnI1WrB8A~AvZXaT3i_qD-UiyF61F4sbXe5ptSp3Wq0JdPF0dcOiAs0ZpAJ7W1QjQ28P5HCXSG";
             else
                 uiMapka.MapServiceToken = "oaQmZvvDqQ39JcwdXSjK~TCuV7-3VaLPbJINptVo9gw~AuExUGkiHbYbqMIEVyx3RaKMprPZShlsQEpjGceEQIQM4HY9nYeWD0D19-Yb8OhY";
-
-            // Uno Unimplemented
-#if NETFX_CORE
             uiMapka.Style = Windows.UI.Xaml.Controls.Maps.MapStyle.Road;
 #endif 
         }
@@ -52,11 +59,13 @@ namespace KrakTram
         private void uiMapka_Holding(Windows.UI.Xaml.Controls.Maps.MapControl sender, Windows.UI.Xaml.Controls.Maps.MapInputEventArgs args)
         {
             App.mbGoGPS = false;
+#if NETFX_CORE
             App.mdLat = args.Location.Position.Latitude;
             App.mdLong = args.Location.Position.Longitude;
             App.mMaxOdl = p.k.GetSettingsInt("maxOdl", 1000);
             App.moOdjazdy.Clear();
             this.Frame.Navigate(typeof(Odjazdy));
+#endif 
         }
     }
 }

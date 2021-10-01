@@ -87,7 +87,7 @@ public partial class FavStopList
         }
         catch
         {
-            await p.k.DialogBox("ERROR reading fav file?");
+            p.k.DialogBox("ERROR reading fav file?");
             return false;
         }
     }
@@ -101,7 +101,7 @@ public partial class FavStopList
 
         if (oFile == null)
         {
-            await p.k.DialogBox("ERROR cannot create favs.xml file?");
+            p.k.DialogBox("ERROR cannot create favs.xml file?");
             return;
         }
 
@@ -115,7 +115,7 @@ public partial class FavStopList
         }
         catch
         {
-            await p.k.DialogBox("ERROR cannot serialize favs?");
+            p.k.DialogBox("ERROR cannot serialize favs?");
         }
     }
 
@@ -142,7 +142,7 @@ public partial class FavStopList
         }
         if (bError)
         {
-            await p.k.DialogBox("ERROR loading favourites list");
+            await p.k.DialogBoxAsync("ERROR loading favourites list");
             return false;
         }
 
@@ -151,7 +151,7 @@ public partial class FavStopList
 
         await Save(true);
         p.k.SetSettingsString("favPlaces", "");
-        await p.k.DialogBoxRes("resImportedOldFav");
+        await p.k.DialogBoxResAsync("resImportedOldFav");
         return true;
 #else
         return false;   // ale to się nie zdarzy - bo wtedy nie może być OldFav :)

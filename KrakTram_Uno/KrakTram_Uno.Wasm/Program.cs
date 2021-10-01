@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 
-namespace KrakTram_Uno.Wasm
+namespace KrakTram
 {
     public class Program
     {

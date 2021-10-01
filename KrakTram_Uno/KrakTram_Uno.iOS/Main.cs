@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace KrakTram_Uno.iOS
+namespace KrakTram.iOS
 {
     public class Application
     {

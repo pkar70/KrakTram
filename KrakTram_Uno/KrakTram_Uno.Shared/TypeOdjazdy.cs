@@ -315,8 +315,8 @@ namespace KrakTram
                         oNew.Odl = iOdl;
                         oNew.TimeSec = iCurrSec;
                         oNew.odlMin = iMinSec / 60;
-                        oNew.uiCol1 = p.k.GetSettingsInt("widthCol0");
-                        oNew.uiCol3 = p.k.GetSettingsInt("widthCol3");
+                        oNew.uiCol1 = p.k.GetSettingsInt("widthCol0");  // linia, typ pojazdu
+                        oNew.uiCol3 = p.k.GetSettingsInt("widthCol3");  // czas odjazdu
 
                         oNew.sPrzystCzas = oNew.Przyst + " (" + oNew.Odl + " m, " + oNew.odlMin + " min)";
 

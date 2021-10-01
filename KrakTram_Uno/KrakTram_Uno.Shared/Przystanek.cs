@@ -73,7 +73,7 @@ public partial class Przystanki
 
         if (oFile == null)
         {
-            await p.k.DialogBox("ERROR cannot create stops1.xml file?");
+            await p.k.DialogBoxAsync("ERROR cannot create stops1.xml file?");
             return;
         }
 
@@ -86,7 +86,7 @@ public partial class Przystanki
         }
         catch
         {
-            await p.k.DialogBox("ERROR cannot serialize stops?");
+            await p.k.DialogBoxAsync("ERROR cannot serialize stops?");
         }
     }
 
@@ -112,7 +112,7 @@ public partial class Przystanki
         }
         catch
         {
-            await p.k.DialogBox("ERROR reading stops file?");
+            await p.k.DialogBoxAsync("ERROR reading stops file?");
             return false;
         }
     }
@@ -259,9 +259,9 @@ public partial class Przystanki
     {
         // ret=false gdy nieudane wczytanie z sieci
 
-        if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+        if (!p.k.NetIsIPavailable(false)) //  System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
         {
-            await p.k.DialogBoxRes("resErrorNoNetwork");
+            await p.k.DialogBoxResAsync("resErrorNoNetwork");
             return false;
         }
 
@@ -275,9 +275,9 @@ public partial class Przystanki
         if (!string.IsNullOrEmpty(sRetMsg))
         {
             if ((sRetMsg.Substring(0, 3) ?? "") == "res")
-                await p.k.DialogBoxRes(sRetMsg);
+                await p.k.DialogBoxResAsync(sRetMsg);
             else
-                await p.k.DialogBox(sRetMsg);
+                await p.k.DialogBoxAsync(sRetMsg);
         }
 
         if (p.k.GetSettingsBool("settingsAlsoBus") | true)  // wczytujemy zawsze - bo mozna potem włączyć...
@@ -287,9 +287,9 @@ public partial class Przystanki
             if (!string.IsNullOrEmpty(sRetMsg))
             {
                 if ((sRetMsg.Substring(0, 3) ?? "") == "res")
-                    await p.k.DialogBoxRes(sRetMsg);
+                    await p.k.DialogBoxResAsync(sRetMsg);
                 else
-                    await p.k.DialogBox(sRetMsg);
+                    await p.k.DialogBoxAsync(sRetMsg);
             }
         }
 
@@ -366,7 +366,7 @@ public partial class Przystanki
         }
     }
 
-    private async System.Threading.Tasks.Task Compare(System.Collections.ObjectModel.Collection<Przystanek> oOld, System.Collections.ObjectModel.Collection<Przystanek> oNew)
+    private static async System.Threading.Tasks.Task Compare(System.Collections.ObjectModel.Collection<Przystanek> oOld, System.Collections.ObjectModel.Collection<Przystanek> oNew)
     {
         string sDiffsDel = "";
 
@@ -410,7 +410,7 @@ public partial class Przystanki
             sDiffsDel = "Usunięte:" + "\n" + sDiffsDel;
 
         if (!string.IsNullOrEmpty(sDiffsNew) || !string.IsNullOrEmpty(sDiffsDel))
-            await p.k.DialogBox(p.k.GetLangString("resChangesInStopList") + "\n" + sDiffsDel + "\n" + sDiffsNew);
+            await p.k.DialogBoxAsync(p.k.GetLangString("resChangesInStopList") + "\n" + sDiffsDel + "\n" + sDiffsNew);
     }
 
 
@@ -418,7 +418,7 @@ public partial class Przystanki
     {
         // policzenie opóźnień, b0 = bus, b1 = tram
         if (mdOpoznLastDate.AddMinutes(5) > DateTime.Now)
-            if (!await p.k.DialogBoxYN("Niedawno było, na pewno?"))
+            if (!await p.k.DialogBoxYNAsync("Niedawno było, na pewno?"))
                 return false;
 
         string sCat;

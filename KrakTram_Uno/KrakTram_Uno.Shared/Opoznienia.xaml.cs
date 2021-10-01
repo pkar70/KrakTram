@@ -19,27 +19,32 @@ namespace KrakTram
         private double mdDelayMinsBus = 0;
         private int miDelayCntBus = 0;
 
-        private void Procesuje(bool bShow)
+        //private void Procesuje(bool bShow)
+        //{
+        //    if (bShow)
+        //    {
+        //        double dVal;
+        //        dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
+        //        uiProcesuje.Width = dVal;
+        //        uiProcesuje.Height = dVal;
+        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        //        uiProcesuje.IsActive = true;
+        //        uiMapka.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        //    }
+        //    else
+        //    {
+        //        uiProcesuje.IsActive = false;
+        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        //        uiMapka.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        //    }
+        //}
+
+        private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            if (bShow)
-            {
-                double dVal;
-                dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
-                uiProcesuje.Width = dVal;
-                uiProcesuje.Height = dVal;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiProcesuje.IsActive = true;
-                uiMapka.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            }
-            else
-            {
-                uiProcesuje.IsActive = false;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                uiMapka.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            }
+            p.k.ProgRingInit(true, false);
         }
 
-        private void PokazDelayStat(int iDelay, int iCount, int iMaxDelay, Windows.UI.Xaml.Controls.TextBlock uiDelay, Windows.UI.Xaml.Controls.TextBlock uiData)
+        private static void PokazDelayStat(int iDelay, int iCount, int iMaxDelay, Windows.UI.Xaml.Controls.TextBlock uiDelay, Windows.UI.Xaml.Controls.TextBlock uiData)
         {
             if (iCount == 0)
             {
@@ -70,11 +75,11 @@ namespace KrakTram
             int iCount = 0;
             int iMaxDelay = 0;
 
-            Procesuje(true);
+            p.k.ProgRingShow(true);
             bool bRet = await App.oStops.OpoznieniaFromHttpAsync(iTyp);
             if (bRet)
                 bRet = App.oStops.OpoznieniaGetStat(iTyp, ref iDelay, ref iCount, ref iMaxDelay);
-            Procesuje(false);
+            p.k.ProgRingShow(false);
             if (!bRet)
                 return;
 

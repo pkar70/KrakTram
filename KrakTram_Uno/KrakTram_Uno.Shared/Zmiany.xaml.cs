@@ -50,7 +50,7 @@ namespace KrakTram
 
         private async void uiSearch_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInput("msgSearchReroute");
+            string sMask = await p.k.DialogBoxInputAsync("msgSearchReroute");
 
             if (string.IsNullOrEmpty(sMask))
             {
@@ -79,19 +79,22 @@ namespace KrakTram
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+
+            p.k.ProgRingInit(true, false);
+
             if (!await TryLoadCache())
             {
-                double dVal;
-                dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
-                uiProcesuje.Width = dVal;
-                uiProcesuje.Height = dVal;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiProcesuje.IsActive = true;
-
+                //double dVal;
+                //dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
+                //uiProcesuje.Width = dVal;
+                //uiProcesuje.Height = dVal;
+                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                //uiProcesuje.IsActive = true;
+                p.k.ProgRingShow(true);
                 await WczytajTrase();
-
-                uiProcesuje.IsActive = false;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                p.k.ProgRingShow(false);
+                //uiProcesuje.IsActive = false;
+                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
 
 #if !__ANDROID__
@@ -160,7 +163,7 @@ namespace KrakTram
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                await p.k.DialogBoxRes("resErrorNoNetwork");
+                await p.k.DialogBoxResAsync("resErrorNoNetwork");
                 return false;
             }
 
@@ -185,7 +188,7 @@ namespace KrakTram
 
             if (bError)
             {
-                await p.k.DialogBoxRes("resErrorGetHttp");
+                await p.k.DialogBoxResAsync("resErrorGetHttp");
                 return false;
             }
 

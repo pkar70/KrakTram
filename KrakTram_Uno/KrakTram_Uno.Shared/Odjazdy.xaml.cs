@@ -40,7 +40,7 @@ namespace KrakTram
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                await p.k.DialogBoxRes("resErrorNoNetwork");
+                await p.k.DialogBoxResAsync("resErrorNoNetwork");
                 return;
             }
 
@@ -229,17 +229,20 @@ namespace KrakTram
             SetSortMode(false, 3);
         }
 
+        private void GoShowStops(JedenOdjazd oItem)
+        {
+            string sParam;
+            sParam = oItem.Linia + "|" + oItem.Kier + "|" + oItem.Przyst;
+            this.Frame.Navigate(typeof(Trasa), sParam);
+        }
+
         private void uiShowStops_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-
             // sender = grid
             // uiGrid.BorderThickness = 1
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             var oItem = oMFI.DataContext as JedenOdjazd;
-
-            string sParam;
-            sParam = oItem.Linia + "|" + oItem.Kier + "|" + oItem.Przyst;
-            this.Frame.Navigate(typeof(Trasa), sParam);
+            GoShowStops(oItem);
         }
 
         private async void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -247,7 +250,7 @@ namespace KrakTram
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             var oItem = oMFI.DataContext as JedenOdjazd;
 
-            await p.k.DialogBox(oItem.sRawData);
+            await p.k.DialogBoxAsync(oItem.sRawData);
         }
 
         private void uiExcludeKier_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -275,5 +278,38 @@ namespace KrakTram
             App.moOdjazdy.FiltrWedleKierunku(false, oItem.Kier);
             WypiszTabele(true);
         }
+
+        //private void uiGridMenu_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        //{ // symulacja dla Android
+        //    var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
+        //    oGrid.ContextFlyout.ShowAt(oGrid);
+        //}
+        private void uiLine_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {// shortcut: przeskok do przystanków (dla Windows)
+            JedenOdjazd oItem;
+
+            var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
+            if (oGrid is null)
+            {
+                var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
+                oItem = oTBlock.DataContext as JedenOdjazd;
+            }
+            else
+                oItem = oGrid.DataContext as JedenOdjazd;
+
+            GoShowStops(oItem);
+        }
+
+        // to byl test, czy w ListView dziala Tapped - nie, nie dziala w 409, w 3902 dziala.
+        //private void uiLine_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        //{
+        //    var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
+        //    p.k.DialogBox("tapped");
+        //}
+        //private void uiTextMenu_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        //{// symulacja dla Android
+        //    var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
+        //    oTBlock.ContextFlyout.ShowAt(oTBlock);
+        //}
     }
 }

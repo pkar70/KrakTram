@@ -13,13 +13,19 @@ using System.Linq;
 //using Windows.UI.Xaml.Media;
 //using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace KrakTram
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
+    public class JedenStop
+    {// musi byc public, bo inaczej serializer nie dziala
+        public string Linia { get; set; }
+        public string Przyst { get; set; }
+        public int iMin { get; set; }
+        public string sMin { get; set; }
+        public int Num { get; set; }
+    }
+ 
     public sealed partial class Trasa : Windows.UI.Xaml.Controls.Page
     {
         public Trasa()
@@ -31,14 +37,7 @@ namespace KrakTram
         private string msKier = "";
         private string msStop = "";
 
-        public partial class JedenStop
-        {
-            public string Linia { get; set; }
-            public string Przyst { get; set; }
-            public int iMin { get; set; }
-            public string sMin { get; set; }
-            public int Num { get; set; }
-        }
+
 
         private System.Collections.ObjectModel.Collection<JedenStop> moStopsy;
 
@@ -61,19 +60,24 @@ namespace KrakTram
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiTitle.Text = p.k.GetLangString("resTrasa") + " " + msLinia;
+
+            p.k.ProgRingInit(true, false);
+
             if (!await TryLoadTrasaCache(msLinia))
             {
-                double dVal;
-                dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
-                uiProcesuje.Width = dVal;
-                uiProcesuje.Height = dVal;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiProcesuje.IsActive = true;
+                p.k.ProgRingShow(true);
+                //double dVal;
+                //dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
+                //uiProcesuje.Width = dVal;
+                //uiProcesuje.Height = dVal;
+                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                //uiProcesuje.IsActive = true;
 
                 await WczytajTrase(msLinia);
 
-                uiProcesuje.IsActive = false;
-                uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                p.k.ProgRingShow(false);
+                //uiProcesuje.IsActive = false;
+                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
 
             if (moStopsy is null || moStopsy.Count < 1)
@@ -134,6 +138,8 @@ namespace KrakTram
                 return false;
             }
 
+            if (moStopsy.Count < 1) return false;   // co z tego ze jest plik jak nie ma trasy?
+
             uiReload.IsEnabled = true;
 
             return true;
@@ -161,9 +167,9 @@ namespace KrakTram
 
         private async System.Threading.Tasks.Task<bool> WczytajTrase(string sLinia)
         {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (!p.k.NetIsIPavailable(false))
             {
-                await p.k.DialogBoxRes("resErrorNoNetwork");
+                await p.k.DialogBoxResAsync("resErrorNoNetwork");
                 return false;
             }
 
@@ -181,7 +187,8 @@ namespace KrakTram
             // oHttp.Timeout = TimeSpan.FromSeconds(8)
             // timeout jest tylko w System.Net.http, ale tam nie działa ("The HTTP redirect request failed"), 302
             // a z drugiej strony, dla Uno musi byc System.Net a nie Windows :)
-            Uri oUri = new Uri("http://rozklady.mpk.krakow.pl/?lang=PL&linia=" + sLinia);
+            Uri oUri = new Uri("http://rozklady.mpk.krakow.pl/?lang=PL&linia=" + sLinia); // http://rozklady.mpk.krakow.pl/?lang=PL&linia=50
+            // oHttp.DefaultRequestHeaders.Add("Referer", )
             try
             {
                 System.Net.Http.HttpResponseMessage oHttResp = await oHttp.GetAsync(oUri);
@@ -198,12 +205,28 @@ namespace KrakTram
             {
                 bError = true;
             }
+
+            if(string.IsNullOrEmpty(sPage))
+            {
+                System.Net.Http.HttpResponseMessage oHttResp = await oHttp.GetAsync(oUri);
+                if (oHttResp.StatusCode == System.Net.HttpStatusCode.Found)
+                {
+                    oHttResp = await oHttp.GetAsync(oHttResp.RequestMessage.RequestUri);
+                }
+                // sPage = await oHttp.GetStringAsync(oUri);
+
+                if (oHttResp.IsSuccessStatusCode)
+                    sPage = await oHttResp.Content.ReadAsStringAsync();
+
+            }
+
+
             oHttp.Dispose();
             oHCH.Dispose();
 
             if (bError)
             {
-                await p.k.DialogBoxRes("resErrorGetHttp");
+                await p.k.DialogBoxResAsync("resErrorGetHttp");
                 return false;
             }
 
@@ -275,15 +298,19 @@ namespace KrakTram
             this.Frame.GoBack();
         }
 
+
+        private void GoPrzystanek(JedenStop oItem)
+        {
+            if (oItem == null) return;
+            ShowTabliczka(oItem.Przyst);
+        }
+
+
         private void uiGoPrzystanek_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             Windows.UI.Xaml.Controls.MenuFlyoutItem oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            if (oMFI == null)
-                return;
-            JedenStop oItem = oMFI.DataContext as JedenStop;
-            if (oItem == null)
-                return;
-            ShowTabliczka(oItem.Przyst);
+            if (oMFI == null) return;
+            GoPrzystanek(oMFI.DataContext as JedenStop);
         }
 
         private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -299,5 +326,16 @@ namespace KrakTram
                                       select c;
         }
 
+        //private void uiGridMenu_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        //{ // symulacja dla Android
+        //    var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
+        //    oGrid.ContextFlyout.ShowAt(oGrid);
+        //}
+        private void uiGoTabliczka_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        { //shortcut do tabliczki (dla Windows)
+            var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
+            if (oGrid == null) return;
+            GoPrzystanek(oGrid.DataContext as JedenStop);
+        }
     }
 }

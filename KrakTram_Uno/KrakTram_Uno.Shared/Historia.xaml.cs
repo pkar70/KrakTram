@@ -1,13 +1,9 @@
 ﻿using System;
 
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace KrakTram
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class Historia : Windows.UI.Xaml.Controls.Page
     {
         public Historia()
@@ -32,7 +28,7 @@ namespace KrakTram
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            if (p.k.IsThisMoje())
+            if (p.k.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
                 uiCommandBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             UstawSlider();

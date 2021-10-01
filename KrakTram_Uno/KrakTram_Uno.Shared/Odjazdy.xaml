@@ -9,7 +9,7 @@
     xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win" Loaded="Page_Loaded" >
 
-    <Grid >
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>
@@ -31,66 +31,66 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid  HorizontalAlignment="Stretch" Margin="0,5,0,0" BorderThickness="2" BorderBrush="Blue" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"  />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                        <Grid  HorizontalAlignment="Stretch" Margin="0,5,0,0" BorderThickness="2" BorderBrush="Blue" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"  />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid Grid.Column="0" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue" DoubleTapped="uiLine_DoubleTapped">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Text="{Binding Linia, Mode=OneWay }" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman" not_win:Margin="2,0,2,0"  />
-                            <TextBlock Grid.Row="1" Text="{Binding Typ, Mode=OneWay }" FontSize="12" HorizontalAlignment="Center" Width="{Binding uiCol1, Mode=OneWay }" Margin="2,0,2,1"/>
+                                <TextBlock Grid.Row="0" Text="{Binding Linia, Mode=OneWay }" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman" not_win:Margin="2,0,2,0" DoubleTapped="uiLine_DoubleTapped" />
+                                <TextBlock Grid.Row="1" Text="{Binding Typ, Mode=OneWay }" FontSize="12" HorizontalAlignment="Center" Width="{Binding uiCol1, Mode=OneWay }" Margin="2,0,2,1"/>
 
-                            <Grid.ContextFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem Text="Sort" Click="bSortByLine_Click"  />
-                                    <MenuFlyoutItem x:Uid="uiShowStops" Text="Przystanki" Click="uiShowStops_Click"/>
-                                </MenuFlyout>
-                            </Grid.ContextFlyout>
+                                <Grid.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Sort" Click="bSortByLine_Click"  />
+                                        <MenuFlyoutItem x:Uid="uiShowStops" Text="Przystanki" Click="uiShowStops_Click"/>
+                                    </MenuFlyout>
+                                </Grid.ContextFlyout>
 
 
-                        </Grid>
+                            </Grid>
 
-                        <Grid Grid.Column="1" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid Grid.Column="1" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0" BorderThickness="1" BorderBrush="Blue" Margin="1,1,1,1" >
-                                <TextBlock Text="{Binding Kier, Mode=OneWay }"  FontSize="18" FontWeight="Bold"  VerticalAlignment="Center"  FontFamily="Times New Roman" Padding="2,0,0,0" not_win:Margin="2,0,0,0">
-                                    <TextBlock.ContextFlyout>
+                                <Grid Grid.Row="0" BorderThickness="1" BorderBrush="Blue" Margin="1,1,1,1" >
+                                    <TextBlock Text="{Binding Kier, Mode=OneWay }"  FontSize="18" FontWeight="Bold"  VerticalAlignment="Center"  FontFamily="Times New Roman" Padding="2,0,0,0" not_win:Margin="2,0,0,0" />
+                                    <Grid.ContextFlyout>
                                         <MenuFlyout>
                                             <MenuFlyoutItem Text="Sort" Click="bSortByKier_Click"  />
                                             <MenuFlyoutItem Text="exclude" x:Uid="uiExcludeKier" Click="uiExcludeKier_Click"  />
                                             <MenuFlyoutItem Text="only" x:Uid="uiOnlyThisKier" Click="uiOnlyThisKier_Click"  />
                                         </MenuFlyout>
+                                    </Grid.ContextFlyout>
+                                </Grid>
+                                <TextBlock Grid.Row="1" Text="{Binding sPrzystCzas, Mode=OneWay }"  FontSize="12" win:Margin="0,2,0,2" Padding="4,0,0,0" not_win:Margin="4,2,0,2" >
+                                    <TextBlock.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Text="Sort" Click="bSortByStop_Click"  />
+                                        </MenuFlyout>
                                     </TextBlock.ContextFlyout>
                                 </TextBlock>
                             </Grid>
-                                <TextBlock Grid.Row="1" Text="{Binding sPrzystCzas, Mode=OneWay }"  FontSize="12" win:Margin="0,2,0,2" Padding="4,0,0,0" not_win:Margin="4,2,0,2">
-                                <TextBlock.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuFlyoutItem Text="Sort" Click="bSortByStop_Click"  />
-                                    </MenuFlyout>
-                                </TextBlock.ContextFlyout>
-                            </TextBlock>
-                        </Grid>
 
-                        <Grid Grid.Column="2" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1" />
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Text=" " FontSize="1" Width="{Binding uiCol3, Mode=OneWay }" />
-                            <TextBlock Grid.Row="1" Text="{Binding Mins, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0">
-                                <TextBlock.ContextFlyout>
+                            <Grid Grid.Column="2" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue" >
+                                <!--<Grid.RowDefinitions>
+                                    <RowDefinition Height="1" />
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text=" " FontSize="1"  />
+                                <TextBlock Grid.Row="1" Text="{Binding Mins, Mode=OneWay }" MinWidth="{Binding uiCol3, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0" /> -->
+                                <TextBlock Text="{Binding Mins, Mode=OneWay }" MinWidth="{Binding uiCol3, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0" />
+                                <Grid.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="Sort" Click="bSortByCzas_Click"/>
                                         <MenuFlyoutSeparator/>
@@ -99,12 +99,10 @@
                                         <MenuFlyoutSeparator Visibility="{Binding bPkarMode, Mode=OneWay }"/>
                                         <MenuFlyoutItem Text="Raw data" Visibility="{Binding bPkarMode, Mode=OneWay }" Click="uiRawData_Click"/>
                                     </MenuFlyout>
-                                </TextBlock.ContextFlyout>
-                            </TextBlock>
-
+                                </Grid.ContextFlyout>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </DataTemplate>
+                    </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
@@ -115,6 +113,7 @@
                 <AppBarButton Icon="Sort" Label="Sort" >
                     <AppBarButton.Flyout>
                         <MenuFlyout>
+                            <MenuFlyoutItem Text="nietoggle" Click="bSortByLine_Click" IsChecked="True"/>
                             <ToggleMenuFlyoutItem x:Name="uiSortLine" x:Uid="resSortLine" Text="byLine" Click="bSortByLine_Click" IsChecked="True"/>
                             <ToggleMenuFlyoutItem x:Name="uiSortStop" x:Uid="resSortStop" Text="byStop" Click="bSortByStop_Click"/>
                             <ToggleMenuFlyoutItem x:Name="uiSortKier" x:Uid="resSortKier" Text="byKier" Click="bSortByKier_Click"/>

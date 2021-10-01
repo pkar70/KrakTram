@@ -1,5 +1,5 @@
-﻿//#define XAMARIN_GPS
-
+﻿
+// using Android.Locations;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,11 @@ namespace KrakTram
         /// </summary>
         public App()
         {
+#if NETFX_CORE
             ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+#else
+            InitializeLogging(); // nowsze Uno
+#endif 
 
             this.InitializeComponent();
             //this.Suspending += OnSuspending;
@@ -46,10 +50,10 @@ namespace KrakTram
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// this.DebugSettings.EnableFrameRateCounter = true;
-			}
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // this.DebugSettings.EnableFrameRateCounter = true;
+            }
 #endif
             Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
@@ -78,9 +82,7 @@ namespace KrakTram
 
 #if NETFX_CORE
             if (e.PrelaunchActivated == false)
-#else
-            if(true)
-#endif 
+#endif
             {
                 if (rootFrame.Content == null)
                 {
@@ -113,6 +115,8 @@ namespace KrakTram
         //}
 
 
+#if NETFX_CORE
+        // previous UNO
         /// <summary>
         /// Configures global logging
         /// </summary>
@@ -148,17 +152,76 @@ namespace KrakTram
 					}
                 )
 #if DEBUG
-				.AddConsole(LogLevel.Debug);
+                .AddConsole(LogLevel.Debug);
 #else
                 .AddConsole(LogLevel.Information);
 #endif
         }
+#else
+        // nowsze Uno
+        /// <summary>
+        /// Configures global Uno Platform logging
+        /// </summary>
+        private static void InitializeLogging()
+        {
+            var factory = LoggerFactory.Create(builder =>
+            {
+#if __WASM__
+                builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+#elif __IOS__
+                builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
+#elif NETFX_CORE
+                builder.AddDebug();
+#else
+                builder.AddConsole();
+#endif
+
+                // Exclude logs below this level
+                builder.SetMinimumLevel(LogLevel.Information);
+
+                // Default filters for Uno Platform namespaces
+                builder.AddFilter("Uno", LogLevel.Warning);
+                builder.AddFilter("Windows", LogLevel.Warning);
+                builder.AddFilter("Microsoft", LogLevel.Warning);
+
+                // Generic Xaml events
+                // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+
+                // Layouter specific messages
+                // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+
+                // builder.AddFilter("Windows.Storage", LogLevel.Debug );
+
+                // Binding related messages
+                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+
+                // Binder memory references tracking
+                // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
+
+                // RemoteControl and HotReload related
+                // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+
+                // Debug JS interop
+                // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
+            });
+
+            global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+        }
+#endif
+
+
 
 
         // PKAR added wedle https://stackoverflow.com/questions/39262926/uwp-hardware-back-press-work-correctly-in-mobile-but-error-with-pc
         private void OnNavigatedAddBackButton(object sender, NavigationEventArgs e)
         {
-            /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
             var oFrame = sender as Frame;
             if (oFrame == null)
                 return;
@@ -175,11 +238,11 @@ namespace KrakTram
         {
             try
             {
-                if ((Window.Current.Content as Frame).CanGoBack)
-                        (Window.Current.Content as Frame).GoBack();
+                if ((Windows.UI.Xaml.Window.Current.Content as Frame).CanGoBack)
+                    (Windows.UI.Xaml.Window.Current.Content as Frame).GoBack();
                 e.Handled = true;
             }
-            catch 
+            catch
             {
             }
         }
@@ -206,7 +269,7 @@ namespace KrakTram
             await oFavour.LoadOrImport();
         }
 
-        
+
         public static int GPSdistanceDwa(double dLat0, double dLon0, double dLat, double dLon)
         {
             // https://stackoverflow.com/questions/28569246/how-to-get-distance-between-two-locations-in-windows-phone-8-1
@@ -222,7 +285,7 @@ namespace KrakTram
 
                 return (int)d;
             }
-            catch 
+            catch
             {
                 return 0;
             }// nie powinno sie nigdy zdarzyc, ale na wszelki wypadek...
@@ -231,127 +294,11 @@ namespace KrakTram
         public static int GPSdistance(Windows.Devices.Geolocation.Geoposition oPos, double dLat, double dLon)
         {
             if (oPos is null) return 0;
+
             return App.GPSdistanceDwa(oPos.Coordinate.Point.Position.Latitude, oPos.Coordinate.Point.Position.Longitude, dLat, dLon);
         }
 
-
-#if __ANDROID__ && XAMARIN_GPS
-        // z wykorzystaniem Xamarin.Essentials
-        // https://docs.microsoft.com/en-us/dotnet/api/xamarin.essentials.geolocation?view=xamarin-essentials
-        public static async System.Threading.Tasks.Task<Point> GetCurrentPoint()
-        {
-            Point oPoint = new Point(); // = default(Point);
-
-            mSpeed = p.k.GetSettingsInt("walkSpeed", 4);
-
-            oPoint.X = 50.01; // 1985 ' latitude - dane domku, choc mała precyzja
-            oPoint.Y = 19.97; // 7872   dla Android dodałem drugą cyfrę po kropce, żeby default miał tramwaje
-            mSpeed = p.k.GetSettingsInt("walkSpeed", 4);
-
-            bool bError = false;
-            string sErr = "";
-
-            Xamarin.Essentials.Location oLoc;
-            try
-            {
-                oLoc = await Xamarin.Essentials.Geolocation.GetLastKnownLocationAsync();
-            }
-            catch
-            {
-                oLoc = null;
-                bError = true;
-            }
-
-            if (bError)
-            {
-                // If Not GetSettingsBool("noGPSshown") Then
-                await p.k.DialogBoxRes("resErrorNoGPSAllowed");
-                // SetSettingsBool("noGPSshown", True)
-                // End If
-                return oPoint;
-            }
-
-            // jest jakaś lokalizacja, czy w odpowiednim promieniu oraz całkiem młoda
-            if(oLoc != null)
-            {
-                if ((DateTime.Now - oLoc.Timestamp).TotalSeconds < 30)
-                    if (oLoc.Accuracy.HasValue && (oLoc.Accuracy.Value < (uint)p.k.GetSettingsInt("gpsPrec", 100)))
-                    {
-                        oPoint.X = oLoc.Latitude;
-                        oPoint.Y = oLoc.Longitude;
-                        if (oLoc.Speed.HasValue)
-                        {
-                            double dSpeed;
-                            dSpeed = oLoc.Speed.Value / 3.6;    // z m/s na km/h
-                            mSpeed = Math.Max(dSpeed, dSpeed - 1);   // co ja tu miałem na myśli??
-                            mSpeed = Math.Max(dSpeed, 1);            // nie wiem, więc daję to (na wszelki wypadek - ograniczenie na 1 km/h)
-                        }
-                        return oPoint;
-                    }
-            }
-
-            // jeśli nie, to szukaj aktualnej lokalizacji
-
-            // ustal precyzję
-            Xamarin.Essentials.GeolocationAccuracy oAcc = Xamarin.Essentials.GeolocationAccuracy.Medium;
-            if ((uint)p.k.GetSettingsInt("gpsPrec", 100) < 100)
-            {
-                oAcc = Xamarin.Essentials.GeolocationAccuracy.High;
-            }
-            else
-                if ((uint)p.k.GetSettingsInt("gpsPrec", 100) > 500)
-                {
-                oAcc = Xamarin.Essentials.GeolocationAccuracy.Low;
-                }
-
-
-            Xamarin.Essentials.GeolocationRequest oReq = new Xamarin.Essentials.GeolocationRequest(oAcc, 
-                new TimeSpan(0, 0, 30));
-
-            bError = false;
-            oLoc = null;
-            sErr = "";
-            try
-            {
-                oLoc = await Xamarin.Essentials.Geolocation.GetLocationAsync(oReq);
-            }
-            catch(Exception e)
-            {
-                oLoc = null;
-                bError = true;
-                sErr = e.Message;
-            }
-
-            if (bError)
-            {
-                // po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
-                // dodaję zarówno ustalenie oPoint i mSpeed na defaulty, jak i Speed.HasValue
-                await p.k.DialogBoxRes("resErrorGettingPos", sErr);
-
-                oPoint.X = 50.0; // 1985 ' latitude - dane domku, choc mała precyzja
-                oPoint.Y = 19.9; // 7872
-                mSpeed = p.k.GetSettingsInt("walkSpeed", 4);
-            }
-            else
-            {
-                oPoint.X = oLoc.Latitude;
-                oPoint.Y = oLoc.Longitude;
-
-                if (oLoc.Speed.HasValue)
-                {
-                    double dSpeed;
-                    dSpeed = oLoc.Speed.Value / 3.6;    // z m/s na km/h
-                    mSpeed = Math.Max(dSpeed, dSpeed - 1);   // co ja tu miałem na myśli??
-                    mSpeed = Math.Max(dSpeed, 1);            // nie wiem, więc daję to (na wszelki wypadek - ograniczenie na 1 km/h)
-                }
-            }
-
-
-            return oPoint;
-        }
-
-#else
-        public static async System.Threading.Tasks.Task<Point> GetCurrentPoint()
+          public static async System.Threading.Tasks.Task<Point> GetCurrentPoint()
         {
             Point oPoint = new Point(); // = default(Point);
 
@@ -361,39 +308,30 @@ namespace KrakTram
             oPoint.Y = 19.97; // 7872   dla Android dodałem drugą cyfrę po kropce, żeby default miał tramwaje
 
             Windows.Devices.Geolocation.GeolocationAccessStatus rVal;
-#if __ANDROID__
-            rVal = await MyGeolocator.RequestAccessAsync();
-#else
             rVal = await Windows.Devices.Geolocation.Geolocator.RequestAccessAsync();
-#endif
             if (rVal != Windows.Devices.Geolocation.GeolocationAccessStatus.Allowed)
             {
                 // If Not GetSettingsBool("noGPSshown") Then
-                await p.k.DialogBoxRes("resErrorNoGPSAllowed");
+                await p.k.DialogBoxResAsync("resErrorNoGPSAllowed");
                 // SetSettingsBool("noGPSshown", True)
                 // End If
                 return oPoint;
             }
 
             // https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0/33866959'
-#if __ANDROID__
-            MyGeolocator oDevGPS = new MyGeolocator();
-            TimeSpan oCacheTime = new TimeSpan(0, 1, 0);  // minuta ≈ 80 m (ale nie autobusem! wtedy 400 m)
-            TimeSpan oTimeout = new TimeSpan(0, 2, 0);    // timeout 
-#else
             Windows.Devices.Geolocation.Geolocator oDevGPS = new Windows.Devices.Geolocation.Geolocator();
             TimeSpan oCacheTime = new TimeSpan(0, 0, 30);  // minuta ≈ 80 m (ale nie autobusem! wtedy 400 m)
-            TimeSpan oTimeout = new TimeSpan(0, 0, 5);    // timeout 
-#endif
+            TimeSpan oTimeout = new TimeSpan(0, 0, 7);    // timeout 
 
-            Windows.Devices.Geolocation.Geoposition oPos;
-            oDevGPS.DesiredAccuracyInMeters = (uint)p.k.GetSettingsInt("gpsPrec", p.k.GetPlatform(75,100,75,75,75)); // dla 4 km/h; 100 m = 90 sec, 75 m = 67 sec
+            Windows.Devices.Geolocation.Geoposition oPos = null;
+            oDevGPS.DesiredAccuracyInMeters = (uint)p.k.GetSettingsInt("gpsPrec", p.k.GetPlatform(75, 100, 75, 75, 75)); // dla 4 km/h; 100 m = 90 sec, 75 m = 67 sec
             bool bErr = false;
             string sErr = "";
 
             try
             {
-                oPos = await oDevGPS.GetGeopositionAsync(oCacheTime, oTimeout);
+                oPos = await oDevGPS.GetGeopositionAsync(oCacheTime, oTimeout); // UNO "firmowe" nie protestuje, ale ignoruje te dwa parametry
+                //oPos = location.ToGeoposition();
                 oPoint.X = oPos.Coordinate.Point.Position.Latitude;
                 oPoint.Y = oPos.Coordinate.Point.Position.Longitude;
 
@@ -406,7 +344,7 @@ namespace KrakTram
                         if (oPos.Coordinate.Speed != 0)
                         {
                             dSpeed = oPos.Coordinate.Speed.Value / 3.6;    // z m/s na km/h
-                            mSpeed = Math.Max(dSpeed, dSpeed - 1);   // co ja tu miałem na myśli??
+                            mSpeed = Math.Max(dSpeed, dSpeed - 1);   // co ja tu miałem na myśli?? konwersja?
                             mSpeed = Math.Max(dSpeed, 1);            // nie wiem, więc daję to (na wszelki wypadek - ograniczenie na 1 km/h)
                         }
                     }
@@ -419,7 +357,7 @@ namespace KrakTram
                 sErr = e.Message;
             }
 
-#if __ANDROID__
+#if __ANDROID__ && false
             oDevGPS.Destruktor();
             // oDevGPS.Dispose();
 #endif
@@ -428,7 +366,7 @@ namespace KrakTram
             {
                 // po tym wyskakuje później z błędem, więc może oPoint jest zepsute?
                 // dodaję zarówno ustalenie oPoint i mSpeed na defaulty, jak i Speed.HasValue
-                await p.k.DialogBoxRes("resErrorGettingPos",sErr);
+                await p.k.DialogBoxResAsync("resErrorGettingPos", sErr);
 
                 oPoint.X = 50.0; // 1985 ' latitude - dane domku, choc mała precyzja
                 oPoint.Y = 19.9; // 7872
@@ -437,7 +375,7 @@ namespace KrakTram
 
             return oPoint;
         }
-#endif
+
         public static async System.Threading.Tasks.Task<Newtonsoft.Json.Linq.JObject> WczytajTabliczke(string sCat, string sErrData, int iId)
         {
             string sUrl;
@@ -456,7 +394,7 @@ namespace KrakTram
             {
                 oJson = Newtonsoft.Json.Linq.JObject.Parse(sPage);
             }
-            catch 
+            catch
             {
                 bError = true;
             }
@@ -501,7 +439,7 @@ namespace KrakTram
             {
                 sPage = await oHttp.GetStringAsync(new Uri(sUri));
             }
-            catch 
+            catch
             {
                 bError = true;
             }
@@ -518,6 +456,6 @@ namespace KrakTram
         }
     }
 
-}
+    }
 
 

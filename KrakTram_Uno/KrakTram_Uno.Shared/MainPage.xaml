@@ -9,7 +9,7 @@
     xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win" Loaded="Page_Loaded" >
 
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>   <!-- symulacja BottomAppBar dla Android, do usuniecia jak Uno bedzie miało obsługę BottomAB -->
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>
@@ -24,12 +24,12 @@
             <RowDefinition Height="3*"/>    <!-- 4: spacer -->
         </Grid.RowDefinitions>
 
-        <ProgressRing x:Name="uiProcesuje" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Grid.RowSpan="5"/>
+        <!--<ProgressRing x:Name="uiProcesuje" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Grid.RowSpan="5"/> -->
         <TextBlock HorizontalAlignment="Center" FontSize="24" Text="Krak Tram" />
         <TextBlock HorizontalAlignment="Center" Grid.Row="1" FontSize="12" Text=" " Name="uiVersion" Margin="0,5,0,0"/>
 
         <!-- testety konieczne do wyrownywania szerokosci na stronie odjazdow -->
-        <TextBlock Grid.Row="2" Name="uiTesterLinia" Text="50" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
+        <TextBlock Grid.Row="2" Name="uiTesterLinia" Text="244" FontSize="30" FontWeight="Bold" FontFamily="Times New Roman" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
         <TextBlock Grid.Row="2" Name="uiTesterTyp" Text="2014N" FontSize="12"  HorizontalAlignment="Left" FontFamily="Times New Roman" VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/>
         <TextBlock Grid.Row="2" Name="uiTesterCzas" Text="22 min" FontSize="22"  HorizontalAlignment="Left" FontFamily="Times New Roman"  VerticalAlignment="Top" MinWidth="1" Padding="1,1,1,1"/> 
 
@@ -47,8 +47,10 @@
             <RowDefinition Height="Auto"/> <!-- bus -->
         </Grid.RowDefinitions>
 
-            <Button FontSize="18" Content="GPS" HorizontalAlignment="Left" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
-                <Button FontSize="18" Content="Map" HorizontalAlignment="Right" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="uiGoMap_Click" Grid.ColumnSpan="3" Grid.Row="0" />
+            <Button FontSize="18" Content="GPS" win:HorizontalAlignment="Left" not_win:HorizontalAlignment="Center" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
+            <win:Button FontSize="18" Content="Map" HorizontalAlignment="Right" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="uiGoMap_Click" Grid.ColumnSpan="3" Grid.Row="0" /> 
+            <!--    <Button FontSize="18" Content="GPS" HorizontalAlignment="Left" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="bGetGPS_Click" Grid.ColumnSpan="3" Grid.Row="0" />
+                <Button FontSize="18" Content="Map" HorizontalAlignment="Right" Margin="0,10,0,30" Width="100" VerticalAlignment="Center" Click="uiGoMap_Click" Grid.ColumnSpan="3" Grid.Row="0" /> -->
 
                 <ComboBox x:Uid="resFavour" Name="uiFavList" Grid.Row="1" Header="Ulubione" SelectionChanged="uiFavList_SelectionChanged"/>
             <Button x:Uid="resGoStop" Content="Go" Grid.Row="1" Grid.Column="1" Margin="15,0,0,0" Click="uiGoFavour_Click" VerticalAlignment="Bottom" />

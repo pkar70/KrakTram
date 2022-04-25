@@ -1,0 +1,2 @@
+﻿
+' praktycznie nic do przeniesienia

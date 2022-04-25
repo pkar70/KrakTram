@@ -1,5 +1,6 @@
 ﻿using System;
 
+using vb14 = VBlib.pkarlibmodule14;
 
 
 namespace KrakTram
@@ -23,12 +24,12 @@ namespace KrakTram
 
         private void UstawTitle(int iRok)
         {
-            uiTitle.Text = p.k.GetLangString("resHistoriaTitle") + " " + iRok;
+            uiTitle.Text = vb14.GetLangString("resHistoriaTitle") + " " + iRok;
         }
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            if (p.k.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
+            if (vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
                 uiCommandBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             UstawSlider();
@@ -37,7 +38,7 @@ namespace KrakTram
             uiSlider.Value = MAX_ROK;
         }
 
-        private async System.Threading.Tasks.Task<bool> WczytajPicek(int iRok)
+        private async System.Threading.Tasks.Task<bool> WczytajPicekAsync(int iRok)
         {
             if (iRok > MAX_ROK)
                 return false;
@@ -47,10 +48,8 @@ namespace KrakTram
             Uri oPicUri = new Uri("ms-appx:///Assets/" + iRok + ".gif");
             Windows.Storage.StorageFile oFile;
             try
-            {   // Uno tu protestuje (unimplemented), ale przecież ta strona jest tylko pod UWP
-#pragma warning disable Uno0001 // Uno type or member is not implemented
+            {   // Uno tu protestuje (unimplemented), ale przecież ta strona jest tylko pod UWP - już nie :)
                 oFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(oPicUri);
-#pragma warning restore Uno0001 // Uno type or member is not implemented
             }
             catch
             {
@@ -73,7 +72,7 @@ namespace KrakTram
             // w petli probuj ustawic obrazek, az bedzie
             while (iRok <= MAX_ROK)
             {
-                if (await WczytajPicek(iRok))
+                if (await WczytajPicekAsync(iRok))
                     break;
                 iRok = iRok + 1;
             }

@@ -24,8 +24,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--<ProgressRing x:Name="uiProcesuje" Grid.RowSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />-->
-
         <TextBlock x:Name="uiTitle" FontSize="18" HorizontalAlignment="Center" />
         <TextBlock x:Name="uiFileDate" FontSize="10" HorizontalAlignment="Center" Grid.Row="1"/>
 
@@ -47,7 +45,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="1" Text="{Binding sMin, Mode=OneWay }" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="1" Text="{Binding iMin, Mode=OneWay }" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="2" Text="{Binding Przyst, Mode=OneWay }" Margin="10,0,0,0" />
 
                         <Grid.ContextFlyout>

@@ -1,204 +1,7 @@
 ﻿using System.Linq;
 using System;
+using vb14 = VBlib.pkarlibmodule14;
 
-/* ewentualnie:
- progressbar przy czytaniu kolejnych tabliczek, szczegolnie dla Android? taki półprzezroczysty?
- wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
- android: nie działa ContextMenuFlyout!
- android: nie ma fontu Times!
- Warning! IsThisMoje chyba nie dziala! Tzn. zwraca windows_phone a nie nazwe Lumia_pkar?
-
-    <ikonka kosza - poprawne pokazywanie! jak jest cos wybrane w Combo>
-    <instrukcja: kółeczka doubleclick, click, oraz contextclick?>
-
-Uno STRIP:
-* mapka
-* szybkie wypełnianie Combo
-* contextMenu
-* historia sieci
-
-2021.04
-* próba uproszczenia Settings przez zrobienie Binding (i sprawdzenie czy to działa na Android) - DZIAŁA
-* próba czy można usunąć z Settings\ListView styl (workaround dla Height=0) - dalej NIE DZIAŁA
-* próba czy można dać not_win:CommandBar (było na razie StackPanel) - (niby działa, ale z tym paskiem na dole ma problem - zasłania go)
-
-2021.03
-* 3.6.0-dev.186
-* Uwaga! Android 11.0! [zresztą to wymóg Gogusia, od VIII 2021 new apps mają być 11.0]. Zmiana w Uno 9 XI 2020.
-
- 
-2020.10.30
- * przejście na własne Uno oparte o 3.1.6
- *      more fields in Geoposition	| 4061@20.09.17	| 2020.09.22
- * pkModuleShared.cs [..\..\..\_mojeSuby\pkarModule-Uno3-1-6.cs]
- *      ProgRing z tegoż modułu
-
-2020.03.10
- * trasa zwracało pustą, pewnie referer - bo powtórzenie requesta pomaga.
-
-STORE ANDROID 2002.1
-
-2020.02.12
- * [Android] przepięcie na Uno.945 z moimi dodatkami - w efekcie pkmodule aktualizacja (było: 3092)
- * [Android] splashscreen - ale nieudane, bo zostaje na srodku ekranu. Może za długo trwa ładowanie mainpage?
-            wycofuje sie z tego (<!-- --> w 
-            H:\Home\PIOTR\VStudio\_Vs2017\KrakTram\KrakTram_Uno\KrakTram_Uno.Droid\Resources\values\Styles.xml)
-
-2020.01.09
- * Trasa: gdy wczytana z cache trasa ma zero przystanków, traktuj plik jak nieistniejący
- * Android: usunięcie stylu co miał być splashscreenem (bo to chyba likwiduje ikonkę, protest z GoogleStore)
- * Android: powrót do Uno 3092, bo w 409 nie działa DoubleClick
- * Android: 3092 wymusza pełną własną obsługę Geolocator, GetAppVersion, 
-
-2020.01.07
- * szukanie przystanku wedle maski - gdy Cancel, i Android, to exit sub (bez pokazywania pełnej listy)
-
-STORE WINDOWS   10.2001.1.0
-STORE ANDROID   10.2001.1.0
-
-2019.12.31
- * własne tylko Geolocator:RequestAccess, samo pytanie GPSa juz z Uno (mojego zresztą)
- * dla Android, przyjmuje minimalne szerokości hardcoded, zeby ładniej wyglądąło (skoro nie umie skalować)
-
-2019.12.27
- * do mapki: dołączam Pedestrian, Transit (choć i tak chyba nie ma efektów)
- * zoom: 12 na desktop, ale 10 w telefonie, żeby wiecej zmieścic?
- * Odjazdy: uproszczenie XAML czasu odjazdu (bez pola o wysokosci 1)
- * MainPage, skalowanie: gdy włączone są także autobusy, szerokość pola jest dla "244", a gdy tylko tramwaje - dla "50"
-    
-2019.12.26
- * Odjazdy:DoubleTap na linii - przeskok do odjazdów danej linii (skrót, z ominięciem ContextMenu), to działa także na Android
- * Odjazdy: tam, gdzie ContextMenu był do tekstu, a mógł być do piętro wyżej (Grid), przeniosłem do grid
- * Trasa: nowe dla Android, skoro skrót z DoubleClick działa
- * Trasa: DoubleTap na przystanku przeskakuje do tabliczki przystanku (skrót)
- * Historia, oraz WedleMapy: nie wedle IsThisMoje, ale wedle GetBool z default isthismoje (ustawiane po wpisaniu punktu o nazwie "pkarinit")
-
-2019.12.23
- * podłączenie nowej kompilacji Uno (z 2.1.0-dev.408) - GetAppVersion, OpenBrowser w pkmodule
-     * dalej nie ma mapy
-     * dalej nie ma szerokości pola w Page_Loaded
-
-STORE ANDROID
-
-STORE WINDOWS
-
-2019.12.11
- Nowa strona: WedleMapy.xaml, wybor lokalizacji z okolicy ktorej ma pokazac tabliczki
-
-2019.12.10
- przeniesienie z Uno do wlasnego MyGeolocator - by mozna bylo sledzic. Poprawki i uzupelnienia w kodzie (ale i tak nie dziala)
- 
-2019.11.25
- MainPage: progressring podczas uruchamiania (szczególnie ważne dla Android)
- MainPage: przy itemsSource=LINQ stosuję LINQ.ToList(), co chyba faktycznie znacznie przyspiesza ładowanie Combo (nie na tyle, by bus także wczytywać)
- Setup:[andro] dodatkowy ToggleSwitch, wypełnianie listy tramwajów
- Odjazdy:WypiszTabele: przy itemsSource=LINQ stosuję LINQ.ToList()
-
-2019.11.11
- MainPage: gdy tylko jedno w Fav, automatyczny select tego
- MainPage: po zapinowaniu, wraca guzik wyszukiwania przystanku
- Reroutes: na start, rządek z webview jest likwidowany, przez to jest cały ekran na listę zmian [UWPonly]
- Reroutes: pasek pomiędzy webview a listą, oraz pomiędzy pozycjami z listy 
- Reroutes: wyszukiwarka
- Odjazdy: przywrócenie Real, i Act prefixów przy odjazdach
- Odjazdy: pkarmode wedle settings (po wpisaniu nazwy punktu), ale z defaultem IsThisMoje
-
-STORE WINDOWS, oraz testowa Android
-
-2019.11.07
- mainpage: zmiana Header combo na "tram", gdy są także autobusy
- mainpage: jesli po Search jest tylko jeden, to go od razu robi Select
- mainpage:Android: nie wypelnia combo przystankow, bo trwa to za dlugo - daje tam '--use search', zeby przyspieszyc pokazanie strony (na Android: dopiero po Loaded)
- setup: lista bliskich przystankow, sortowana wedle odleglosci (przywrocenie funkcjonalnosci ktora byla w XSLT)
- trasa: po wczytaniu trasy (refresh), jak jest to nieudane, to nie wylatuje z bledem 
- trasa: dla Uno, musi byc System.net.httpclient, co oznacza serie problemów z redirect- rozwiazane
- mainpage: szerokość Combo bus i tram są kopiowane z fav (bo to jest szersze...)
-    
-2019.11.06
-  mainpage: pokazywanie numeru wersji
-
-2019.11.05
-  setup: przeróbka z HTMLview na ListView (z nadzieją że na Android będzie lepiej wyglądało, nie takie malutkie)
-  odjazdy:no_win: dodaje Margin, bo Padding nie działa?
-
-2019.10.29
-  guzik Position (otwieranie panelu override GPS) jest tylko przy Setup z Main, a nie z Odjazdy
-  Setup: po zmianie bus/tram odświeżał listę, ale nie uwzględniał nowego ustawienia AlsoBus
-
-2019.10.26
- gdy podczas startu app, w cache lista_przystanków.Count < 1, to wymuś odczyt
-
-2019.10.25
- mainpage: buttony Pin/Unpin przy Combo, a nie w BottomAppBar
- mainpage: buttony z lupką (search)
- czytanie danych: przy błędzie pokazuje o który przystanek chodzi
- czytanie danych: DialogBox 'zero kursow' nie jest pokazywany przy wczytywaniu tabliczek pojedynczych, tylko raz (globalnie)
- poprawka: można przejść na tabliczkę przystankową także autobusową (wcześniej tylko tramwajowe)
-
- migracja do C# - udana
- likwidacja catch(Exception ex) » catch - żeby ograniczyc liczbę Warningów
- częściowo dodane await do DialogBoxów - żeby ograniczyc liczbę Warningów
-
- GITsync
-
-  migracja z Windows.Data.Json do Newtonsoft.Json.Linq
-
- BUG: 20190822 dlaczego pokazuje 'no tram in next hour' przy każdym przystanku tramwajowym?
- 2019.08.04 wczytanie przystanków tram JSON 0 objects - nie Cancel, tylko próbuje wczytac autobusowe
-
- 2019.07.27
- migracja do pkarmodule
- dla IsThisMoje, statystyka opóźnień - na razie tekstowa
-
-
- 4.1907 (29 VI)
- 2019.06.26 odjazdy:kierunek:contextMenu tylko ten, albo usun ten, kierunek z listy
-
- 2019.04.02
- 1. viewport w HEAD przy pokazywaniu zmian/reroutes zeby bylo czytelne
- 2019.04.09
- 1. pokazywanie częściowej listy (co kazde wczytanie tabliczki)
- 2019.04.19
- 1. zoom mode w historii sieci
- 2. zmiana domyślnego 30 dni na 14 dni w ważności cache objazdów
-
- 2019.03.16
- 1. przygotowanie: app korzysta z App.GetSettingsInt("treatAsSameStop", 150), ale nie ma ustawiania tego
- 2. wyszukiwanie przystanków wedle mask
- 3. pamietanie sposobu sortowania
- 2019.03.18
- 1. progressring przy wczytywaniu trasy
- 2019.03.21
- 1. strona Zmiany/Reroutes, cache'owalna
- 2. poprawka - po refresh trasy nie było refresh (tylko do pliku zapisywalo nowe)
-
-
- Wzięte ze Store description:
- v.4.1907
-* można filtrować listę odjazdów wedle kierunków ('tylko ten', lub 'bez tego'), dostępne w menu kontekstowym pola kierunku.
-
-v.4.1905
-* informacja o objazdach powinna być teraz czytelniejsza
-* dane o objazdach odświeżane są po 14 dniach (poprzednio: po 30) - można też wymusić odświeżenie 
-* podczas wczytywania tabliczek pokazywane są dane częściowe
-* zoom na stronie historii sieci tramwajowej
-
-
-v.4.1904 (zmiana stylu numerowania wersji)
-* można wyszukać przystanek wpisując fragment nazwy
-* sortowanie jest zapamiętywane, i używane po kolejnym uruchomieniu aplikacji
-* podczas wczytywania danych pokazywany jest ProgressRing  
-* strona objazdów/zmian tras
-
-v.3.1: Teraz aplikacja pokazuje także tabliczki dla przystanków autobusowych. Aby włączyć tą funkcjonalność, należy wejść na stronę ustawień.
-
-v.2.1:
-a) historia sieci tramwajowej w Krakowie (dostępne z głównej strony aplikacji)
-b) licznik przystanków na trasielinii (po pomnożeniu x2 daje przybliżony czas podróży)
-
-
-
-*/
 
 namespace KrakTram
 {
@@ -236,36 +39,35 @@ namespace KrakTram
                                      select c.Name;
         }
 #endif
+        public static async System.Threading.Tasks.Task LoadFavListAsync()
+        {
+            int iRet = App.oFavour.Load();
+            if (iRet > 0) return;   // wczytało po nowemu, JSON
 
+            if (await FavStopListXML.Load())
+            {
+                App.oFavour.Save(true);
+                return; // wczytało poprawnie XML
+            }
 
-        //private void ProgresywnyRing(bool sStart)
-        //{
+            // ani JSON, ani XML - to proba importu ze zmiennej (bardzo stara wersja, tylko Windows, ale skoro kod jest i niczemu nie wadzi...)
+            // kod jednak wadzi :) więc '//' [bo i tak migracja z XML do JSON)
+            //if (await FavStopListXML.Import())
+            //{
+            //    App.oFavour.Save(true);
+            //    return; // wczytało poprawnie ze zmiennej
+            //}
 
-        //    if (sStart)
-        //    { double dVal;
-        //        dVal = (System.Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth)) / 2;
-        //        if (dVal < 100) dVal = 100; // dla Android - jakby jeszcze nie było
-        //        uiProcesuje.Width = dVal;
-        //        uiProcesuje.Height = dVal;
-
-        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-        //        uiProcesuje.IsActive = true;
-        //    }
-        //    else
-        //    {
-        //        uiProcesuje.IsActive = false;
-        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-        //    }
-        //}
-
+        }
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+
             uiVersion.Text = "v. " + p.k.GetAppVers();
 
             // int i = (int)(System.TimeSpan.FromSeconds(20).TotalMilliseconds / 250.0); // i=80
 
-            p.k.SetSettingsInt("selectMode", 0);  // pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
+            vb14.SetSettingsInt("selectMode", 0);  // pokazywanie tabliczki: 0: punkt, 1: przystanek id ?
             KontrolaSzerokosci();
 
             // zeby nie bylo widac...
@@ -274,11 +76,11 @@ namespace KrakTram
             HideAppPins();
             HideSearchButtons();
 
-            p.k.ProgRingInit(true, false);
+            this.ProgRingInit(true, false);
 
-            p.k.ProgRingShow(true); // ProgresywnyRing(true);
+            this.ProgRingShow(true); // ProgresywnyRing(true);
 
-            if (p.k.GetSettingsBool("settingsAlsoBus"))
+            if (vb14.GetSettingsBool("settingsAlsoBus"))
             {
                 uiStopList.Header = "Tram";
                 uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
@@ -291,7 +93,7 @@ namespace KrakTram
 
             }
 
-            await App.LoadFavList();
+            await LoadFavListAsync();
             uiFavList.ItemsSource = from c in App.oFavour.GetList()
                                     orderby c.Name
                                     select c.Name;
@@ -299,8 +101,8 @@ namespace KrakTram
                 uiFavList.SelectedIndex = 0;
 
 
-            await App.CheckLoadStopList();
-            if (p.k.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp") )
+            await App.CheckLoadStopListAsync();
+            if (vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp") )
             {
                 uiStopList.ItemsSource = (from c in App.oStops.GetList("tram")
                                           orderby c.Name
@@ -309,12 +111,12 @@ namespace KrakTram
             else
             {
                 mbAndroAdd = true;
-                uiStopList.Items.Add(p.k.GetLangString("resUseSearch"));
+                uiStopList.Items.Add(vb14.GetLangString("resUseSearch"));
                 uiStopList.SelectedIndex = 0;
 
             }
 
-            if (p.k.GetSettingsBool("settingsAlsoBus"))
+            if (vb14.GetSettingsBool("settingsAlsoBus"))
             {
                 // przeniesione wyzej.
                 //uiStopList.Header = "Tram";
@@ -330,7 +132,7 @@ namespace KrakTram
                 else
                 {
                     mbAndroAdd = true;
-                    uiBusStopList.Items.Add(p.k.GetLangString("resUseSearch"));
+                    uiBusStopList.Items.Add(vb14.GetLangString("resUseSearch"));
                     uiBusStopList.SelectedIndex = 0;
                 }
 
@@ -341,7 +143,7 @@ namespace KrakTram
                 await System.Threading.Tasks.Task.Delay(500);
 
 
-            p.k.ProgRingShow(false); //ProgresywnyRing(false);
+            this.ProgRingShow(false); //ProgresywnyRing(false);
 
             if (!p.k.GetPlatform("uwp"))
                 KontrolaSzerokosci();   // powtarzamy dla Androida - moze juz jest przerysowane...
@@ -376,7 +178,7 @@ namespace KrakTram
                 uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiTesterLinia.Text = p.k.GetSettingsBool("settingsAlsoBus") ? "244" : "50";
+                uiTesterLinia.Text = vb14.GetSettingsBool("settingsAlsoBus") ? "244" : "50";
                 iWidthLine = (int)uiTesterLinia.ActualWidth;  //linia
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
@@ -399,8 +201,8 @@ namespace KrakTram
             //'uiTester.Text = "50"
             //'uiTester.Visibility = Visibility.Collapsed
 
-            p.k.SetSettingsInt("widthCol0", System.Math.Max(iWidthLine, iWidthTyp));
-            p.k.SetSettingsInt("widthCol3", iWidthTime);
+            vb14.SetSettingsInt("widthCol0", System.Math.Max(iWidthLine, iWidthTyp));
+            vb14.SetSettingsInt("widthCol3", iWidthTime);
         }
 
         private void HideAppPins()
@@ -419,7 +221,7 @@ namespace KrakTram
 
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            if (!p.k.GetSettingsBool("settingsAlsoBus"))
+            if (!vb14.GetSettingsBool("settingsAlsoBus"))
                     return;
 
             if (uiPinBus.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
@@ -432,12 +234,12 @@ namespace KrakTram
             uiUnPin.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
-        private async void uiUnPin_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void uiUnPin_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             // usun z Fav
             string sName = uiFavList.SelectedItem.ToString();
             App.oFavour.Del(sName);
-            await App.oFavour.Save(false);
+            App.oFavour.Save(false);
             uiFavList.ItemsSource = from c in App.oFavour.GetList()
                                     orderby c.Name
                                     select c.Name;
@@ -446,19 +248,19 @@ namespace KrakTram
         }
 
 
-        private async void uiPin_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void uiPin_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(msStopName))
                 return;
 
             // dodaj do Fav
             // Dim sName As String = uiStopList.SelectedItem
-            Przystanek oPrzyst = App.oStops.GetItem(msStopName);
+            VBlib.Przystanek oPrzyst = App.oStops.GetItem(msStopName);
             if (oPrzyst == null)
                 return;
 
             App.oFavour.Add(msStopName, oPrzyst.Lat, oPrzyst.Lon, 150);  // odl 150, zeby byl tram/bus
-            await App.oFavour.Save(false);
+            App.oFavour.Save(false);
 
             msStopName = ""; // powtorka buttonu nie zadziała
 
@@ -519,14 +321,13 @@ namespace KrakTram
                 return;
 
             string sStop = uiFavList.SelectedValue.ToString();
-            foreach (FavStop oStop in App.oFavour.GetList())
+            foreach (VBlib.FavStop oStop in App.oFavour.GetList())
             {
                 if (oStop.Name == sStop)
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = oStop.maxOdl;
-                    App.mdLat = oStop.Lat;
-                    App.mdLong = oStop.Lon;
+                    App.mPoint = p.k.NewBasicGeoposition(oStop.Lat, oStop.Lon);
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
                     this.Frame.Navigate(typeof(Odjazdy));
@@ -536,14 +337,13 @@ namespace KrakTram
 
         private void GoStop(string sName, string sCat)
         {
-            foreach (Przystanek oStop in App.oStops.GetList(sCat))
+            foreach (VBlib.Przystanek oStop in App.oStops.GetList(sCat))
             {
                 if (oStop.Name == sName)
                 {
                     App.mbGoGPS = false;
-                    App.mMaxOdl = p.k.GetSettingsInt("treatAsSameStop", 150);
-                    App.mdLat = oStop.Lat;
-                    App.mdLong = oStop.Lon;
+                    App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
+                    App.mPoint = p.k.NewBasicGeoposition(oStop.Lat, oStop.Lon);
                     App.msCat = oStop.Cat;
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
@@ -572,7 +372,7 @@ namespace KrakTram
 
         private async void uiStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInputAsync("msgEnterName");
+            string sMask = await vb14.DialogBoxInputResAsync("msgEnterName");
 
             if (string.IsNullOrEmpty(sMask))
             {
@@ -601,7 +401,7 @@ namespace KrakTram
 
         private async void uiBusStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInputAsync("msgEnterName");
+            string sMask = await vb14.DialogBoxInputResAsync("msgEnterName");
             if (string.IsNullOrEmpty(sMask))
             {
                 sMask = sMask.ToLower();
@@ -627,7 +427,7 @@ namespace KrakTram
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
-
+#pragma warning disable IDE1006 // Naming Styles
         private void uiSearchBus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiBusStopList_DoubleTapped(null, null);
@@ -660,6 +460,7 @@ namespace KrakTram
         }
 
 #pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning restore IDE1006 // Naming Styles
 
     }
 }

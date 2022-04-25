@@ -1,14 +1,16 @@
 ﻿using System;
+using vb14 = VBlib.pkarlibmodule14;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+
 
 namespace KrakTram
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
+
     public sealed partial class Opoznienia : Windows.UI.Xaml.Controls.Page
     {
+        private static DateTime mdOpoznLastDate = System.DateTime.Now.AddDays(-5);
+
         public Opoznienia()
         {
             this.InitializeComponent();
@@ -19,29 +21,10 @@ namespace KrakTram
         private double mdDelayMinsBus = 0;
         private int miDelayCntBus = 0;
 
-        //private void Procesuje(bool bShow)
-        //{
-        //    if (bShow)
-        //    {
-        //        double dVal;
-        //        dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
-        //        uiProcesuje.Width = dVal;
-        //        uiProcesuje.Height = dVal;
-        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-        //        uiProcesuje.IsActive = true;
-        //        uiMapka.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-        //    }
-        //    else
-        //    {
-        //        uiProcesuje.IsActive = false;
-        //        uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-        //        uiMapka.Visibility = Windows.UI.Xaml.Visibility.Visible;
-        //    }
-        //}
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            p.k.ProgRingInit(true, false);
+            this.ProgRingInit(true, false);
         }
 
         private static void PokazDelayStat(int iDelay, int iCount, int iMaxDelay, Windows.UI.Xaml.Controls.TextBlock uiDelay, Windows.UI.Xaml.Controls.TextBlock uiData)
@@ -75,11 +58,27 @@ namespace KrakTram
             int iCount = 0;
             int iMaxDelay = 0;
 
-            p.k.ProgRingShow(true);
-            bool bRet = await App.oStops.OpoznieniaFromHttpAsync(iTyp);
-            if (bRet)
-                bRet = App.oStops.OpoznieniaGetStat(iTyp, ref iDelay, ref iCount, ref iMaxDelay);
-            p.k.ProgRingShow(false);
+            // policzenie opóźnień, b0 = bus, b1 = tram
+            if (mdOpoznLastDate.AddMinutes(5) > DateTime.Now)
+                if (!await vb14.DialogBoxYNAsync("Niedawno było, na pewno?"))
+                    return;
+
+            this.ProgRingShow(true);
+
+            
+            string sRet = await App.oStops.OpoznieniaFromHttpAsync(iTyp);
+            if (sRet == "")
+            {
+                vb14.DialogBox(App.oStops.sLastError);
+                return;
+            }
+            p.k.ClipPut(sRet);
+
+            // sygnalizacja kiedy bylo ostatnie
+            mdOpoznLastDate = DateTime.Now;
+            
+            bool bRet = App.oStops.OpoznieniaGetStat(iTyp, ref iDelay, ref iCount, ref iMaxDelay);
+            this.ProgRingShow(false);
             if (!bRet)
                 return;
 
@@ -112,8 +111,115 @@ namespace KrakTram
         {
             // 4. info: aktualna średnia, liczba wpisów, liczba wpisów z minutami (a nie rozkładowe)
             // 5. pokazywanie na mapie, kółka z kolorami
-            App.oStops.OpoznieniaDoMapy(uiTramCB.IsChecked.GetValueOrDefault(false), uiBusCB.IsChecked.GetValueOrDefault(false), uiMapka);
+
+            // ze wzgledu na VBlibek z Przystanki :)
+            OpoznieniaDoMapy(uiTramCB.IsChecked.GetValueOrDefault(false), uiBusCB.IsChecked.GetValueOrDefault(false), uiMapka);
         }
+
+        public int OpoznieniaDoMapy(bool bTram, bool bBus, Windows.UI.Xaml.Controls.Maps.MapControl oMapCtrl)
+        {
+            // iType: 1: tram, 2:bus, 3: wszystko (ale nie 'other')
+            if (oMapCtrl == null)
+                return 0;
+
+            // https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/display-poi
+
+            int iCnt = 0;
+
+            Windows.UI.Xaml.Media.SolidColorBrush oBrush2min, oBrush3min, oBrush4min, oBrush5min;
+            oBrush2min = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Yellow);
+            oBrush3min = oBrush2min;
+            oBrush4min = oBrush2min;
+            oBrush5min = oBrush2min;
+            oBrush2min.Opacity = 0.3;
+            oBrush3min.Opacity = 0.4;
+            oBrush4min.Opacity = 0.5;
+            oBrush5min.Opacity = 0.6;
+            Windows.UI.Xaml.Media.SolidColorBrush oBrush10min, oBrush20min, oBrushMaxmin;
+            oBrush10min = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.OrangeRed);
+            oBrush20min = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+            oBrushMaxmin = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DarkRed);
+            oBrush10min.Opacity = 0.5;
+            oBrush20min.Opacity = 0.5;
+            oBrushMaxmin.Opacity = 0.5;
+
+
+            foreach (VBlib.Przystanek oItem in App.oStops.GetList("all"))
+            {
+                if (oItem.iEntriesCount == 0)
+                    continue;
+                switch (oItem.Cat)
+                {
+                    case "bus":
+                        if (!bBus)
+                            continue;
+                        break;
+                    case "tram":
+                        if (!bTram)
+                            continue;
+                        break;
+                    default:
+                        continue;
+                }
+
+                Windows.UI.Xaml.Shapes.Ellipse oNew = new Windows.UI.Xaml.Shapes.Ellipse();
+                oNew.Height = 20;
+                oNew.Width = 20;
+                double dAvgDelay = 0;
+
+                dAvgDelay = oItem.iSumDelay / (double)oItem.iEntriesCount;
+
+                if (dAvgDelay < 1)
+                    continue;
+
+                if (dAvgDelay > 2)
+                {
+                    if (dAvgDelay > 3)
+                    {
+                        if (dAvgDelay > 4)
+                        {
+                            if (dAvgDelay > 5)
+                            {
+                                if (dAvgDelay > 10)
+                                {
+                                    if (dAvgDelay > 20)
+                                        oNew.Fill = oBrushMaxmin;
+                                    else
+                                        oNew.Fill = oBrush20min;
+                                }
+                                else
+                                    oNew.Fill = oBrush10min;
+                            }
+                            else
+                                oNew.Fill = oBrush5min;
+                        }
+                        else
+                            oNew.Fill = oBrush4min;
+                    }
+                    else
+                        oNew.Fill = oBrush3min;
+                }
+                else
+                    oNew.Fill = oBrush2min;
+
+                Windows.Devices.Geolocation.BasicGeoposition oPosition;
+                oPosition = new Windows.Devices.Geolocation.BasicGeoposition();
+                oPosition.Latitude = oItem.Lat;
+                oPosition.Longitude = oItem.Lon;
+                Windows.Devices.Geolocation.Geopoint oPoint;
+                oPoint = new Windows.Devices.Geolocation.Geopoint(oPosition);
+
+                iCnt += 1;
+                oMapCtrl.Children.Add(oNew);
+
+                // shared member - ale skąd wie jaka mapa? nie można dwu wyświetlić?
+                Windows.UI.Xaml.Controls.Maps.MapControl.SetLocation(oNew, oPoint);
+                Windows.UI.Xaml.Controls.Maps.MapControl.SetNormalizedAnchorPoint(oNew, new Windows.Foundation.Point(0.5, 0.5));
+            }
+
+            return iCnt;
+        }
+
 
         private void uiMapka_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {

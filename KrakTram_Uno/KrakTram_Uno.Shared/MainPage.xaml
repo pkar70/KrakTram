@@ -24,7 +24,6 @@
             <RowDefinition Height="3*"/>    <!-- 4: spacer -->
         </Grid.RowDefinitions>
 
-        <!--<ProgressRing x:Name="uiProcesuje" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Grid.RowSpan="5"/> -->
         <TextBlock HorizontalAlignment="Center" FontSize="24" Text="Krak Tram" />
         <TextBlock HorizontalAlignment="Center" Grid.Row="1" FontSize="12" Text=" " Name="uiVersion" Margin="0,5,0,0"/>
 
@@ -92,6 +91,7 @@
             <!--<CommandBar Style="{StaticResource XamlCommandBar}"> -->
                 <StackPanel Orientation="Horizontal" >
                 <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />                <!-- Style="{StaticResource XamlAppBarButton}"-->
+                <AppBarButton x:Uid="uiHistoria" Icon="Clock" Label="Historia" Click="uiHist_Click" />
                 <AppBarSeparator />
                 <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" Style="{StaticResource XamlAppBarButton}" />
                 </StackPanel> 
@@ -103,7 +103,7 @@
             <!-- <AppBarButton x:Uid="uiUnpin" Icon="UnPin" x:Name="uiUnpin" Label="Del fav" Click="uiUnPin_Click" Visibility="Collapsed" />
             <AppBarButton x:Uid="uiPin" Icon="Pin" x:Name="uiPin" Label="Add fav" Click="uiPin_Click" Visibility="Collapsed" /> -->
             <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />
-            <win:AppBarButton x:Uid="uiHistoria" Icon="Clock" Label="Historia" Click="uiHist_Click" />
+            <AppBarButton x:Uid="uiHistoria" Icon="Clock" Label="Historia" Click="uiHist_Click" />
             <AppBarSeparator Name="uiAppSep" />
             <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click"  />
         </win:CommandBar>

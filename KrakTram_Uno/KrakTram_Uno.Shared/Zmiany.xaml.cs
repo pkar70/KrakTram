@@ -1,42 +1,13 @@
-﻿using System;
-//using System.Collections.Generic;
-using System.IO;
+﻿
 using System.Linq;
-//using System.Runtime.InteropServices.WindowsRuntime;
-//using Windows.Foundation;
-//using Windows.Foundation.Collections;
-//using Windows.UI.Xaml;
-//using Windows.UI.Xaml.Controls;
-//using Windows.UI.Xaml.Controls.Primitives;
-//using Windows.UI.Xaml.Data;
-//using Windows.UI.Xaml.Input;
-//using Windows.UI.Xaml.Media;
-//using Windows.UI.Xaml.Navigation;
-
-//using System;
-//using System.IO;
-//using System.Threading.Tasks;
-//using Microsoft.VisualBasic;
-
-public partial class JednaInfo
-{
-    public string sLinie { get; set; }
-    public string sCzas { get; set; }
-    public string sTytul { get; set; }
-    public string sInfo { get; set; }
-}
+using vb14 = VBlib.pkarlibmodule14;
 
 namespace KrakTram
 {
     public sealed partial class Zmiany : Windows.UI.Xaml.Controls.Page
     {
-        private System.Collections.ObjectModel.Collection<JednaInfo> moLista;
 
-        private const string FILENAME = "zmiany.xml";
-
-        /// <summary>
-        /// An empty page that can be used on its own or navigated to within a Frame.
-        /// </summary>
+        private VBlib.Zmiany oVbLib = new VBlib.Zmiany(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
 
         public Zmiany()
         {
@@ -50,22 +21,22 @@ namespace KrakTram
 
         private async void uiSearch_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            string sMask = await p.k.DialogBoxInputAsync("msgSearchReroute");
+            string sMask = await vb14.DialogBoxInputResAsync("msgSearchReroute");
 
             if (string.IsNullOrEmpty(sMask))
             {
-                uiLista.ItemsSource = moLista;
+                uiLista.ItemsSource = oVbLib.moItemy;
             }
             else
             {
                 sMask = sMask.ToLower();
-                uiLista.ItemsSource = from c in moLista
+                uiLista.ItemsSource = from c in oVbLib.moItemy
                                       where c.sInfo.ToLower().Contains(sMask)
                                       select c;
             }
 
             if (uiLista.Items.Count == 1)
-                PokazObjazd((uiLista.Items.ElementAt(0) as JednaInfo).sInfo);
+                PokazObjazd((uiLista.Items.ElementAt(0) as VBlib.JednaInfo).sInfo);
         }
 
     
@@ -73,160 +44,63 @@ namespace KrakTram
     private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
-            await WczytajTrase();
-            uiLista.ItemsSource = moLista; // from c in moLista;
+            await WczytajZmiany();
+            uiLista.ItemsSource = oVbLib.moItemy; // from c in moLista;
         }
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
-            p.k.ProgRingInit(true, false);
+            this.ProgRingInit(true, false);
 
-            if (!await TryLoadCache())
+            if (!TryLoadCache())
             {
-                //double dVal;
-                //dVal = Math.Min(uiGrid.ActualHeight, uiGrid.ActualWidth) / 2;
-                //uiProcesuje.Width = dVal;
-                //uiProcesuje.Height = dVal;
-                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                //uiProcesuje.IsActive = true;
-                p.k.ProgRingShow(true);
-                await WczytajTrase();
-                p.k.ProgRingShow(false);
-                //uiProcesuje.IsActive = false;
-                //uiProcesuje.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                this.ProgRingShow(true);
+                await WczytajZmiany();
+                this.ProgRingShow(false);
             }
 
 #if !__ANDROID__
             // uiRowInfo.Height = new Windows.UI.Xaml.GridLength { GridUnitType= Windows.UI.Xaml.GridUnitType.Pixel,  }
             uiRowInfo.MaxHeight = 10;
 #endif 
-            if (moLista.Count < 1)
+            if (oVbLib.moItemy.Count < 1)
                 return;
-            uiLista.ItemsSource = moLista; //  From c In moLista ' Order By c.iMin
+            uiLista.ItemsSource = oVbLib.moItemy; //  From c In moLista ' Order By c.iMin
 
         }
 
 
-        private async System.Threading.Tasks.Task<bool> TryLoadCache()
+        private bool TryLoadCache()
         {
-            Windows.Storage.StorageFile oObj;
-            oObj = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.TryGetItemAsync(FILENAME)) as Windows.Storage.StorageFile;
-            if (oObj == null)
-                return false;
+            string sRet = oVbLib.TryLoadCache();
+            if(sRet == "") return false;
 
-            Windows.Storage.StorageFile oFile = oObj as Windows.Storage.StorageFile;
-
-            if (oFile.DateCreated.AddDays(14) < DateTime.Now)
-                return false;    // za stare
-            uiFileDate.Text = oFile.DateCreated.ToString("dd/MM/yyyy");
-
-            System.Xml.Serialization.XmlSerializer oSer;
-            oSer = new System.Xml.Serialization.XmlSerializer(typeof(System.Collections.ObjectModel.Collection<JednaInfo>));
-            Stream oStream = await oFile.OpenStreamForReadAsync();
-            try
-            {
-                System.Xml.XmlReader oXmlReader = System.Xml.XmlReader.Create(oStream);
-                moLista = oSer.Deserialize(oXmlReader) as System.Collections.ObjectModel.Collection<JednaInfo>;
-                oXmlReader.Dispose();
-            }
-            catch
-            {
-                return false;
-            }
-
+            uiFileDate.Text = sRet;
             uiReload.IsEnabled = true;
 
             return true;
         }
-        private async System.Threading.Tasks.Task Save()
-        {
-            Windows.Storage.StorageFile oFile;
-            oFile = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.TryGetItemAsync(FILENAME)) as Windows.Storage.StorageFile;
-            if (oFile != null)
-                await oFile.DeleteAsync();
-            // bez tego kasowania create timestamp jest stary!
 
-            oFile = await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync(FILENAME, Windows.Storage.CreationCollisionOption.ReplaceExisting);
-
-            if (oFile == null)
-                return;
-
-            System.Xml.Serialization.XmlSerializer oSer;
-            oSer = new System.Xml.Serialization.XmlSerializer(typeof(System.Collections.ObjectModel.Collection<JednaInfo>));
-            Stream oStream = await oFile.OpenStreamForWriteAsync();
-            oSer.Serialize(oStream, moLista);
-            oStream.Dispose();   // == fclose
-        }
-
-        private async System.Threading.Tasks.Task<bool> WczytajTrase()
+        private async System.Threading.Tasks.Task<bool> WczytajZmiany()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                await p.k.DialogBoxResAsync("resErrorNoNetwork");
+                await vb14.DialogBoxResAsync("resErrorNoNetwork");
                 return false;
             }
 
-            System.Net.Http.HttpClient oHttp = new System.Net.Http.HttpClient();
-
-            string sPage = "";
-
-            bool bError = false;
-
-            // oHttp.Timeout = TimeSpan.FromSeconds(8)
-            // timeout jest tylko w System.Net.http, ale tam nie działa ("The HTTP redirect request failed")
-
-            try
+            string sRet = await oVbLib.WczytajZmiany();
+            if(sRet != "")
             {
-                sPage = await oHttp.GetStringAsync(new Uri("http://kmkrakow.pl/"));
-            }
-            catch 
-            {
-                bError = true;
-            }
-            oHttp.Dispose();
-
-            if (bError)
-            {
-                await p.k.DialogBoxResAsync("resErrorGetHttp");
+                await vb14.DialogBoxAsync(sRet);
                 return false;
             }
 
-            moLista = new System.Collections.ObjectModel.Collection<JednaInfo>();
-
-            int iInd;
-            iInd = sPage.IndexOf("<div class=\"linie");
-            while (iInd > 0)
-            {
-                var oNew = new JednaInfo();
-
-                sPage = sPage.Substring(iInd);
-                iInd = sPage.IndexOf("</");
-                oNew.sLinie = p.k.RemoveHtmlTags(sPage.Substring(0, iInd));
-
-                iInd = sPage.IndexOf("<div class=\"przedz");
-                sPage = sPage.Substring(iInd);
-                iInd = sPage.IndexOf("</");
-                oNew.sCzas = p.k.RemoveHtmlTags(sPage.Substring(0, iInd));
-
-                iInd = sPage.IndexOf("<h2 class=\"tyt");
-                sPage = sPage.Substring(iInd);
-                iInd = sPage.IndexOf("</");
-                oNew.sTytul = p.k.RemoveHtmlTags(sPage.Substring(0, iInd));
-
-                iInd = sPage.IndexOf("<div class=\"hide");
-                sPage = sPage.Substring(iInd);
-                iInd = sPage.IndexOf("</div");
-                oNew.sInfo = sPage.Substring(0, iInd) + "</div>";
-
-                moLista.Add(oNew);
-
-                iInd = sPage.IndexOf("<div class=\"linie");
-            }
 
             uiFileDate.Text = "";
             uiReload.IsEnabled = false;
-            await Save();
+            oVbLib.Save();
             return true;
         }
 
@@ -245,7 +119,7 @@ namespace KrakTram
         }
         private void uiPokaz_Click(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            JednaInfo oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as JednaInfo;
+            VBlib.JednaInfo oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as VBlib.JednaInfo;
 
             string sHtml = oItem.sInfo;
             PokazObjazd(sHtml);

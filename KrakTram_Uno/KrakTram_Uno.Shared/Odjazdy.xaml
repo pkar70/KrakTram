@@ -9,6 +9,10 @@
     xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win" Loaded="Page_Loaded" >
 
+    <UserControl.Resources>
+        <local:KonwersjaVisibility x:Key="KonwersjaVisib" />
+    </UserControl.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -96,8 +100,8 @@
                                         <MenuFlyoutSeparator/>
                                         <MenuFlyoutItem Text="{Binding PlanTime, Mode=OneWay }" />
                                         <MenuFlyoutItem Text="{Binding ActTime, Mode=OneWay }" />
-                                        <MenuFlyoutSeparator Visibility="{Binding bPkarMode, Mode=OneWay }"/>
-                                        <MenuFlyoutItem Text="Raw data" Visibility="{Binding bPkarMode, Mode=OneWay }" Click="uiRawData_Click"/>
+                                        <MenuFlyoutSeparator Visibility="{Binding bPkarMode, Mode=OneWay,  Converter={StaticResource KonwersjaVisib} }"/>
+                                        <MenuFlyoutItem Text="Raw data" Visibility="{Binding bPkarMode, Mode=OneWay,  Converter={StaticResource KonwersjaVisib} }" Click="uiRawData_Click"/>
                                     </MenuFlyout>
                                 </Grid.ContextFlyout>
                             </Grid>

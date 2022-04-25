@@ -1,0 +1,230 @@
+
+ progressbar przy czytaniu kolejnych tabliczek, szczegolnie dla Android? taki pó³przezroczysty?
+ wiecej mozliwosci 'isthismoje' oraz 'biggerpermission': Aska, Gibala, etc?
+ android: nie dzia³a ContextMenuFlyout!
+ android: nie ma fontu Times!
+ Warning! IsThisMoje chyba nie dziala! Tzn. zwraca windows_phone a nie nazwe Lumia_pkar?
+
+    <ikonka kosza - poprawne pokazywanie! jak jest cos wybrane w Combo>
+    <instrukcja: kó³eczka doubleclick, click, oraz contextclick?>
+
+Uno STRIP:
+* mapka
+* szybkie wype³nianie Combo
+* contextMenu
+* historia sieci
+
+2022.04.25
+* _tudus oraz _changes
+* trochê na $"{}"
+* trochê rename funkcji na *Async
+* Microsoft.UI.XAML (czyli mo¿e wygl¹daæ inaczej)
+* próba WinUI 2.7.1 - brzydka! i pasek na dole z CommandBar, nie nadaje sie. WinUI 2.4 mo¿e byæ.
+* próba <muxc:RadioMenuFlyoutItem Text="Small icons" GroupName="ViewGroup"/> - ale jednak to brzydsze, kropka ma³o wyraŸna, fajka od ToggleMenuFlyoutItem lepsza.
+* oNew.sMin robione by³o z iMin, ale niech sam sobie przetwarza w XAML z Int na String
+* FUNC: pokazywanie trasy - uwzglêdnia (przy liczniku przystanków) ¿e mog¹ byæ numerowane s³upki
+* sprawdzam: wczytywanie listy przystanków via http daje bez s³upków (i tram, i bus)
+* BUG: po przeniesieniu do Vblib, nie pokazywa³o pobliskich przystanków autobusowych (w Setup)
+* FUNC: przeskok do tabliczki (z listy przystanków) usuwa numerek s³upka
+* BUG: by³ b³¹d we wczytywaniu INI (w pkar.cs) - nie wczytywa³o w ogóle, a mia³o zreszt¹ niby tylko w WIN
+
+
+2022.04.06
+* jest ju¿ Uno z poprawionym geolocator, wiêc mogê przejœæ z w³asnego Uno na publiczne;
+*   co wiêcej, istotne zmiany w VBlib i podziale na VBlib/shared.cs
+*   co wiêcej, zrobili podzia³ przystanków na s³upki, wiêc app i tak wymaga zmiany
+*   => *TODO* wyrzucenie fav.xml (2 osoby u¿ywaj¹ tego pod Andro, mog¹ straciæ listê), jak zrobi¹ import do JSON
+
+STORE UWP
+
+2022.01.29
+* tak¿e Zmiany, oraz Trasa - co koñczy mo¿liwe migracje
+* GPS z Point na BasicGeoPosition i to co jest w pkarmodule
+
+2022.01.28
+* wstawiam VBlibek (.Net Std 1.4), ale to nie ma XMLIgnore etc., wiêc zamieniam na JSON (powoli)
+*   kilka problemów, ale: Przystanek, TypeFavour, TypeOdjazdy s¹ przeniesione
+*   oraz Fav.Init z w³asnych przenoszê do pswd.cs
+
+STORE ANDRO
+
+2021.04
+* próba uproszczenia Settings przez zrobienie Binding (i sprawdzenie czy to dzia³a na Android) - DZIA£A
+* próba czy mo¿na usun¹æ z Settings\ListView styl (workaround dla Height=0) - dalej NIE DZIA£A
+* próba czy mo¿na daæ not_win:CommandBar (by³o na razie StackPanel) - (niby dzia³a, ale z tym paskiem na dole ma problem - zas³ania go)
+
+2021.03
+* 3.6.0-dev.186
+* Uwaga! Android 11.0! [zreszt¹ to wymóg Gogusia, od VIII 2021 new apps maj¹ byæ 11.0]. Zmiana w Uno 9 XI 2020.
+
+ 
+2020.10.30
+ * przejœcie na w³asne Uno oparte o 3.1.6
+ *      more fields in Geoposition	| 4061@20.09.17	| 2020.09.22
+ * pkModuleShared.cs [..\..\..\_mojeSuby\pkarModule-Uno3-1-6.cs]
+ *      ProgRing z tego¿ modu³u
+
+2020.03.10
+ * trasa zwraca³o pust¹, pewnie referer - bo powtórzenie requesta pomaga.
+
+STORE ANDROID 2002.1
+
+2020.02.12
+ * [Android] przepiêcie na Uno.945 z moimi dodatkami - w efekcie pkmodule aktualizacja (by³o: 3092)
+ * [Android] splashscreen - ale nieudane, bo zostaje na srodku ekranu. Mo¿e za d³ugo trwa ³adowanie mainpage?
+            wycofuje sie z tego (<!-- --> w 
+            H:\Home\PIOTR\VStudio\_Vs2017\KrakTram\KrakTram_Uno\KrakTram_Uno.Droid\Resources\values\Styles.xml)
+
+2020.01.09
+ * Trasa: gdy wczytana z cache trasa ma zero przystanków, traktuj plik jak nieistniej¹cy
+ * Android: usuniêcie stylu co mia³ byæ splashscreenem (bo to chyba likwiduje ikonkê, protest z GoogleStore)
+ * Android: powrót do Uno 3092, bo w 409 nie dzia³a DoubleClick
+ * Android: 3092 wymusza pe³n¹ w³asn¹ obs³ugê Geolocator, GetAppVersion, 
+
+2020.01.07
+ * szukanie przystanku wedle maski - gdy Cancel, i Android, to exit sub (bez pokazywania pe³nej listy)
+
+STORE WINDOWS   10.2001.1.0
+STORE ANDROID   10.2001.1.0
+
+2019.12.31
+ * w³asne tylko Geolocator:RequestAccess, samo pytanie GPSa juz z Uno (mojego zreszt¹)
+ * dla Android, przyjmuje minimalne szerokoœci hardcoded, zeby ³adniej wygl¹d¹³o (skoro nie umie skalowaæ)
+
+2019.12.27
+ * do mapki: do³¹czam Pedestrian, Transit (choæ i tak chyba nie ma efektów)
+ * zoom: 12 na desktop, ale 10 w telefonie, ¿eby wiecej zmieœcic?
+ * Odjazdy: uproszczenie XAML czasu odjazdu (bez pola o wysokosci 1)
+ * MainPage, skalowanie: gdy w³¹czone s¹ tak¿e autobusy, szerokoœæ pola jest dla "244", a gdy tylko tramwaje - dla "50"
+    
+2019.12.26
+ * Odjazdy:DoubleTap na linii - przeskok do odjazdów danej linii (skrót, z ominiêciem ContextMenu), to dzia³a tak¿e na Android
+ * Odjazdy: tam, gdzie ContextMenu by³ do tekstu, a móg³ byæ do piêtro wy¿ej (Grid), przenios³em do grid
+ * Trasa: nowe dla Android, skoro skrót z DoubleClick dzia³a
+ * Trasa: DoubleTap na przystanku przeskakuje do tabliczki przystanku (skrót)
+ * Historia, oraz WedleMapy: nie wedle IsThisMoje, ale wedle GetBool z default isthismoje (ustawiane po wpisaniu punktu o nazwie "pkarinit")
+
+2019.12.23
+ * pod³¹czenie nowej kompilacji Uno (z 2.1.0-dev.408) - GetAppVersion, OpenBrowser w pkmodule
+     * dalej nie ma mapy
+     * dalej nie ma szerokoœci pola w Page_Loaded
+
+STORE ANDROID
+
+STORE WINDOWS
+
+2019.12.11
+ Nowa strona: WedleMapy.xaml, wybor lokalizacji z okolicy ktorej ma pokazac tabliczki
+
+2019.12.10
+ przeniesienie z Uno do wlasnego MyGeolocator - by mozna bylo sledzic. Poprawki i uzupelnienia w kodzie (ale i tak nie dziala)
+ 
+2019.11.25
+ MainPage: progressring podczas uruchamiania (szczególnie wa¿ne dla Android)
+ MainPage: przy itemsSource=LINQ stosujê LINQ.ToList(), co chyba faktycznie znacznie przyspiesza ³adowanie Combo (nie na tyle, by bus tak¿e wczytywaæ)
+ Setup:[andro] dodatkowy ToggleSwitch, wype³nianie listy tramwajów
+ Odjazdy:WypiszTabele: przy itemsSource=LINQ stosujê LINQ.ToList()
+
+2019.11.11
+ MainPage: gdy tylko jedno w Fav, automatyczny select tego
+ MainPage: po zapinowaniu, wraca guzik wyszukiwania przystanku
+ Reroutes: na start, rz¹dek z webview jest likwidowany, przez to jest ca³y ekran na listê zmian [UWPonly]
+ Reroutes: pasek pomiêdzy webview a list¹, oraz pomiêdzy pozycjami z listy 
+ Reroutes: wyszukiwarka
+ Odjazdy: przywrócenie Real, i Act prefixów przy odjazdach
+ Odjazdy: pkarmode wedle settings (po wpisaniu nazwy punktu), ale z defaultem IsThisMoje
+
+STORE WINDOWS, oraz testowa Android
+
+2019.11.07
+ mainpage: zmiana Header combo na "tram", gdy s¹ tak¿e autobusy
+ mainpage: jesli po Search jest tylko jeden, to go od razu robi Select
+ mainpage:Android: nie wypelnia combo przystankow, bo trwa to za dlugo - daje tam '--use search', zeby przyspieszyc pokazanie strony (na Android: dopiero po Loaded)
+ setup: lista bliskich przystankow, sortowana wedle odleglosci (przywrocenie funkcjonalnosci ktora byla w XSLT)
+ trasa: po wczytaniu trasy (refresh), jak jest to nieudane, to nie wylatuje z bledem 
+ trasa: dla Uno, musi byc System.net.httpclient, co oznacza serie problemów z redirect- rozwiazane
+ mainpage: szerokoœæ Combo bus i tram s¹ kopiowane z fav (bo to jest szersze...)
+    
+2019.11.06
+  mainpage: pokazywanie numeru wersji
+
+2019.11.05
+  setup: przeróbka z HTMLview na ListView (z nadziej¹ ¿e na Android bêdzie lepiej wygl¹da³o, nie takie malutkie)
+  odjazdy:no_win: dodaje Margin, bo Padding nie dzia³a?
+
+2019.10.29
+  guzik Position (otwieranie panelu override GPS) jest tylko przy Setup z Main, a nie z Odjazdy
+  Setup: po zmianie bus/tram odœwie¿a³ listê, ale nie uwzglêdnia³ nowego ustawienia AlsoBus
+
+2019.10.26
+ gdy podczas startu app, w cache lista_przystanków.Count < 1, to wymuœ odczyt
+
+2019.10.25
+ mainpage: buttony Pin/Unpin przy Combo, a nie w BottomAppBar
+ mainpage: buttony z lupk¹ (search)
+ czytanie danych: przy b³êdzie pokazuje o który przystanek chodzi
+ czytanie danych: DialogBox 'zero kursow' nie jest pokazywany przy wczytywaniu tabliczek pojedynczych, tylko raz (globalnie)
+ poprawka: mo¿na przejœæ na tabliczkê przystankow¹ tak¿e autobusow¹ (wczeœniej tylko tramwajowe)
+
+ migracja do C# - udana
+ likwidacja catch(Exception ex) » catch - ¿eby ograniczyc liczbê Warningów
+ czêœciowo dodane await do DialogBoxów - ¿eby ograniczyc liczbê Warningów
+
+ GITsync
+
+  migracja z Windows.Data.Json do Newtonsoft.Json.Linq
+
+ BUG: 20190822 dlaczego pokazuje 'no tram in next hour' przy ka¿dym przystanku tramwajowym?
+ 2019.08.04 wczytanie przystanków tram JSON 0 objects - nie Cancel, tylko próbuje wczytac autobusowe
+
+ 2019.07.27
+ migracja do pkarmodule
+ dla IsThisMoje, statystyka opóŸnieñ - na razie tekstowa
+
+
+ 4.1907 (29 VI)
+ 2019.06.26 odjazdy:kierunek:contextMenu tylko ten, albo usun ten, kierunek z listy
+
+ 2019.04.02
+ 1. viewport w HEAD przy pokazywaniu zmian/reroutes zeby bylo czytelne
+ 2019.04.09
+ 1. pokazywanie czêœciowej listy (co kazde wczytanie tabliczki)
+ 2019.04.19
+ 1. zoom mode w historii sieci
+ 2. zmiana domyœlnego 30 dni na 14 dni w wa¿noœci cache objazdów
+
+ 2019.03.16
+ 1. przygotowanie: app korzysta z App.GetSettingsInt("treatAsSameStop", 150), ale nie ma ustawiania tego
+ 2. wyszukiwanie przystanków wedle mask
+ 3. pamietanie sposobu sortowania
+ 2019.03.18
+ 1. progressring przy wczytywaniu trasy
+ 2019.03.21
+ 1. strona Zmiany/Reroutes, cache'owalna
+ 2. poprawka - po refresh trasy nie by³o refresh (tylko do pliku zapisywalo nowe)
+
+
+ Wziête ze Store description:
+ v.4.1907
+* mo¿na filtrowaæ listê odjazdów wedle kierunków ('tylko ten', lub 'bez tego'), dostêpne w menu kontekstowym pola kierunku.
+
+v.4.1905
+* informacja o objazdach powinna byæ teraz czytelniejsza
+* dane o objazdach odœwie¿ane s¹ po 14 dniach (poprzednio: po 30) - mo¿na te¿ wymusiæ odœwie¿enie 
+* podczas wczytywania tabliczek pokazywane s¹ dane czêœciowe
+* zoom na stronie historii sieci tramwajowej
+
+
+v.4.1904 (zmiana stylu numerowania wersji)
+* mo¿na wyszukaæ przystanek wpisuj¹c fragment nazwy
+* sortowanie jest zapamiêtywane, i u¿ywane po kolejnym uruchomieniu aplikacji
+* podczas wczytywania danych pokazywany jest ProgressRing  
+* strona objazdów/zmian tras
+
+v.3.1: Teraz aplikacja pokazuje tak¿e tabliczki dla przystanków autobusowych. Aby w³¹czyæ t¹ funkcjonalnoœæ, nale¿y wejœæ na stronê ustawieñ.
+
+v.2.1:
+a) historia sieci tramwajowej w Krakowie (dostêpne z g³ównej strony aplikacji)
+b) licznik przystanków na trasielinii (po pomno¿eniu x2 daje przybli¿ony czas podró¿y)
+
+

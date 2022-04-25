@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Windows.UI.Xaml.Data;
+using vb14 = VBlib.pkarlibmodule14;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -27,20 +29,20 @@ namespace KrakTram
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             // App.moOdjazdy.Clear() - pietro wyzej to jest zrobione
-            await WczytajPokazDane(false);
+            await WczytajPokazDaneAsync(false);
         }
 
         private async void uiGetData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            await WczytajPokazDane(true);
+            await WczytajPokazDaneAsync(true);
         }
 
 
-        private async System.Threading.Tasks.Task WczytajPokazDane(bool bForce)
+        private async System.Threading.Tasks.Task WczytajPokazDaneAsync(bool bForce)
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                await p.k.DialogBoxResAsync("resErrorNoNetwork");
+                await vb14.DialogBoxResAsync("resErrorNoNetwork");
                 return;
             }
 
@@ -59,13 +61,11 @@ namespace KrakTram
             if (App.mbGoGPS)
             {
                 // wedle GPS
-                App.mMaxOdl = p.k.GetSettingsInt("maxOdl", 1000);
+                App.mMaxOdl = vb14.GetSettingsInt("maxOdl");
                 // ustaw wspolrzedne
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = "o";
-                Windows.Foundation.Point oPoint = await App.GetCurrentPoint();
-                App.mdLat = oPoint.X;
-                App.mdLong = oPoint.Y;
+                App.mPoint = await App.GetCurrentPointAsync();
                 uiWorking.Text = " ";
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
             }
@@ -76,25 +76,25 @@ namespace KrakTram
             App.moOdjazdy.Clear();
 
             // ustalony jest skąd szukamy przystanków i jak daleko
-            await WczytajTabliczkiWOdleglosci(App.mdLat, App.mdLong, App.mMaxOdl);
+            await WczytajTabliczkiWOdleglosci(App.mPoint, App.mMaxOdl);
 
             App.moOdjazdy.OdfiltrujMiedzytabliczkowo();
         }
 
-        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosci(double dLat, double dLon, double dOdl)
+        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosci(Windows.Devices.Geolocation.BasicGeoposition oPos , double dOdl)
         {
             int iWorking = 0;
             int iOdl;
 
             string sFilter = "tram";
-            if (p.k.GetSettingsBool("settingsAlsoBus"))
+            if (vb14.GetSettingsBool("settingsAlsoBus"))
                 sFilter = "all";
 
-            foreach (Przystanek oNode in App.oStops.GetList(sFilter))
+            foreach (VBlib.Przystanek oNode in App.oStops.GetList(sFilter))
             {
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = ".";
-                iOdl = App.GPSdistanceDwa(dLat, dLon, oNode.Lat, oNode.Lon);
+                iOdl = (int)oPos.DistanceTo(oNode.Lat, oNode.Lon);
                 if (iOdl < dOdl)
                 {
                     iWorking += 1;
@@ -116,7 +116,7 @@ namespace KrakTram
                     }
 
                     string sErrData = oNode.Name;
-                    if (p.k.GetSettingsBool("settingsAlsoBus"))
+                    if (vb14.GetSettingsBool("settingsAlsoBus"))
                     {
                         if (oNode.Cat == "bus")
                             sErrData += " (bus)";
@@ -126,7 +126,8 @@ namespace KrakTram
 
                     int iId;
                     if(!int.TryParse(oNode.id, out iId)) iId=0;
-                    await App.moOdjazdy.WczytajTabliczke(oNode.Cat, sErrData, iId, iOdl);
+                    await App.moOdjazdy.WczytajTabliczke(oNode.Cat, sErrData, iId, iOdl, App.mSpeed,
+                        vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()));
 
                     WypiszTabele(false);  // w trakcie - pokazujemy na raty, zeby cos sie dzialo
                 }
@@ -139,11 +140,11 @@ namespace KrakTram
             if (App.moOdjazdy.Count() < 1)
             {
                 if (bShowZero)
-                    p.k.DialogBoxRes("resZeroKursow");
+                    vb14.DialogBoxRes("resZeroKursow");
                 return;
             }
 
-            switch (p.k.GetSettingsInt("sortMode"))
+            switch (vb14.GetSettingsInt("sortMode"))
             {
                 case 1:  // stop/czas/dir
                         uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
@@ -182,7 +183,7 @@ namespace KrakTram
             uiSortCzas.IsChecked = false;
 
             if (bInit)
-                iMode = p.k.GetSettingsInt("sortMode");
+                iMode = vb14.GetSettingsInt("sortMode");
 
             switch (iMode)
             {
@@ -204,7 +205,7 @@ namespace KrakTram
 
             if (!bInit)
             {
-                p.k.SetSettingsInt("sortMode", iMode);
+                vb14.SetSettingsInt("sortMode", iMode);
                 WypiszTabele(true);
             }
         }
@@ -229,10 +230,10 @@ namespace KrakTram
             SetSortMode(false, 3);
         }
 
-        private void GoShowStops(JedenOdjazd oItem)
+        private void GoShowStops(VBlib.JedenOdjazd oItem)
         {
             string sParam;
-            sParam = oItem.Linia + "|" + oItem.Kier + "|" + oItem.Przyst;
+            sParam = $"{oItem.Linia}|{oItem.Kier}|{oItem.Przyst}";
             this.Frame.Navigate(typeof(Trasa), sParam);
         }
 
@@ -241,16 +242,16 @@ namespace KrakTram
             // sender = grid
             // uiGrid.BorderThickness = 1
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            var oItem = oMFI.DataContext as JedenOdjazd;
+            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
             GoShowStops(oItem);
         }
 
         private async void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            var oItem = oMFI.DataContext as JedenOdjazd;
+            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
 
-            await p.k.DialogBoxAsync(oItem.sRawData);
+            await vb14.DialogBoxAsync(oItem.sRawData);
         }
 
         private void uiExcludeKier_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -258,7 +259,7 @@ namespace KrakTram
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             if (oMFI == null)
                 return;
-            var oItem = oMFI.DataContext as JedenOdjazd;
+            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
             if (oItem == null)
                 return;
 
@@ -271,7 +272,7 @@ namespace KrakTram
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             if (oMFI == null)
                 return;
-            var oItem = oMFI.DataContext as JedenOdjazd;
+            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
             if (oItem == null)
                 return;
 
@@ -279,37 +280,46 @@ namespace KrakTram
             WypiszTabele(true);
         }
 
-        //private void uiGridMenu_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        //{ // symulacja dla Android
-        //    var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
-        //    oGrid.ContextFlyout.ShowAt(oGrid);
-        //}
         private void uiLine_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {// shortcut: przeskok do przystanków (dla Windows)
-            JedenOdjazd oItem;
+            VBlib.JedenOdjazd oItem;
 
             var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
             if (oGrid is null)
             {
                 var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
-                oItem = oTBlock.DataContext as JedenOdjazd;
+                oItem = oTBlock.DataContext as VBlib.JedenOdjazd;
             }
             else
-                oItem = oGrid.DataContext as JedenOdjazd;
+                oItem = oGrid.DataContext as VBlib.JedenOdjazd;
 
             GoShowStops(oItem);
         }
 
-        // to byl test, czy w ListView dziala Tapped - nie, nie dziala w 409, w 3902 dziala.
-        //private void uiLine_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        //{
-        //    var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
-        //    p.k.DialogBox("tapped");
-        //}
-        //private void uiTextMenu_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        //{// symulacja dla Android
-        //    var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
-        //    oTBlock.ContextFlyout.ShowAt(oTBlock);
-        //}
     }
+
+    public class KonwersjaVisibility : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            bool bTemp = System.Convert.ToBoolean(value);
+            if (bTemp)
+            {
+                return Windows.UI.Xaml.Visibility.Visible;
+            }
+            else
+            {
+                return Windows.UI.Xaml.Visibility.Collapsed;
+            }
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 }

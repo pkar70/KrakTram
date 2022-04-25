@@ -24,9 +24,6 @@
             <RowDefinition x:Name="uiRowLista"/>
         </Grid.RowDefinitions>
 
-        <!--<ProgressRing x:Name="uiProcesuje" Grid.RowSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />-->
-
-
         <TextBlock HorizontalAlignment="Center" FontSize="14" x:Uid="uiZmianyTitle" />
         <TextBlock HorizontalAlignment="Center" x:Name="uiFileDate" FontSize="10" Grid.Row="1"/>
             <Frame  Grid.Row="2" BorderThickness="0,0,0,2" BorderBrush="Blue" >

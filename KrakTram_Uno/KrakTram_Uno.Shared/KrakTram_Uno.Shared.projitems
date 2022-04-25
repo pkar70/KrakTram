@@ -31,7 +31,7 @@
       <DependentUpon>Opoznienia.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)pkModuleShared.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Przystanek.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)pswd.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setup.xaml.cs">
       <DependentUpon>Setup.xaml</DependentUpon>
     </Compile>
@@ -39,7 +39,6 @@
       <DependentUpon>Trasa.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)TypeFavour.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TypeOdjazdy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WedleMapy.xaml.cs">
       <DependentUpon>WedleMapy.xaml</DependentUpon>
     </Compile>
@@ -84,8 +83,54 @@
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\Resources.resw" />
+    <None Include="$(MSBuildThisFileDirectory)_changes.txt" />
+    <None Include="$(MSBuildThisFileDirectory)_tudus.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Assets\" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1882.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1896.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1902.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1913.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1916.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1917.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1923.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1926.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1934.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1935.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1936.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1938.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1940.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1946.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1948.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1949.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1950.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1952.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1953.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1954.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1955.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1956.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1960.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1961.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1964.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1965.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1967.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1968.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1969.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1970.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1971.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1972.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1974.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1975.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1976.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1977.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1978.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\1984.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2000.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2006.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2008.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2010.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2012.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2013.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2015.gif" />
   </ItemGroup>
 </Project>

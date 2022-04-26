@@ -219,6 +219,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Trams in.
+        '''</summary>
+        Friend Shared ReadOnly Property resHistoriaTitle() As String
+            Get
+                Return ResourceManager.GetString("resHistoriaTitle", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Old list of fav places was imported..
         '''</summary>
         Friend Shared ReadOnly Property resImportedOldFav() As String

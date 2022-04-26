@@ -49,14 +49,14 @@ namespace KrakTram
             uiGoTtssBar.IsEnabled = false;
 
             if (App.moOdjazdy.Count() == 0 || bForce)
-                await CzytanieTabliczek();
+                await CzytanieTabliczekAsync();
 
             WypiszTabele(true);
 
             uiGoTtssBar.IsEnabled = true;
         }
 
-        private async System.Threading.Tasks.Task CzytanieTabliczek()
+        private async System.Threading.Tasks.Task CzytanieTabliczekAsync()
         {
             if (App.mbGoGPS)
             {
@@ -76,12 +76,12 @@ namespace KrakTram
             App.moOdjazdy.Clear();
 
             // ustalony jest skąd szukamy przystanków i jak daleko
-            await WczytajTabliczkiWOdleglosci(App.mPoint, App.mMaxOdl);
+            await WczytajTabliczkiWOdleglosciAsync(App.mPoint, App.mMaxOdl);
 
             App.moOdjazdy.OdfiltrujMiedzytabliczkowo();
         }
 
-        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosci(Windows.Devices.Geolocation.BasicGeoposition oPos , double dOdl)
+        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosciAsync(Windows.Devices.Geolocation.BasicGeoposition oPos , double dOdl)
         {
             int iWorking = 0;
             int iOdl;

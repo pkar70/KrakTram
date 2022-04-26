@@ -195,4 +195,7 @@
   <data name="msgSearchReroute" xml:space="preserve">
     <value>Search for:</value>
   </data>
+  <data name="resHistoriaTitle" xml:space="preserve">
+    <value>Trams in</value>
+  </data>
 </root>

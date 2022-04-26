@@ -39,7 +39,7 @@ namespace KrakTram
         }
 
 
-        private async void PrepareTrasa(bool bForceRefresh)
+        private async void PrepareTrasaAsync(bool bForceRefresh)
         {
             this.ProgRingInit(true, false);
             string sRet = await inVb.PrepareTrasa(bForceRefresh, p.k.NetIsIPavailable(false));
@@ -68,7 +68,7 @@ namespace KrakTram
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiTitle.Text = vb14.GetLangString("resTrasa") + " " + msLinia;
-            PrepareTrasa(false);
+            PrepareTrasaAsync(false);
         }
 
 
@@ -110,7 +110,7 @@ namespace KrakTram
         private void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
-            PrepareTrasa(true);
+            PrepareTrasaAsync(true);
         }
 
         private void uiGoTabliczka_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)

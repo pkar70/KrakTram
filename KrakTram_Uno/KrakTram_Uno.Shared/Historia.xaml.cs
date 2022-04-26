@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using vb14 = VBlib.pkarlibmodule14;
 
@@ -38,6 +39,48 @@ namespace KrakTram
             uiSlider.Value = MAX_ROK;
         }
 
+#if __ANDROID__
+        private async System.Threading.Tasks.Task<Windows.Storage.StorageFile> AndroidGetFileFromApplicationUri(Uri uri)
+        {
+            // "ms-appx:///Assets/" + iRok + ".gif"
+            // "__" + iRok + ".gif" w pkar.KrakTram.apk\res\drawable-nodpi-v4\
+
+            if (uri.Scheme != "ms-appx")
+            {
+                throw new InvalidOperationException("Uri is not using the ms-appx scheme");
+            }
+
+            string sFilename = uri.ToString();
+
+            if (!sFilename.StartsWith("ms-appx:///Assets/"))
+            {
+                throw new InvalidOperationException("Uri is not ms-appx:///Assets/");
+            }
+
+            sFilename = sFilename.Substring("ms-appx:///Assets/".Length);
+
+            var assetMan = Android.App.Application.Context.Assets;
+            if (assetMan is null)
+            {
+                throw new InvalidOperationException("Cannot get AssetManager");
+            }
+
+            var outputCachePath = System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, sFilename);
+
+            if (!System.IO.File.Exists(outputCachePath))
+            {
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(outputCachePath));
+
+                using System.IO.Stream fileInApk = assetMan.Open(sFilename);
+                using var output = System.IO.File.OpenWrite(outputCachePath);
+
+                await fileInApk.CopyToAsync(output);
+            }
+
+            return await Windows.Storage.StorageFile.GetFileFromPathAsync(outputCachePath);
+        }
+
+#endif
         private async System.Threading.Tasks.Task<bool> WczytajPicekAsync(int iRok)
         {
             if (iRok > MAX_ROK)
@@ -49,7 +92,12 @@ namespace KrakTram
             Windows.Storage.StorageFile oFile;
             try
             {   // Uno tu protestuje (unimplemented), ale przecież ta strona jest tylko pod UWP - już nie :)
+#if NETFX_CORE 
                 oFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(oPicUri);
+#else
+                // zakładam że jak nie UWP to Android
+                oFile = await AndroidGetFileFromApplicationUri(oPicUri);
+#endif
             }
             catch
             {
@@ -91,4 +139,5 @@ namespace KrakTram
             this.Frame.Navigate(typeof(Opoznienia));
         }
     }
+
 }

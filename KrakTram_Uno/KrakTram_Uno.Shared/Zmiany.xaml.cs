@@ -44,7 +44,7 @@ namespace KrakTram
     private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
-            await WczytajZmiany();
+            await WczytajZmianyAsync();
             uiLista.ItemsSource = oVbLib.moItemy; // from c in moLista;
         }
 
@@ -56,7 +56,7 @@ namespace KrakTram
             if (!TryLoadCache())
             {
                 this.ProgRingShow(true);
-                await WczytajZmiany();
+                await WczytajZmianyAsync();
                 this.ProgRingShow(false);
             }
 
@@ -82,7 +82,7 @@ namespace KrakTram
             return true;
         }
 
-        private async System.Threading.Tasks.Task<bool> WczytajZmiany()
+        private async System.Threading.Tasks.Task<bool> WczytajZmianyAsync()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {

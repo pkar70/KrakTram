@@ -11,8 +11,14 @@
 Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
-* contextMenu
-* historia sieci
+
+ STORE UWP
+ STORE Andro
+
+2022.04.26
+* Android test mapki: **Java.IO.FileNotFoundException:** 'Assets/__1950.gif' (ale pliki da³ do H:\Home\PIOTR\VStudio\_Vs2017\KrakTram\KrakTram_Uno\KrakTram_Uno.Droid\obj\Debug\120\res\drawable-nodpi , wiêc nie jest tak ¿e je ca³kiem ignoruje)
+* dodajê w³asn¹ obs³ugê mapek. Pliki musz¹ byæ w Droid/Assets niezale¿nie od Shared/Assets.
+* BUG nie by³o w En przeniesiony LangString uiTitle do Historia.
 
 2022.04.25
 * _tudus oraz _changes
@@ -23,11 +29,10 @@ Uno STRIP:
 * próba <muxc:RadioMenuFlyoutItem Text="Small icons" GroupName="ViewGroup"/> - ale jednak to brzydsze, kropka ma³o wyraŸna, fajka od ToggleMenuFlyoutItem lepsza.
 * oNew.sMin robione by³o z iMin, ale niech sam sobie przetwarza w XAML z Int na String
 * FUNC: pokazywanie trasy - uwzglêdnia (przy liczniku przystanków) ¿e mog¹ byæ numerowane s³upki
-* sprawdzam: wczytywanie listy przystanków via http daje bez s³upków (i tram, i bus)
+* sprawdzam: wczytywanie listy przystanków via http; serwer daje listê bez s³upków (i tram, i bus)
 * BUG: po przeniesieniu do Vblib, nie pokazywa³o pobliskich przystanków autobusowych (w Setup)
 * FUNC: przeskok do tabliczki (z listy przystanków) usuwa numerek s³upka
 * BUG: by³ b³¹d we wczytywaniu INI (w pkar.cs) - nie wczytywa³o w ogóle, a mia³o zreszt¹ niby tylko w WIN
-
 
 2022.04.06
 * jest ju¿ Uno z poprawionym geolocator, wiêc mogê przejœæ z w³asnego Uno na publiczne;

@@ -26,6 +26,9 @@
     
     <!-- Add your application specific runtime directives here. -->
 
-
+	 <Type Name="My.Resources.Resource_EN" />
+	 <Type Name="My.Resources.Resource_PL" />
+	  <Namespace Name="My.Resources.Resource_PL" Dynamic="Required All" />
+	  <Namespace Name="My.Resources.Resource_EN" Dynamic="Required All" />
   </Application>
 </Directives>

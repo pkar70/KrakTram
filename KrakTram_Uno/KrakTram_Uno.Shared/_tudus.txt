@@ -1,1 +1,7 @@
 
+https://github.com/unoplatform/uno/issues/8618#issuecomment-1111335182
+
+  <ItemGroup>
+    <AndroidAsset Include=".\Test8618.Shared\Assets\**" Link="Assets\Assets\%(RecursiveDir)\%(FileName)%(Extension)" />
+  </ItemGroup>
+

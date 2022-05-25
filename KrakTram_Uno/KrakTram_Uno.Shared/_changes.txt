@@ -12,6 +12,9 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+2022.05.25
+* dodanie do VBlib deflang, bez czego nie by³o w Release GetLang w ogóle!
+
  STORE UWP
  STORE Andro
 

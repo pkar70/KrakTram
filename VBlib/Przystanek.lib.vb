@@ -202,7 +202,7 @@ Public Class Przystanki
         SetSettingsInt("LastLoadStops", iLastLoad)
 
         If GetSettingsBool("pkarmode") Then sMsg &= Compare(oItemyOld, moItemy)
-        Await DialogBoxAsync(sMsg)
+        If sMsg <> "" Then Await DialogBoxAsync(sMsg)
     End Function
 
     Public Function GetItem(sName As String, Optional sCat As String = "tram") As Przystanek

@@ -63,7 +63,7 @@ namespace KrakTram
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
-            uiVersion.Text = "v. " + p.k.GetAppVers();
+            uiVersion.ShowAppVers(); // .Text = "v. " + p.k.GetAppVers();
 
             // int i = (int)(System.TimeSpan.FromSeconds(20).TotalMilliseconds / 250.0); // i=80
 
@@ -90,7 +90,6 @@ namespace KrakTram
             if (!p.k.GetPlatform("uwp"))
             {
                 // inicjalizacja dla Androida, gdy nie ma jeszcze danych
-
             }
 
             await LoadFavListAsync();

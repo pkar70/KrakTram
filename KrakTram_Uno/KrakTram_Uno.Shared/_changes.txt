@@ -12,6 +12,12 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+
+2022.08.08
+* skasowanie pustego MsgBox po wczytaniu przystankow (przystanek.lib, LoadOrImport)
+
+ STORE UWP
+
 2022.05.25
 * dodanie do VBlib deflang, bez czego nie by³o w Release GetLang w ogóle!
 

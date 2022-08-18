@@ -116,16 +116,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+      <Version>13.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Uno.UI" Version="2.1.0-dev.408" />
+    <PackageReference Include="Uno.UI" Version="4.2.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
     <PackageReference Include="Xam.Plugins.Notifier">
       <Version>3.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Xamarin.Plugins.Clipboard">
-      <Version>2.2.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

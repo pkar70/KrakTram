@@ -15,15 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakTram_Uno.UWP", "KrakTra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KrakTram_Uno.Wasm", "KrakTram_Uno\KrakTram_Uno.Wasm\KrakTram_Uno.Wasm.csproj", "{89CD9412-8E0E-447D-9115-2330E329CB2C}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VBlib", "VBlib\VBlib.vbproj", "{FE2D6F6B-E03B-41A6-B5D0-DA3EC58B049D}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "VBlib", "VBlib\VBlib.vbproj", "{FE2D6F6B-E03B-41A6-B5D0-DA3EC58B049D}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{12191652-9405-4ff4-aa68-698f265d4013}*SharedItemsImports = 4
-		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{4781b65f-849c-4487-ace9-52ce77be3042}*SharedItemsImports = 4
-		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
-		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{89ae7d74-1a47-431a-84cf-19e99c5d6802}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
 		Ad-Hoc|ARM = Ad-Hoc|ARM
@@ -377,5 +371,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {573DE445-0C4C-41E4-8685-E0098219BE47}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{12191652-9405-4ff4-aa68-698f265d4013}*SharedItemsImports = 4
+		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{4781b65f-849c-4487-ace9-52ce77be3042}*SharedItemsImports = 4
+		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{89ae7d74-1a47-431a-84cf-19e99c5d6802}*SharedItemsImports = 4
+		KrakTram_Uno\KrakTram_Uno.Shared\KrakTram_Uno.Shared.projitems*{89cd9412-8e0e-447d-9115-2330e329cb2c}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -198,4 +198,7 @@
   <data name="resHistoriaTitle" xml:space="preserve">
     <value>Trams in</value>
   </data>
+  <data name="resZmianyLink" xml:space="preserve">
+    <value>(more info)</value>
+  </data>
 </root>

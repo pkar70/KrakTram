@@ -2,6 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Data;
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -81,7 +82,7 @@ namespace KrakTram
             App.moOdjazdy.OdfiltrujMiedzytabliczkowo();
         }
 
-        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosciAsync(Windows.Devices.Geolocation.BasicGeoposition oPos , double dOdl)
+        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosciAsync(VBlib.MyBasicGeoposition oPos , double dOdl)
         {
             int iWorking = 0;
             int iOdl;
@@ -246,12 +247,12 @@ namespace KrakTram
             GoShowStops(oItem);
         }
 
-        private async void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private  void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
 
-            await vb14.DialogBoxAsync(oItem.sRawData);
+             vb14.DialogBox(oItem.sRawData);
         }
 
         private void uiExcludeKier_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)

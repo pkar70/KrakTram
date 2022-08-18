@@ -2,6 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -20,14 +21,8 @@ namespace KrakTram
 
         private void uiMapka_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Windows.Devices.Geolocation.BasicGeoposition oPosition;
-            oPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-            oPosition.Latitude = 50.061389;  // współrzędne wedle Wiki
-            oPosition.Longitude = 19.938333;
-            // Dim oPoint As Windows.Devices.Geolocation.Geopoint
-            // oPoint = New Windows.Devices.Geolocation.Geopoint(oPosition)
 
-            uiMapka.Center = new Windows.Devices.Geolocation.Geopoint(oPosition);
+            uiMapka.Center = VBlib.MyBasicGeoposition.GetKrakowGeopos().ToWinGeopoint();
             if (p.k.IsFamilyMobile())
                 uiMapka.ZoomLevel = 10;
             else
@@ -48,10 +43,10 @@ namespace KrakTram
         {
             App.mbGoGPS = false;
 #if NETFX_CORE
-            App.mPoint = args.Location.Position;
+            App.mPoint = args.Location.Position.ToMyGeopos();
             App.mMaxOdl = vb14.GetSettingsInt("maxOdl");
             App.moOdjazdy.Clear();
-            this.Frame.Navigate(typeof(Odjazdy));
+            this.Navigate(typeof(Odjazdy));
 #endif 
         }
     }

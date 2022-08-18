@@ -4,11 +4,13 @@ Public Class JednaInfo
     Public Property sCzas As String
     Public Property sTytul As String
     Public Property sInfo As String
+    Public Property sLink As String
+
 End Class
 
 Public Class Zmiany
 
-    Public moItemy As ObjectModel.Collection(Of JednaInfo)
+    Public moItemy As New ObjectModel.Collection(Of JednaInfo)
     Private ReadOnly msDataFilePath As String = ""
     Private Const MAX_CACHE_DAYS As Integer = 14
 
@@ -46,44 +48,57 @@ Public Class Zmiany
     End Sub
 
     Public Async Function WczytajZmiany() As Task(Of String)
+        DumpCurrMethod()
 
         Dim sPage = ""
         Dim bError = False
 
-        Using oHttp As Net.Http.HttpClient = New Net.Http.HttpClient()
+        ' 2022.08
+        ' nie działa od jakiegoś czasu, bo zmiany na stronie
+
+        ' można byłoby przejść na RSS, ale... System.ServiceModel.Syndication jest dopiero od .Net 2 :(
+        ' https://ztp.krakow.pl/feed?post_type=komunikat
+        ' oraz w tym nie ma linii
+
+        ' przechodzę na HtmlAgilityPack i zjadanie strony
+
+        ' własny HTTP, bo robię 10 sekund
+        Using oHttp As New Net.Http.HttpClient
             oHttp.Timeout = TimeSpan.FromSeconds(10)
             Try
-                sPage = Await oHttp.GetStringAsync(New Uri("http://kmkrakow.pl/"))
+                ' Android: "Ssl error:1000007d:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED\n  at /Users/builder/jenki…"
+                sPage = Await oHttp.GetStringAsync(New Uri("https://ztp.krakow.pl/transport-publiczny/komunikacja-miejska/komunikaty"))
             Catch
                 Return GetLangString("resErrorGetHttp")
             End Try
         End Using
 
 
-        moItemy = New ObjectModel.Collection(Of JednaInfo)()
-        Dim iInd As Integer
-        iInd = sPage.IndexOf("<div class=""linie")
+        moItemy.Clear()
 
-        While iInd > 0
-            Dim oNew = New JednaInfo()
-            sPage = sPage.Substring(iInd)
-            iInd = sPage.IndexOf("</")
-            oNew.sLinie = RemoveHtmlTags(sPage.Substring(0, iInd))
-            iInd = sPage.IndexOf("<div class=""przedz")
-            sPage = sPage.Substring(iInd)
-            iInd = sPage.IndexOf("</")
-            oNew.sCzas = RemoveHtmlTags(sPage.Substring(0, iInd))
-            iInd = sPage.IndexOf("<h2 class=""tyt")
-            sPage = sPage.Substring(iInd)
-            iInd = sPage.IndexOf("</")
-            oNew.sTytul = RemoveHtmlTags(sPage.Substring(0, iInd))
-            iInd = sPage.IndexOf("<div class=""hide")
-            sPage = sPage.Substring(iInd)
-            iInd = sPage.IndexOf("</div")
-            oNew.sInfo = sPage.Substring(0, iInd) & "</div>"
+        Dim oHtmlDoc As New HtmlAgilityPack.HtmlDocument()
+        oHtmlDoc.LoadHtml(sPage)
+
+        ' iterujemy <div class="card">
+
+        Dim entries As HtmlAgilityPack.HtmlNodeCollection = oHtmlDoc.DocumentNode.SelectNodes("//div[@class='card']")
+        If entries Is Nothing Then
+            DumpMessage("Cos nie tak, nie powinno byc null - jakies komunikaty jednak powinny być")
+            Return ""
+        End If
+
+        For Each entry As HtmlAgilityPack.HtmlNode In entries
+            Dim oNew As New JednaInfo()
+
+            ' UWAGA! "." jest istotna, bez niej idzie od DocumentRoot a nie wewnątrz entry!
+            oNew.sCzas = entry.SelectSingleNode(".//div[@class='date']").InnerText.Trim
+            oNew.sLinie = entry.SelectSingleNode(".//div[@class='lines']").InnerText.Trim
+            oNew.sTytul = entry.SelectSingleNode(".//div[@class='message-title']").InnerText.Trim
+            oNew.sInfo = entry.SelectSingleNode(".//div[@class='card-body-inner']/div").InnerText.Trim
+            oNew.sLink = entry.SelectSingleNode(".//a").Attributes("href").Value
+
             moItemy.Add(oNew)
-            iInd = sPage.IndexOf("<div class=""linie")
-        End While
+        Next
 
         Return ""
     End Function

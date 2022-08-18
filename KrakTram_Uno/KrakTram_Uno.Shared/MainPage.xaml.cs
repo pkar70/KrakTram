@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System;
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
 
 
 namespace KrakTram
@@ -39,27 +40,6 @@ namespace KrakTram
                                      select c.Name;
         }
 #endif
-        public static async System.Threading.Tasks.Task LoadFavListAsync()
-        {
-            int iRet = App.oFavour.Load();
-            if (iRet > 0) return;   // wczytało po nowemu, JSON
-
-            if (await FavStopListXML.Load())
-            {
-                App.oFavour.Save(true);
-                return; // wczytało poprawnie XML
-            }
-
-            // ani JSON, ani XML - to proba importu ze zmiennej (bardzo stara wersja, tylko Windows, ale skoro kod jest i niczemu nie wadzi...)
-            // kod jednak wadzi :) więc '//' [bo i tak migracja z XML do JSON)
-            //if (await FavStopListXML.Import())
-            //{
-            //    App.oFavour.Save(true);
-            //    return; // wczytało poprawnie ze zmiennej
-            //}
-
-        }
-
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
@@ -87,12 +67,10 @@ namespace KrakTram
                 uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
             }
 
-            if (!p.k.GetPlatform("uwp"))
-            {
-                // inicjalizacja dla Androida, gdy nie ma jeszcze danych
-            }
+            // await LoadFavListAsync(); - gdy było razem z importem z XML (2022.04), teraz już usuwam ten import (2022.08)
+            // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
+            App.oFavour.Load();
 
-            await LoadFavListAsync();
             uiFavList.ItemsSource = from c in App.oFavour.GetList()
                                     orderby c.Name
                                     select c.Name;
@@ -326,10 +304,10 @@ namespace KrakTram
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = oStop.maxOdl;
-                    App.mPoint = p.k.NewBasicGeoposition(oStop.Lat, oStop.Lon);
+                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
-                    this.Frame.Navigate(typeof(Odjazdy));
+                    this.Navigate(typeof(Odjazdy));
                 }
             }
         }
@@ -342,11 +320,11 @@ namespace KrakTram
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
-                    App.mPoint = p.k.NewBasicGeoposition(oStop.Lat, oStop.Lon);
+                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
                     App.msCat = oStop.Cat;
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
-                    this.Frame.Navigate(typeof(Odjazdy));
+                    this.Navigate(typeof(Odjazdy));
                 }
             }
         }
@@ -440,17 +418,17 @@ namespace KrakTram
 
         private void uiChanges_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Zmiany));
+            this.Navigate(typeof(Zmiany));
         }
 
         private void uiGoMap_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(WedleMapy));
+            this.Navigate(typeof(WedleMapy));
         }
 
         private void uiHist_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Historia));
+            this.Navigate(typeof(Historia));
         }
 
         private void bSetup_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)

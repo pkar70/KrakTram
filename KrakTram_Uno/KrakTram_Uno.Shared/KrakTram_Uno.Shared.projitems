@@ -38,7 +38,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Trasa.xaml.cs">
       <DependentUpon>Trasa.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)TypeFavour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WedleMapy.xaml.cs">
       <DependentUpon>WedleMapy.xaml</DependentUpon>
     </Compile>
@@ -130,7 +129,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\2008.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2010.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2012.gif" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\2013.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2024.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2022.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2015.gif" />
   </ItemGroup>
 </Project>

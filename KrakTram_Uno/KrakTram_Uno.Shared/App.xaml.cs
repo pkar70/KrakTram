@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
+
 
 namespace KrakTram
 {
@@ -184,7 +186,7 @@ namespace KrakTram
             string strArgs = operation?.Arguments;
 
 
-            p.k.InitLib(strArgs.Split(' ')); // mamy command line, próbujemy zrobić z tego string() (.Net Standard 1.4)
+            p.k.InitLib(strArgs.Split(' ').ToList()); // mamy command line, próbujemy zrobić z tego string() (.Net Standard 1.4)
 
             if (!string.IsNullOrEmpty(strArgs))
             {
@@ -463,7 +465,7 @@ namespace KrakTram
         public static VBlib.FavStopList oFavour = new VBlib.FavStopList(Windows.Storage.ApplicationData.Current.LocalFolder.Path);
         //public static double mdLat = 100;
         //public static double mdLong;
-        public static Windows.Devices.Geolocation.BasicGeoposition mPoint = p.k.NewBasicGeoposition(100,0);
+        public static VBlib.MyBasicGeoposition mPoint = new VBlib.MyBasicGeoposition(100,0);
         public static double mSpeed;
         public static bool mbGoGPS = false;
         public static double mMaxOdl = 20;
@@ -477,14 +479,11 @@ namespace KrakTram
         }
 
 
-        public static async System.Threading.Tasks.Task<Windows.Devices.Geolocation.BasicGeoposition> GetCurrentPointAsync()
+        public static async System.Threading.Tasks.Task<VBlib.MyBasicGeoposition> GetCurrentPointAsync()
         {
             //Point oPoint = new Point(); // = default(Point);
 
             mSpeed = vb14.GetSettingsInt("walkSpeed", 4);
-
-            //oPoint.X = 50.01; // 1985 ' latitude - dane domku, choc mała precyzja
-            //oPoint.Y = 19.97; // 7872   dla Android dodałem drugą cyfrę po kropce, żeby default miał tramwaje
 
             Windows.Devices.Geolocation.GeolocationAccessStatus rVal;
             rVal = await Windows.Devices.Geolocation.Geolocator.RequestAccessAsync();
@@ -494,7 +493,7 @@ namespace KrakTram
                 await vb14.DialogBoxResAsync("resErrorNoGPSAllowed");
                 // SetSettingsBool("noGPSshown", True)
                 // End If
-                return p.k.GetDomekGeopos(2); // oPoint;
+                return VBlib.MyBasicGeoposition.GetDomekGeopos(2); // oPoint;
             }
 
             // https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0/33866959'
@@ -509,9 +508,6 @@ namespace KrakTram
             try
             {
                 oPos = await oDevGPS.GetGeopositionAsync(oCacheTime, oTimeout); // UNO "firmowe" nie protestuje, ale ignoruje te dwa parametry
-                //oPos = location.ToGeoposition();
-                //oPoint.X = oPos.Coordinate.Point.Position.Latitude;
-                //oPoint.Y = oPos.Coordinate.Point.Position.Longitude;
 
                 double dSpeed;
                 // 2018.11.13: dodaję: andalso hasvalue
@@ -528,7 +524,7 @@ namespace KrakTram
                     }
                 }
 
-                return oPos.Coordinate.Point.Position;
+                return oPos.Coordinate.Point.Position.ToMyGeopos();
 
             }
             catch (Exception e)
@@ -547,7 +543,7 @@ namespace KrakTram
 
                 mSpeed = vb14.GetSettingsInt("walkSpeed", 4);
 
-            return p.k.GetDomekGeopos(2);
+            return VBlib.MyBasicGeoposition.GetDomekGeopos(2);
         }
 
     }

@@ -246,4 +246,7 @@
   <data name="uiMapInstruction.Text" xml:space="preserve">
     <value>Choose location (long tap)</value>
   </data>
+  <data name="uiReverse.Label" xml:space="preserve">
+    <value>Opposite direction</value>
+  </data>
 </root>

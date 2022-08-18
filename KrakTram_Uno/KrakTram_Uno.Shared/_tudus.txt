@@ -5,7 +5,5 @@ https://github.com/unoplatform/uno/issues/8618#issuecomment-1111335182
     <AndroidAsset Include=".\Test8618.Shared\Assets\**" Link="Assets\Assets\%(RecursiveDir)\%(FileName)%(Extension)" />
   </ItemGroup>
 
-  2022.04.06
-*  => *TODO* wyrzucenie fav.xml (2 osoby u¿ywaj¹ tego pod Andro, mog¹ straciæ listê), jak zrobi¹ import do JSON
 
-ewentualnie: "odwrócenie" listy przystanków (przejazd w drug¹ stronê)
+

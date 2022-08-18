@@ -13,6 +13,15 @@ Uno STRIP:
 * szybkie wype³nianie Combo
 
 
+2022.08.18
+* Reroutes: wczytywanie zmian po nowemu (bo siê zmieni³o ju¿ jakiœ czas temu) - HtmAgilityPack
+* Reroutes: link do pe³nej info na stronie
+* mapki: uwzglêdnienie 2022 (Kurdwanów-£agiewniki) oraz 2024, jako planowane (Krowodrza Górka - Górka Narodowa oraz Mistrzejowice-Wieczysta)
+* usuwam FavImport z XML (w 2022.04.26 by³a wersja STORE która robi³a import z XML do nowego JSON)
+* Trasa: guzik do obracania kierunku
+* Trasa: z wykorzystaniem HtmlAgility, trochê u³atwia (choæ niedu¿o)
+* Historia: guziki next/prev stanu, lekkie przeorganizowanie kodu
+
 2022.08.08
 * skasowanie pustego MsgBox po wczytaniu przystankow (przystanek.lib, LoadOrImport)
 

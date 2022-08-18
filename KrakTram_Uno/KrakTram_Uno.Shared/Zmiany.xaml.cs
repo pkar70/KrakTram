@@ -1,6 +1,8 @@
 ﻿
 using System.Linq;
+using Windows.UI.Xaml.Controls;
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
 
 namespace KrakTram
 {
@@ -16,7 +18,7 @@ namespace KrakTram
 
         private void uiClose_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            this.GoBack();
         }
 
         private async void uiSearch_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -121,8 +123,18 @@ namespace KrakTram
         {
             VBlib.JednaInfo oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as VBlib.JednaInfo;
 
-            string sHtml = oItem.sInfo;
+            string sHtml = $"<p>{oItem.sInfo}<p><a href='{oItem.sLink}'>{vb14.GetLangString("resZmianyLink")}</a>";
             PokazObjazd(sHtml);
+        }
+
+        private void uiWebNavStart(WebView sender, WebViewNavigationStartingEventArgs args)
+        {
+            if (args.Uri == null)
+                return;
+
+            args.Cancel = true;
+
+            Windows.System.Launcher.LaunchUriAsync(args.Uri);
         }
 
     }

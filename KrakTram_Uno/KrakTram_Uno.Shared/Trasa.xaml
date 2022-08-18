@@ -65,6 +65,7 @@
             <StackPanel Orientation="Horizontal" >
                 <AppBarButton Icon="Accept" Label="Ok" Click="uiClose_Click"/>
                 <AppBarSeparator/>
+                <AppBarButton Name="uiReverse" Icon="Sort" Label="reverse" x:Uid="uiReverse" Click="uiShowReverse_Click" IsEnabled="False"/>
                 <AppBarButton x:Name="uiReload" x:Uid="uiRefresh" Icon="Refresh" Label="Reload" Click="uiRefresh_Click"/>
             </StackPanel>
 
@@ -75,6 +76,7 @@
         <CommandBar ClosedDisplayMode="Minimal">
             <AppBarButton Icon="Accept" Label="Ok" Click="uiClose_Click"/>
             <AppBarSeparator/>
+            <AppBarButton Name="uiReverse" Icon="Sort" Label="reverse" x:Uid="uiReverse" Click="uiShowReverse_Click" IsEnabled="False" />
             <AppBarButton x:Name="uiReload" x:Uid="uiRefresh" Icon="Refresh" Label="Reload" Click="uiRefresh_Click"/>
         </CommandBar>
 

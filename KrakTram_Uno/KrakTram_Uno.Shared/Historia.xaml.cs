@@ -2,7 +2,7 @@
 using System.Linq;
 
 using vb14 = VBlib.pkarlibmodule14;
-
+using static p.Extensions;
 
 namespace KrakTram
 {
@@ -13,30 +13,46 @@ namespace KrakTram
             this.InitializeComponent();
         }
         private const int MIN_ROK = 1882;
-        private const int MAX_ROK = 2015;
+        private int _MaxRok = 2024;
+        private int _InitRok = 2022;
 
         private bool mbBlockSlider = true;
 
-        private void UstawSlider()
+        private void UstawGraniceSlider()
         {
             uiSlider.Minimum = MIN_ROK;
-            uiSlider.Maximum = MAX_ROK;
+            uiSlider.Maximum = _MaxRok;
         }
 
-        private void UstawTitle(int iRok)
-        {
-            uiTitle.Text = vb14.GetLangString("resHistoriaTitle") + " " + iRok;
-        }
-
-        private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             if (vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
                 uiCommandBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-            UstawSlider();
+            await PoszukajGornejGranicyDatAsync();  // dla Windows nie trzeba ustawiać MIN/INIT
+
+            UstawGraniceSlider();
             mbBlockSlider = false;
 
-            uiSlider.Value = MAX_ROK;
+            uiSlider.Value = _InitRok;
+        }
+
+
+
+
+        private async System.Threading.Tasks.Task PoszukajGornejGranicyDatAsync()
+        {
+            // init rok, idziemy od Date.Now w dół
+            for(_InitRok = DateTime.Now.Year; _InitRok > MIN_ROK; _InitRok--)
+            {
+                if (await GetFileFromYearAsync(_InitRok) != null) break;
+            }
+
+            // max rok, idziemy od aktualnej w górę (max. 10 lat)
+            for (_MaxRok = DateTime.Now.Year+10; _MaxRok > _InitRok; _MaxRok--)
+            {
+                if (await GetFileFromYearAsync(_MaxRok) != null) break;
+            }
         }
 
 #if __ANDROID__
@@ -81,18 +97,24 @@ namespace KrakTram
         }
 
 #endif
-        private async System.Threading.Tasks.Task<bool> WczytajPicekAsync(int iRok)
+        /// <summary>
+        /// zwraca Uri które można wykorzystać jako oBmp.UriSource albo null
+        /// </summary>
+        /// <param name="iRok"></param>
+        /// <returns></returns>
+        private async System.Threading.Tasks.Task<Windows.Storage.StorageFile> GetFileFromYearAsync(int iRok)
         {
-            if (iRok > MAX_ROK)
-                return false;
+
+            if (iRok > _MaxRok)
+                return null;
             if (iRok < MIN_ROK)
-                return false;
+                return null;
 
             Uri oPicUri = new Uri("ms-appx:///Assets/" + iRok + ".gif");
             Windows.Storage.StorageFile oFile;
             try
-            {   // Uno tu protestuje (unimplemented), ale przecież ta strona jest tylko pod UWP - już nie :)
-#if NETFX_CORE 
+            {
+#if NETFX_CORE
                 oFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(oPicUri);
 #else
                 // zakładam że jak nie UWP to Android
@@ -101,43 +123,86 @@ namespace KrakTram
             }
             catch
             {
-                return false;
+                return null;
             }
 
+            return oFile;
+        }
+
+
+        private async System.Threading.Tasks.Task<bool> WczytajPicekAsync(int iRok)
+        {
+            if (iRok > _MaxRok)
+                return false;
+            if (iRok < MIN_ROK)
+                return false;
+
+            //Uri oPicUri = new Uri("ms-appx:///Assets/" + iRok + ".gif");
+            Windows.Storage.StorageFile oFile = await GetFileFromYearAsync(iRok);
+            if (oFile == null) return false;
+
             Windows.UI.Xaml.Media.Imaging.BitmapImage oBmp = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-            oBmp.UriSource = oPicUri;
+            oBmp.SetSource(await oFile.OpenAsync(Windows.Storage.FileAccessMode.Read));
             uiPic.Source = oBmp;
             return true;
         }
 
-        private async void uiSlider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void uiSlider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (mbBlockSlider)
+            if (mbBlockSlider) 
                 return;
 
-            int iRok = (int)uiSlider.Value;
-
-            // w petli probuj ustawic obrazek, az bedzie
-            while (iRok <= MAX_ROK)
-            {
-                if (await WczytajPicekAsync(iRok))
-                    break;
-                iRok = iRok + 1;
-            }
-
-            // If iRok <> uiSlider.Value Then
-            // mbBlockSlider = True
-            // uiSlider.Value = iRok
-            // mbBlockSlider = False
-            // End If
-
-            UstawTitle(iRok);
+            PrzestawRokAsync(0);
         }
 
         private void uiOpoznienia_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Opoznienia));
+            this.Navigate(typeof(Opoznienia));
         }
+
+private async System.Threading.Tasks.Task PrzestawRokAsync(int initRokChange)
+        {
+            int iRok = (int)uiSlider.Value + initRokChange;
+            int iRokDelta = initRokChange;
+            if (iRokDelta == 0) iRokDelta = 1;
+
+            // w petli probuj ustawic obrazek, az bedzie
+            while (iRok <= _MaxRok)
+            {
+                if (await WczytajPicekAsync(iRok))
+                    break;
+                iRok += iRokDelta;
+            }
+
+            uiRokMinus.IsEnabled = true;
+            uiRokPlus.IsEnabled = true;
+
+            if (iRok <= MIN_ROK)
+                uiRokMinus.IsEnabled = false;
+
+            if(iRok >= _MaxRok)
+                uiRokPlus.IsEnabled = false;
+
+            uiTitle.Text = vb14.GetLangString("resHistoriaTitle") + " " + iRok;
+
+            // czyli wywołanie z guzików, plus/minus - aktualizujemy Slider
+            if(initRokChange != 0)
+            {
+                mbBlockSlider = true;
+                uiSlider.Value = iRok;
+                mbBlockSlider = false;
+            }
+        }
+
+        private void uiRokMinus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            PrzestawRokAsync(-1);
+        }
+        private void uiRokPlus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            PrzestawRokAsync(+1);
+        }
+
     }
 
 }

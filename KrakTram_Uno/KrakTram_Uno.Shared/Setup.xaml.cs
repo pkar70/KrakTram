@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using vb14 = VBlib.pkarlibmodule14;
-
+using static p.Extensions;
 
 namespace KrakTram
 {
@@ -31,9 +31,6 @@ namespace KrakTram
 
             vb14.SetSettingsInt("gpsPrec", VBlib.Setup.ConvertGpsPrecFromAndroid((int)uiGPSPrecSld.Value, p.k.GetPlatform("uwp")));
 
-            //if (uiAlsoBus.IsOn && !p.k.GetSettingsBool("settingsAlsoBus"))
-            //{ // było do doczytania przystanków autobusowych
-            //}
             uiAlsoBus.SetSettingsBool("settingsAlsoBus");
             uiAndroAutoTram.SetSettingsBool("androAutoTram");
             this.Frame.GoBack();
@@ -41,8 +38,6 @@ namespace KrakTram
 
         private async void bLoadStops_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            // na reload stops? bo reszta funkcjonalnosci jest w mainpage
-            // Me.Frame.Navigate(GetType(ListaPrzystankow))
             uiReloadStop.IsEnabled = false;
             await App.CheckLoadStopListAsync(true);
             uiReloadStop.IsEnabled = true;
@@ -78,10 +73,10 @@ namespace KrakTram
             if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
-        private void ListaBliskichPrzystankowListView(Windows.Devices.Geolocation.BasicGeoposition oPoint)
+        private void ListaBliskichPrzystankowListView(VBlib.MyBasicGeoposition oPoint)
         {
             System.Collections.ObjectModel.Collection<BliskiStop > oItemy =
-                VBlib.Setup.ListaBliskichPrzystankowListView(oPoint.Latitude, oPoint.Longitude, 
+                VBlib.Setup.ListaBliskichPrzystankowListView(oPoint, 
                         uiMaxOdlSld.Value, uiWalkSpeedSld.Value, App.oStops.GetList("all"));
 
             if (uiListItems != null) uiListItems.ItemsSource = from c in oItemy orderby c.iOdl select c;
@@ -90,15 +85,13 @@ namespace KrakTram
     private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             // oPoint - albo narzucony, albo z GPS
-            Windows.Devices.Geolocation.BasicGeoposition oPoint;
+            VBlib.MyBasicGeoposition oPoint;
             if (App.mPoint.Latitude == 100)
                 oPoint = await App.GetCurrentPointAsync();
             else
                 oPoint = App.mPoint;
 
             ListaBliskichPrzystankowListView(oPoint);
-
-            //uiSetupWebView.NavigateToString(sTmp);
         }
 
         private void ShowPositionPanel(bool bShow)
@@ -133,7 +126,7 @@ namespace KrakTram
         }
 
 
-        private async void uiPositOk_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void uiPositOk_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             // dodawanie nowego entry
 
@@ -144,14 +137,14 @@ namespace KrakTram
 
             if (sTxt.Length < 4)
             {
-                await vb14.DialogBoxResAsync("resErrorNazwaZaKrotka");
+                vb14.DialogBoxRes("resErrorNazwaZaKrotka");
                 return;
             }
 
             double dLat, dLon;
             if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
             {
-                await vb14.DialogBoxResAsync("resBadFloat");
+                vb14.DialogBoxRes("resBadFloat");
                 return;
             }
 
@@ -164,12 +157,12 @@ namespace KrakTram
             {
                 if (dLon < 19 | dLon > 21 | dLat < 49 | dLat > 51)
                 {
-                    await vb14.DialogBoxResAsync("resErrorPozaKrakowem");
+                    vb14.DialogBoxRes("resErrorPozaKrakowem");
                     return;
                 }
 
                 App.oFavour.Add(sTxt, dLat, dLon, (int)uiMaxOdlSld.Value);
-                App.mPoint = p.k.NewBasicGeoposition(dLat, dLon);  // i ustalamy to jako biezace wspolrzedne
+                App.mPoint = new VBlib.MyBasicGeoposition(dLat, dLon);  // i ustalamy to jako biezace wspolrzedne
             }
 
             ShowPositionPanel(false);

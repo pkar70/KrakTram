@@ -316,5 +316,14 @@ Namespace My.Resources
                 Return ResourceManager.GetString("resZeroKursow", resourceCulture)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to (więcej info).
+        '''</summary>
+        Friend Shared ReadOnly Property resZmianyLink() As String
+            Get
+                Return ResourceManager.GetString("resZmianyLink", resourceCulture)
+            End Get
+        End Property
     End Class
 End Namespace

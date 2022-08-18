@@ -252,4 +252,7 @@
   <data name="uiMapInstruction.Text" xml:space="preserve">
     <value>Wskaż miejsce (dłużej przytrzymaj palec)</value>
   </data>
+  <data name="uiReverse.Label" xml:space="preserve">
+    <value>Przeciwny kierunek</value>
+  </data>
 </root>

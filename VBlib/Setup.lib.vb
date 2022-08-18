@@ -26,14 +26,14 @@ Public Class Setup
 
 
 
-    Public Shared Function ListaBliskichPrzystankowListView(dLat As Double, dLon As Double, dMaxOdl As Double, dWalkSpeed As Double, olStops As List(Of Przystanek)) As ObjectModel.Collection(Of BliskiStop)
+    Public Shared Function ListaBliskichPrzystankowListView(oPos As MyBasicGeoposition, dMaxOdl As Double, dWalkSpeed As Double, olStops As List(Of Przystanek)) As ObjectModel.Collection(Of BliskiStop)
         Dim iOdl As Integer
 
         Dim iMinOdl = 100000
         Dim oItemy As ObjectModel.Collection(Of BliskiStop) = New ObjectModel.Collection(Of BliskiStop)()
 
         For Each oNode As VBlib.Przystanek In olStops
-            iOdl = GPSDistance(dLat, dLon, oNode.Lat, oNode.Lon)
+            iOdl = oPos.DistanceTo(oNode.Lat, oNode.Lon)
 
             If iOdl < dMaxOdl Then
                 Dim oNew As BliskiStop = New BliskiStop()

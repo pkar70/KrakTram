@@ -1,6 +1,6 @@
 ﻿using System;
 using vb14 = VBlib.pkarlibmodule14;
-
+using static p.Extensions;
 
 
 namespace KrakTram
@@ -72,7 +72,7 @@ namespace KrakTram
                 vb14.DialogBox(App.oStops.sLastError);
                 return;
             }
-            p.k.ClipPut(sRet);
+            vb14.ClipPut(sRet);
 
             // sygnalizacja kiedy bylo ostatnie
             mdOpoznLastDate = DateTime.Now;
@@ -202,12 +202,7 @@ namespace KrakTram
                 else
                     oNew.Fill = oBrush2min;
 
-                Windows.Devices.Geolocation.BasicGeoposition oPosition;
-                oPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-                oPosition.Latitude = oItem.Lat;
-                oPosition.Longitude = oItem.Lon;
-                Windows.Devices.Geolocation.Geopoint oPoint;
-                oPoint = new Windows.Devices.Geolocation.Geopoint(oPosition);
+                Windows.Devices.Geolocation.Geopoint oPoint = new VBlib.MyBasicGeoposition(oItem.Lat, oItem.Lon).ToWinGeopoint();
 
                 iCnt += 1;
                 oMapCtrl.Children.Add(oNew);

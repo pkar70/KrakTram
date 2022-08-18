@@ -201,4 +201,7 @@
   <data name="msgSearchReroute" xml:space="preserve">
     <value>Tekst do szukania:</value>
   </data>
+  <data name="resZmianyLink" xml:space="preserve">
+    <value>(więcej info)</value>
+  </data>
 </root>

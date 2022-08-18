@@ -1,6 +1,7 @@
 ﻿
 using System.Linq;
 using vb14 = VBlib.pkarlibmodule14;
+using static p.Extensions;
 
 
 namespace KrakTram
@@ -11,6 +12,8 @@ namespace KrakTram
 
         private VBlib.Trasa inVb = null;
         private string msLinia = "";
+
+        private bool _InReverse = false;
 
         public Trasa()
         {
@@ -56,13 +59,24 @@ namespace KrakTram
                 if (inVb.moItemy.Count < 1) return;
             }
 
+            uiReverse.IsEnabled = true;
+
             sRet = sRet.Replace("OK", ""); // data pliku cache
             uiFileDate.Text = sRet; // data pliku cache
             if (sRet != "") uiReload.IsEnabled = false; // ma sens tylko wtedy gdy jest plik z cache
 
-            uiListStops.ItemsSource = from c in inVb.moItemy
-                                      orderby c.iMin
-                                      select c;
+            if (_InReverse)
+            {
+                uiListStops.ItemsSource = from c in inVb.moItemy
+                                          orderby c.iMin descending
+                                          select c;
+            }
+            else
+            {
+                uiListStops.ItemsSource = from c in inVb.moItemy
+                                          orderby c.iMin
+                                          select c;
+            }
 
         }
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -80,18 +94,23 @@ namespace KrakTram
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
-                    App.mPoint = p.k.NewBasicGeoposition(oStop.Lat, oStop.Lon);
+                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
                     App.moOdjazdy.Clear();
-                    this.Frame.Navigate(typeof(Odjazdy));
+                    this.Navigate(typeof(Odjazdy));
                 }
             }
         }
 
         private void uiClose_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            this.GoBack();
         }
 
+        private void uiShowReverse_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            _InReverse = !_InReverse;
+            PrepareTrasaAsync(false);
+        }
 
         private void GoPrzystanek(VBlib.JedenStop oItem)
         {

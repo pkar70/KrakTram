@@ -27,7 +27,7 @@
         <TextBlock HorizontalAlignment="Center" FontSize="14" x:Uid="uiZmianyTitle" />
         <TextBlock HorizontalAlignment="Center" x:Name="uiFileDate" FontSize="10" Grid.Row="1"/>
             <Frame  Grid.Row="2" BorderThickness="0,0,0,2" BorderBrush="Blue" >
-                <WebView x:Name="uiWebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <WebView x:Name="uiWebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" NavigationStarting="uiWebNavStart" />
             </Frame> 
             <ListView Grid.Row="3" x:Name="uiLista" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
             <ListView.ItemContainerStyle>

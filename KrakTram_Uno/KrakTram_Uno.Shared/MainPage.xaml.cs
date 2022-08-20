@@ -71,15 +71,10 @@ namespace KrakTram
             // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
             App.oFavour.Load();
 
-            uiFavList.ItemsSource = from c in App.oFavour.GetList()
-                                    orderby c.Name
-                                    select c.Name;
-            if (App.oFavour.GetList().Count == 1)
-                uiFavList.SelectedIndex = 0;
-
+            ShowFavourCombo();
 
             await App.CheckLoadStopListAsync();
-            if (vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp") )
+            if (vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp"))
             {
                 uiStopList.ItemsSource = (from c in App.oStops.GetList("tram")
                                           orderby c.Name
@@ -100,11 +95,11 @@ namespace KrakTram
                 //uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 //uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                if ( p.k.GetPlatform("uwp"))
+                if (p.k.GetPlatform("uwp"))
                 {
                     uiBusStopList.ItemsSource = (from c in App.oStops.GetList("bus")
-                                                orderby c.Name
-                                                select c.Name).ToList();
+                                                 orderby c.Name
+                                                 select c.Name).ToList();
                 }
                 else
                 {
@@ -129,6 +124,16 @@ namespace KrakTram
             uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
 
             mbAndroAdd = false;
+
+        }
+
+        private void ShowFavourCombo()
+        {
+            uiFavList.ItemsSource = from c in App.oFavour.GetList()
+                                    orderby c.Name
+                                    select c.Name;
+            if (App.oFavour.GetList().Count == 1)
+                uiFavList.SelectedIndex = 0;
         }
 
         private void KontrolaSzerokosci()
@@ -217,22 +222,23 @@ namespace KrakTram
             string sName = uiFavList.SelectedItem.ToString();
             App.oFavour.Del(sName);
             App.oFavour.Save(false);
-            uiFavList.ItemsSource = from c in App.oFavour.GetList()
-                                    orderby c.Name
-                                    select c.Name;
+            ShowFavourCombo();
+
             // HideAppPins()
             uiUnPin.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
 
-        private void uiPin_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void Pin_Stop(string sCat)
         {
+            HideAppPins();
+
             if (string.IsNullOrEmpty(msStopName))
                 return;
 
             // dodaj do Fav
             // Dim sName As String = uiStopList.SelectedItem
-            VBlib.Przystanek oPrzyst = App.oStops.GetItem(msStopName);
+            VBlib.Przystanek oPrzyst = App.oStops.GetItem(msStopName, sCat);
             if (oPrzyst == null)
                 return;
 
@@ -241,10 +247,7 @@ namespace KrakTram
 
             msStopName = ""; // powtorka buttonu nie zadziała
 
-            uiFavList.ItemsSource = from c in App.oFavour.GetList()
-                                    orderby c.Name
-                                    select c.Name;
-            HideAppPins();
+            ShowFavourCombo();
         }
 
 
@@ -274,13 +277,13 @@ namespace KrakTram
 
         private void uiPinBus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            uiPin_Click(null, null);
+            Pin_Stop("bus");
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void uiPinTram_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            uiPin_Click(null, null);
+            Pin_Stop("tram");
             uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 

@@ -56,7 +56,7 @@ namespace KrakTram
         }
 
 #if __ANDROID__
-        private async System.Threading.Tasks.Task<Windows.Storage.StorageFile> AndroidGetFileFromApplicationUri(Uri uri)
+        private async System.Threading.Tasks.Task<Windows.Storage.StorageFile> AndroidGetFileFromApplicationUriAsync(Uri uri)
         {
             // "ms-appx:///Assets/" + iRok + ".gif"
             // "__" + iRok + ".gif" w pkar.KrakTram.apk\res\drawable-nodpi-v4\
@@ -114,11 +114,11 @@ namespace KrakTram
             Windows.Storage.StorageFile oFile;
             try
             {
-#if NETFX_CORE
+#if NETFX_CORE 
                 oFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(oPicUri);
 #else
                 // zakładam że jak nie UWP to Android
-                oFile = await AndroidGetFileFromApplicationUri(oPicUri);
+                oFile = await AndroidGetFileFromApplicationUriAsync(oPicUri);
 #endif
             }
             catch

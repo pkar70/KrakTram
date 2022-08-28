@@ -12,6 +12,8 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+ STORE UWP
+
 2022.08.20
 * busstop jako favour - teraz ju¿ dzia³a :)  (nie da³o siê dodaæ Zarzecze, bo chcia³ tylko tram stop dodawaæ)
 

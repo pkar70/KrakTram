@@ -5,5 +5,12 @@ https://github.com/unoplatform/uno/issues/8618#issuecomment-1111335182
     <AndroidAsset Include=".\Test8618.Shared\Assets\**" Link="Assets\Assets\%(RecursiveDir)\%(FileName)%(Extension)" />
   </ItemGroup>
 
+kraktram:
+ daily/hourly (wedle setup) trigger, sprawdzanie reroutów i Toast z tym; open: do www otwarcie info
 
+Linia - trasa - mapka (wspó³rzêdne z przystanków na trasie); button: full trasa (z wszystkimi zakrêtami i ewentualnie kreska na mapie)
+Minuty - trasa - mapka (wspó³rzêdne z przystanków, dodanie info o czasie na ka¿dym kolejnym przystanku); button: jak wy¿ej
 
+https://learn.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geopath.positions?view=winrt-22621#windows-devices-geolocation-geopath-positions
+
+* +20 minut zaznaczenie na mapie przejazdu

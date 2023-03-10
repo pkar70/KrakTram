@@ -2,7 +2,9 @@
 using System.Linq;
 using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
-
+using Windows.UI.Xaml.Data;
+using System;
+//using Uno.UI.ViewManagement;
 
 namespace KrakTram
 {
@@ -13,11 +15,12 @@ namespace KrakTram
         private VBlib.Trasa inVb = null;
         private string msLinia = "";
 
-        private bool _InReverse = false;
+        // private bool _InReverse = false;
 
         public Trasa()
         {
             this.InitializeComponent();
+            this.ProgRingInit(true, false);
         }
 
         protected override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
@@ -44,7 +47,7 @@ namespace KrakTram
 
         private async void PrepareTrasaAsync(bool bForceRefresh)
         {
-            this.ProgRingInit(true, false);
+            this.ProgRingShow(true);
             string sRet = await inVb.PrepareTrasa(bForceRefresh, p.k.NetIsIPavailable(false));
             this.ProgRingShow(false);
 
@@ -54,7 +57,7 @@ namespace KrakTram
                 return;
             }
 
-            if(bForceRefresh)
+            if (bForceRefresh)
             { // jeśli było wymuszenie wczytania, ale nic nie wczytało, to nie przerysowuj
                 if (inVb.moItemy.Count < 1) return;
             }
@@ -65,20 +68,27 @@ namespace KrakTram
             uiFileDate.Text = sRet; // data pliku cache
             if (sRet != "") uiReload.IsEnabled = false; // ma sens tylko wtedy gdy jest plik z cache
 
-            if (_InReverse)
+            ShowTrasa();
+
+        }
+
+        private void ShowTrasa()
+        {
+            if (uiAllStops.IsChecked.Value)
             {
                 uiListStops.ItemsSource = from c in inVb.moItemy
-                                          orderby c.iMin descending
+                                          orderby c.iMin
                                           select c;
             }
             else
             {
                 uiListStops.ItemsSource = from c in inVb.moItemy
                                           orderby c.iMin
+                                          where c.iMin > -2
                                           select c;
             }
-
         }
+
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiTitle.Text = vb14.GetLangString("resTrasa") + " " + msLinia;
@@ -88,13 +98,13 @@ namespace KrakTram
 
         private void ShowTabliczka(string sStop)
         {
-            foreach (VBlib.Przystanek oStop in App.oStops.GetList("all"))
+            foreach (pkar.MpkWrap.Przystanek oStop in App.oStops.GetList("all"))
             {
                 if (oStop.Name == sStop)
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
-                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
+                    App.mPoint = oStop.Geo;
                     App.moOdjazdy.Clear();
                     this.Navigate(typeof(Odjazdy));
                 }
@@ -106,16 +116,24 @@ namespace KrakTram
             this.GoBack();
         }
 
-        private void uiShowReverse_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void uiAllStops_Checked(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            _InReverse = !_InReverse;
-            PrepareTrasaAsync(false);
+            ShowTrasa();
+        }
+
+
+            private void uiShowReverse_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            foreach (var item in inVb.moItemy)
+                item.iMin = -item.iMin;
+
+            ShowTrasa();
         }
 
         private void GoPrzystanek(VBlib.JedenStop oItem)
         {
             if (oItem == null) return;
-            ShowTabliczka(inVb.NazwaBezSlupka(oItem.Przyst));
+            ShowTabliczka(VBlib.Trasa.NazwaBezSlupka(oItem.Przyst));
         }
 
 
@@ -139,4 +157,23 @@ namespace KrakTram
             GoPrzystanek(oGrid.DataContext as VBlib.JedenStop);
         }
     }
+
+
+    public class KonwersjaLicznik : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            int iNum = System.Convert.ToInt32(value);
+            if (iNum < 0) return "";
+            if (iNum == 0) return "»»»"; // "───→"; //"──►"; // 
+            // return "~ " + (2 * iNum).ToString();
+            return iNum.ToString();
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

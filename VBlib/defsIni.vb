@@ -30,10 +30,11 @@ widthCol3=0     # szerokosc pola czas odjazdu
 LastLoadStops=yymmdd    # data ostatniego wczytania
 pkarmode=false
 gpsPrec=0       # dokładność, przeliczana z Android oraz UWP
-settingsAlsoBus=false   # bus/tram
+#settingsAlsoBus=false   # bus/tram, juz zawsze True
 sortMode=0      # sortowanie odjazdów
 androAutoTram=false
 favPlaces=      # dawna wersja listy fav, xml w zmiennej
+uiAndroAutoTram=true
 
 [libs]
 ; lista z pkarmodule

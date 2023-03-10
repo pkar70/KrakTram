@@ -29,7 +29,7 @@ namespace KrakTram
             if (vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()))
                 uiCommandBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-            await PoszukajGornejGranicyDatAsync();  // dla Windows nie trzeba ustawiać MIN/INIT
+            await PoszukajLatKrancowychAsync();  // dla Windows nie trzeba ustawiać MIN/INIT
 
             UstawGraniceSlider();
             mbBlockSlider = false;
@@ -38,9 +38,7 @@ namespace KrakTram
         }
 
 
-
-
-        private async System.Threading.Tasks.Task PoszukajGornejGranicyDatAsync()
+        private async System.Threading.Tasks.Task PoszukajLatKrancowychAsync()
         {
             // init rok, idziemy od Date.Now w dół
             for(_InitRok = DateTime.Now.Year; _InitRok > MIN_ROK; _InitRok--)
@@ -160,7 +158,7 @@ namespace KrakTram
             this.Navigate(typeof(Opoznienia));
         }
 
-private async System.Threading.Tasks.Task PrzestawRokAsync(int initRokChange)
+        private async System.Threading.Tasks.Task PrzestawRokAsync(int initRokChange)
         {
             int iRok = (int)uiSlider.Value + initRokChange;
             int iRokDelta = initRokChange;

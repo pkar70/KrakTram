@@ -60,12 +60,9 @@ namespace KrakTram
 
             this.ProgRingShow(true); // ProgresywnyRing(true);
 
-            if (vb14.GetSettingsBool("settingsAlsoBus"))
-            {
                 uiStopList.Header = "Tram";
                 uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            }
 
             // await LoadFavListAsync(); - gdy było razem z importem z XML (2022.04), teraz już usuwam ten import (2022.08)
             // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
@@ -88,12 +85,6 @@ namespace KrakTram
 
             }
 
-            if (vb14.GetSettingsBool("settingsAlsoBus"))
-            {
-                // przeniesione wyzej.
-                //uiStopList.Header = "Tram";
-                //uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                //uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
                 if (p.k.GetPlatform("uwp"))
                 {
@@ -108,12 +99,10 @@ namespace KrakTram
                     uiBusStopList.SelectedIndex = 0;
                 }
 
-            }
 
             // dla Android nalezy poczekac z ustalaniem szerokosci
             if (!p.k.GetPlatform("uwp"))
                 await System.Threading.Tasks.Task.Delay(500);
-
 
             this.ProgRingShow(false); //ProgresywnyRing(false);
 
@@ -136,22 +125,25 @@ namespace KrakTram
                 uiFavList.SelectedIndex = 0;
         }
 
+
+        public static int widthCol0, widthCol3;
+
         private void KontrolaSzerokosci()
         {
-        // kontrola szerokosci dla pola lewego (linia, typ)
-        int iWidthLine, iWidthTyp, iWidthTime;
+
+            int iWidthLine, iWidthTyp, iWidthTime;
 
             uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Visible;
             if ((int)uiTesterTyp.ActualWidth < 10)
             {
                 // znaczy android, i mamy nieustalone!
-                // niech pozostanie poprzednia wartosc (a nóż byla juz ustawiona poprawnie)
+                // niech pozostanie poprzednia wartosc (a nuż byla juz ustawiona poprawnie)
                 uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 uiTesterCzas.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
                 iWidthTyp = 40;
-                iWidthLine = 40;
+                iWidthLine = 60;
                 iWidthTime = 40;
             }
             else
@@ -160,7 +152,7 @@ namespace KrakTram
                 uiTesterTyp.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                uiTesterLinia.Text = vb14.GetSettingsBool("settingsAlsoBus") ? "244" : "50";
+                uiTesterLinia.Text = "244";
                 iWidthLine = (int)uiTesterLinia.ActualWidth;  //linia
                 uiTesterLinia.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
@@ -183,8 +175,8 @@ namespace KrakTram
             //'uiTester.Text = "50"
             //'uiTester.Visibility = Visibility.Collapsed
 
-            vb14.SetSettingsInt("widthCol0", System.Math.Max(iWidthLine, iWidthTyp));
-            vb14.SetSettingsInt("widthCol3", iWidthTime);
+            widthCol0 = System.Math.Max(iWidthLine, iWidthTyp);
+            widthCol3 = iWidthTime;
         }
 
         private void HideAppPins()
@@ -202,9 +194,9 @@ namespace KrakTram
                 uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            if (!vb14.GetSettingsBool("settingsAlsoBus"))
-                    return;
+            //uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //if (!vb14.GetSettingsBool("settingsAlsoBus"))
+            //        return;
 
             if (uiPinBus.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
                 uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
@@ -229,7 +221,7 @@ namespace KrakTram
         }
 
 
-        private void Pin_Stop(string sCat)
+        private void Pin_Stop(bool isBus)
         {
             HideAppPins();
 
@@ -238,11 +230,11 @@ namespace KrakTram
 
             // dodaj do Fav
             // Dim sName As String = uiStopList.SelectedItem
-            VBlib.Przystanek oPrzyst = App.oStops.GetItem(msStopName, sCat);
+           pkar.MpkWrap.Przystanek oPrzyst = App.oStops.GetItem(msStopName, isBus);
             if (oPrzyst == null)
                 return;
 
-            App.oFavour.Add(msStopName, oPrzyst.Lat, oPrzyst.Lon, 150);  // odl 150, zeby byl tram/bus
+            App.oFavour.Add(msStopName, oPrzyst.Geo, 150);  // odl 150, zeby byl tram/bus
             App.oFavour.Save(false);
 
             msStopName = ""; // powtorka buttonu nie zadziała
@@ -277,13 +269,13 @@ namespace KrakTram
 
         private void uiPinBus_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Pin_Stop("bus");
+            Pin_Stop(true);
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void uiPinTram_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Pin_Stop("tram");
+            Pin_Stop(false);
             uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
@@ -307,7 +299,7 @@ namespace KrakTram
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = oStop.maxOdl;
-                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
+                    App.mPoint = oStop.Geo;
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
                     this.Navigate(typeof(Odjazdy));
@@ -315,16 +307,19 @@ namespace KrakTram
             }
         }
 
-        private void GoStop(string sName, string sCat)
+        private void GoStop(string sName, bool isBus)
         {
-            foreach (VBlib.Przystanek oStop in App.oStops.GetList(sCat))
+            string sCat = "tram";
+            if (isBus) sCat = "bus";
+
+            foreach (pkar.MpkWrap.Przystanek oStop in App.oStops.GetList(sCat))
             {
                 if (oStop.Name == sName)
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
-                    App.mPoint = new VBlib.MyBasicGeoposition(oStop.Lat, oStop.Lon);
-                    App.msCat = oStop.Cat;
+                    App.mPoint = oStop.Geo;
+                    //App.msCat = oStop.IsBus;
                     App.moOdjazdy.Clear();
                     if (!mbSkalowane) KontrolaSzerokosci();  // dla Android 
                     this.Navigate(typeof(Odjazdy));
@@ -338,7 +333,7 @@ namespace KrakTram
                 return;
             // KontrolaSzerokosci()
             string sStop = uiStopList.SelectedValue.ToString();
-            GoStop(sStop, "tram");
+            GoStop(sStop, false);
         }
 
         private void uiGoBusStop_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -347,7 +342,7 @@ namespace KrakTram
                 return;
             // KontrolaSzerokosci()
             string sStop = uiBusStopList.SelectedValue.ToString();
-            GoStop(sStop, "bus");
+            GoStop(sStop, true);
         }
 
         private async void uiStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)

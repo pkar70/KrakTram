@@ -1,33 +1,34 @@
-﻿Public Class JedenStop ' musi byc public, bo inaczej serializer nie dziala
-    Public Property Linia As String
+﻿
+Public Class JedenStop ' musi byc public, bo inaczej serializer nie dziala
+    'Public Property Linia As String
     Public Property Przyst As String
     Public Property iMin As Integer
-    ' Public Property sMin As String
     Public Property Num As Integer
 End Class
 
 Public Class Trasa
 
-
-    Private ReadOnly msLinia As String = ""
+    'Private ReadOnly msLinia As String = ""
     Private ReadOnly msKier As String = ""
     Private ReadOnly msStop As String = ""
 
-    Public moItemy As New ObjectModel.Collection(Of JedenStop)
+    Public moItemy As New List(Of JedenStop)
     Private ReadOnly msDataFilePath As String = ""
     Private Const MAX_CACHE_DAYS As Integer = 30
     Public sLastError As String = ""
 
+    Private _nuget As pkar.MpkWrap.Linia
+
     Public Sub New(sRootPath As String, sLinia As String, sKier As String, sStop As String)
         ' Windows.Storage.ApplicationData.Current.LocalCacheFolder 
-        msDataFilePath = System.IO.Path.Combine(sRootPath, "line" & sLinia & ".json")
-        msLinia = sLinia
+        _nuget = New pkar.MpkWrap.Linia(sRootPath, sLinia)
+        ' msLinia = sLinia
         msKier = sKier
         msStop = sStop
     End Sub
 
 
-    Public Function NazwaBezSlupka(sNazwaZeSlupkiem As String) As String
+    Public Shared Function NazwaBezSlupka(sNazwaZeSlupkiem As String) As String
         Dim iInd As Integer = sNazwaZeSlupkiem.LastIndexOf(" ")
         Dim iTest As Integer = 0
         If iInd > 1 AndAlso Integer.TryParse(sNazwaZeSlupkiem.Substring(iInd).Trim, iTest) Then
@@ -42,16 +43,19 @@ Public Class Trasa
     ''' </summary>
     Public Async Function PrepareTrasa(bForceRefresh As Boolean, bNetAvail As Boolean) As Task(Of String)
 
-        Dim sCacheDate As String = ""
-        If Not bForceRefresh Then sCacheDate = TryLoadTrasaCache()
-
-        If sCacheDate = "" Then
+        Dim ret As String = Await _nuget.LoadOrImport(bForceRefresh, bNetAvail)
+        If Not ret.StartsWith("OK") Then
             If Not bNetAvail Then Return GetLangString("resErrorNoNetwork")
-            Dim sRet As String = Await DownloadTrasa()
-            If sRet <> "" Then Return sRet
         End If
 
-        If moItemy.Count < 1 Then Return "OK"
+        If _nuget.Count < 1 Then Return "OK"
+
+        moItemy.Clear()
+        Dim iCnt As Integer = 0
+        For Each stopek As String In _nuget.GetList
+            moItemy.Add(New JedenStop With {.Przyst = stopek, .Num = iCnt})
+            iCnt += 1
+        Next
 
         ' policz który to numer przystanku
         Dim iStopNo = 0
@@ -67,7 +71,8 @@ Public Class Trasa
         ' dopisanie numeru przystanku
         For Each oStop In moItemy
 
-            If moItemy.Item(0).Przyst = msKier Then
+            ' starts, bo msKier nie ma numeru słupka a Przyst - ma
+            If moItemy.Item(0).Przyst.StartsWith(msKier) Then
                 ' iNum od 0 .. iStopNo .. max -> iMin= -iCount+iStopNo .. 0 .. iCount-iStopNo
                 oStop.iMin = moItemy.Count - oStop.Num - (moItemy.Count - iStopNo)
             Else
@@ -78,8 +83,10 @@ Public Class Trasa
             'oStop.sMin = oStop.iMin.ToString()
         Next
 
-        Return "OK" & sCacheDate
+        Return ret
     End Function
+
+#If NUGET Then
 
     ''' <summary>
     ''' ret="" nie ma w cache/za stare; "dd/mm/yyyy pliku
@@ -182,6 +189,8 @@ Public Class Trasa
 
         Dim iNum = 0
 
+        moItemy.Clear()
+
         For Each entry As HtmlAgilityPack.HtmlNode In entries
             Dim oNew As New JedenStop
             oNew.Linia = msLinia
@@ -198,7 +207,7 @@ Public Class Trasa
         Save()
         Return ""
     End Function
-
+#End If
 
 End Class
 

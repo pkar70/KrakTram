@@ -190,7 +190,7 @@
     <value>Przystanki</value>
   </data>
   <data name="resFavour.Header" xml:space="preserve">
-    <value>Zapisane pozycje</value>
+    <value>Zapisane lokalizacje</value>
   </data>
   <data name="resGoStop.Content" xml:space="preserve">
     <value>Pokaż!</value>
@@ -251,5 +251,20 @@
   </data>
   <data name="uiReverse.Label" xml:space="preserve">
     <value>Przeciwny kierunek</value>
+  </data>
+  <data name="uiAllStops.Content" xml:space="preserve">
+    <value>Wszystkie</value>
+  </data>
+  <data name="uiTrasaInvert.Content" xml:space="preserve">
+    <value>Odwróć</value>
+  </data>
+  <data name="uiScheduled.Text" xml:space="preserve">
+    <value>Przewidywany czas</value>
+  </data>
+  <data name="uiScheduledTitle.Text" xml:space="preserve">
+    <value>Przewidywany czas dojazdu</value>
+  </data>
+  <data name="uiDelayStats.Text" xml:space="preserve">
+    <value>Statystyka opóźnień</value>
   </data>
 </root>

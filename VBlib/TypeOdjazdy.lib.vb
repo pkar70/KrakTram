@@ -1,30 +1,37 @@
-﻿Partial Public Class JedenOdjazd
-    Public Property Linia As String
-    Public Property iLinia As Integer
-    Public Property Typ As String
-    Public Property Kier As String
-    Public Property Przyst As String
-    Public Property Mins As String
-    Public Property PlanTime As String
-    Public Property ActTime As String
+﻿
+Imports pkar.MpkWrap
+
+Partial Public Class JedenOdjazd
+
+    Public Property Odjazd As pkar.MpkWrap.Odjazd
+    Public Property isBus As Boolean
+    Public Property stopId As String
     Public Property Delay As Integer
     Public Property Odl As Integer
-    Public Property TimeSec As Integer
     Public Property bShow As Boolean = True
-    Public Property odlMin As Integer
-    Public Property uiCol1 As Integer
-    Public Property uiCol3 As Integer
+    'Public Property uiCol1 As Integer
+    'Public Property uiCol3 As Integer
     Public Property sPrzystCzas As String
     Public Property bPkarMode As Boolean
-    Public Property sRawData As String
+
+    Public Property vehicleType As String
+    Public Property vehicleInwalida As Integer
+
 End Class
+
 
 Partial Public Class ListaOdjazdow
     Public sLastError As String = ""
 
-    Private moOdjazdy As ObjectModel.Collection(Of JedenOdjazd)
+    Private moOdjazdy As New List(Of JedenOdjazd)
 
-    Public Function GetItems() As ObjectModel.Collection(Of JedenOdjazd)
+    Private Shared _pojazdy As pkar.MpkWrap.MpkWrap_Vehicles
+
+    Public Sub New(cacheFolder As String)
+        _pojazdy = New MpkWrap_Vehicles(cacheFolder)
+    End Sub
+
+    Public Function GetItems() As List(Of JedenOdjazd)
         Return moOdjazdy
     End Function
 
@@ -33,103 +40,19 @@ Partial Public Class ListaOdjazdow
     End Function
 
     Public Sub Clear()
-        If moOdjazdy Is Nothing Then moOdjazdy = New ObjectModel.Collection(Of JedenOdjazd)()
+        If moOdjazdy Is Nothing Then moOdjazdy = New List(Of JedenOdjazd)
         moOdjazdy.Clear()
     End Sub
 
+    Private Shared _nuget As New pkar.MpkWrap.Tabliczka
 
-#Region "typy pojazdów"
-
-    Private Shared Function VehicleId2VehicleType68(sTmp As String) As String
-        If String.IsNullOrEmpty(sTmp) OrElse sTmp.Length < 15 Then Return ""
-        If Not Equals(If(sTmp.Substring(0, 15), ""), "635218529567218") Then Return ""
-        Dim id As Integer
-        If Not Integer.TryParse(sTmp.Substring(15), id) Then id = 0
-        id -= 736
-        If id = 831 Then id = 216
-        If id < 100 Then Return "???"
-        If id < 200 Then Return "E1"  ' lowfloor=0
-        If id < 300 Then Return "105N"  ' lowfloor=0
-        If id < 400 Then Return "GT8"  ' lowfloor=0, dla 313 i 323 low=1; 
-        If id < 450 Then Return "EU8N"  ' lowfloor=1
-        If id < 500 Then Return "N8"  ' lowfloor=1
-        If id < 600 Then Return "???"
-        If id < 700 Then Return "NGT6"  ' lowfloor=2
-        If id < 800 Then Return "???"
-        If id < 890 Then Return "NGT8"
-        If id = 899 Then Return "126N"
-        If id < 990 Then Return "2014N"
-        If id = 990 Then Return "405N-Kr"
-        Return "???"
-    End Function
-
-    Private Shared Function VehicleId2VehicleType11(sTmp As String) As String
-        If String.IsNullOrEmpty(sTmp) OrElse sTmp.Length < 15 Then Return ""
-        If Not Equals(If(sTmp.Substring(0, 15), ""), "-11889502973096") Then Return ""
-        ' 123456789.12345
-
-        Dim id As Integer
-        If Not Integer.TryParse(sTmp.Substring(15), id) Then id = 0
-        If id = 46005 Then Return "405N"
-        If id < 46021 Then Return "   "
-        If id < 46126 Then Return "2014N"
-        If id < 46214 Then Return "NGT8"
-        If id < 46396 Then Return "NGT6"
-        If id = 46399 Then Return "2014N"
-        If id = 46403 Then Return "NGT6"
-        If id = 46435 Then Return "N8S-NF"
-        If id = 46439 Then Return "N8S-NF"
-        If id = 46443 Then Return "GT8"
-        If id < 46499 Then Return "   "
-        If id < 46580 Then Return "EU8N"
-        If id < 46595 Then Return "   "
-        If id < 46596 Then Return "GT8"
-        If id < 46715 Then Return "   "
-        If id < 46764 Then Return "105N"
-        If id < 46891 Then Return "   "
-        If id < 47142 Then Return "E1"
-
-        ' dalej sa pojedyncze, za duzo roboty
-
-        Return "   "    ' ale nie pytajnikuj, bo nie wiadomo czy nie wiadomo :)
-    End Function
-
-    Private Shared Function VehicleId2VehicleType(sTmp As String) As String
-        ' https://github.com/jacekkow/mpk-ttss/blob/master/common.js
-
-        Dim sRet = ""
-        sRet = VehicleId2VehicleType68(sTmp)
-        If Not String.IsNullOrEmpty(sRet) Then Return sRet
-        sRet = VehicleId2VehicleType11(sTmp)
-        If Not String.IsNullOrEmpty(sRet) Then Return sRet
-        Return "    "
-    End Function
-#End Region
-
-    Public Async Function WczytajTabliczke(sCat As String, sErrData As String, iId As Integer, iOdl As Integer, mSpeed As Double, bPkarMode As Boolean) As Task(Of String)
+    Public Async Function WczytajTabliczke(isBus As Boolean, sErrData As String, sId As String, iOdl As Integer, mSpeed As Double, bPkarMode As Boolean) As Task(Of String)
         ' mSpeed = App.mSpeed
         ' Dim bPkarMode As Boolean = p.k.GetSettingsBool("pkarmode", p.k.IsThisMoje())
         'oNew.uiCol1 = GetSettingsInt("widthCol0")  ' linia, typ pojazdu
         'oNew.uiCol3 = GetSettingsInt("widthCol3")  ' czas odjazdu
         'If iCurrSec > iOldSec + 60 * GetSettingsInt("alsoNext", 5) Then
 
-        Dim oJson As Newtonsoft.Json.Linq.JObject = Await VBlib.App.WczytajTabliczke(sCat, sErrData, iId)
-        If oJson Is Nothing Then
-            Return VBlib.App.sLastError
-        End If
-
-        Dim oJsonStops As Newtonsoft.Json.Linq.JArray = New Newtonsoft.Json.Linq.JArray()
-
-        Try
-            oJsonStops = CType(oJson("actual"), Newtonsoft.Json.Linq.JArray)
-        Catch
-            Return "ERROR: JSON ""actual"" array missing in " & sErrData
-        End Try
-
-        If oJsonStops.Count < 1 Then Return "" ' przeciez tabliczka moze byc pusta (po kursach, przystanek nieczynny...)
-
-        ' Dim iMinSec As Integer = 3600 * iOdl / (App.GetSettingsInt("walkSpeed", 4) * 1000)
-        ' 20171108: nie walkspeed, ale aktualna szybkosc (nie mniej niz walkSpeed)
 
         Dim iMinSec As Integer
 
@@ -139,124 +62,115 @@ Partial Public Class ListaOdjazdow
             iMinSec = 3.6 * iOdl / mSpeed
         End If
 
+        If _pojazdy.Count < 1 Then Await _pojazdy.LoadOrImport(False, True)
 
-        For Each oVal As Newtonsoft.Json.Linq.JObject In oJsonStops
-            Dim iCurrSec = 0
+        Dim nugetOdjazdy As List(Of pkar.MpkWrap.Odjazd) = Await _nuget.WczytajTabliczke(isBus, sId, iMinSec)
+        If nugetOdjazdy Is Nothing Then Return "ERROR"
 
-            Try
-                iCurrSec = CInt(oVal("actualRelativeTime"))
-            Catch
-            End Try
+        For Each odjazd As pkar.MpkWrap.Odjazd In nugetOdjazdy
+            Dim oNew As New JedenOdjazd
+            oNew.Odjazd = odjazd
+            oNew.isBus = isBus
+            oNew.stopId = sId
+            oNew.Odl = iOdl
 
-            If iCurrSec > iMinSec Then
-                Dim oNew As JedenOdjazd = New JedenOdjazd()
+            If odjazd.vehicleId IsNot Nothing Then
+                ' no bo się zdarza że jest NULL!
 
-                Try
-                    oNew.Linia = "!ERR!"
+                Dim danePojazdu As pkar.MpkWrap.VehicleData = _pojazdy.GetItem(odjazd.vehicleId, isBus)
+                If danePojazdu Is Nothing Then
+                    Await _pojazdy.LoadOrImport(True, True)
+                    danePojazdu = _pojazdy.GetItem(odjazd.vehicleId, isBus)
+                End If
 
-                    Try
-                        oNew.Linia = CStr(oVal("patternText"))
-                    Catch
-                    End Try
-
-                    Dim argresult = 0
-
-                    If Integer.TryParse(oNew.Linia, argresult) Then
-                        oNew.iLinia = argresult
+                If danePojazdu IsNot Nothing Then
+                    oNew.vehicleType = SkrocTypPojazdu(isBus, danePojazdu.type)
+                    If danePojazdu.low.HasValue Then
+                        oNew.vehicleInwalida = danePojazdu.low.Value
                     Else
-                        oNew.iLinia = 9999
-                    End If  ' trafia na koniec
-
-                    oNew.Typ = "!ERR!" '  VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
-
-                    Try
-                        oNew.Typ = CStr(oVal("vehicleId"))
-                        oNew.Typ = VehicleId2VehicleType(oNew.Typ)
-                    Catch
-                    End Try
-
-                    ' oVal.GetObject().GetNamedString("direction", "!error!");
-                    Try
-                        oNew.Kier = CStr(oVal("direction"))
-                    Catch
-                    End Try
-
-                    If String.IsNullOrEmpty(oNew.Kier) Then oNew.Kier = "!error!"
-
-                    '  oVal.GetObject().GetNamedString("mixedTime", "!ERR!").Replace("%UNIT_MIN%", "min").Replace("Min", "min");
-                    Try
-                        oNew.Mins = CStr(oVal("mixedTime"))
-                    Catch
-                    End Try
-
-                    If String.IsNullOrEmpty(oNew.Mins) Then oNew.Mins = "!ERR!"
-                    oNew.Mins = oNew.Mins.Replace("%UNIT_MIN%", "min").Replace("Min", "min")
-
-                    ' "Plan: " + oVal.GetObject().GetNamedString("plannedTime", "!ERR!");
-                    Try
-                        oNew.PlanTime = CStr(oVal("plannedTime"))
-                    Catch
-                    End Try
-
-                    If String.IsNullOrEmpty(oNew.PlanTime) Then oNew.PlanTime = "!ERR!"
-                    oNew.PlanTime = "Plan: " & oNew.PlanTime
-
-                    ' "Real: " + oVal.GetObject().GetNamedString("actualTime", "!ERR!");
-                    Try
-                        oNew.ActTime = CStr(oVal("actualTime"))
-                    Catch
-                    End Try
-
-                    If String.IsNullOrEmpty(oNew.ActTime) Then oNew.ActTime = "!ERR!"
-                    oNew.ActTime = "Real: " & oNew.ActTime
-
-                    ' oJson.GetObject().GetNamedString("stopName", "!error!");
-                    Try
-                        oNew.Przyst = CStr(oJson("stopName"))
-                    Catch
-                    End Try
-
-                    If String.IsNullOrEmpty(oNew.Przyst) Then oNew.Przyst = "!error!"
-                    oNew.Odl = iOdl
-                    oNew.TimeSec = iCurrSec
-                    oNew.odlMin = iMinSec / 60
-                    oNew.uiCol1 = GetSettingsInt("widthCol0") ' linia, typ pojazdu
-                    oNew.uiCol3 = GetSettingsInt("widthCol3") ' czas odjazdu
-                    oNew.sPrzystCzas = $"{oNew.Przyst} ({oNew.Odl} m, {oNew.odlMin} min)"
-                    oNew.bPkarMode = False  ' Windows.UI.Xaml.Visibility.Collapsed
-                    oNew.sRawData = ""
-
-                    If bPkarMode Then
-                        oNew.bPkarMode = True   ' Windows.UI.Xaml.Visibility.Visible
-                        oNew.sRawData = oVal.ToString().Replace(",""", "," & vbLf & """")
+                        oNew.vehicleInwalida = 0
                     End If
-
-                    ' oNode.SetAttribute("numer",
-                    ' oVal.GetObject.GetNamedString("vehicleId", "12345678901234599999").Substring(15))
-                    ' oNode.SetAttribute("odlSec", iMinSec)
-
-
-                    Dim bBylo = False
-
-                    For Each oTmp In moOdjazdy
-
-                        If oTmp.Kier = oNew.Kier AndAlso oTmp.Linia = oNew.Linia Then
-                            Dim iOldSec = oTmp.TimeSec
-
-                            If iCurrSec > iOldSec + 60 * GetSettingsInt("alsoNext") Then '  GetSettingsInt("alsoNext", 5) 
-                                bBylo = True
-                                Exit For
-                            End If
-                        End If
-                    Next
-
-                    If Not bBylo Then moOdjazdy.Add(oNew)
-                Catch
-                End Try
+                End If
             End If
+
+            ' tylko to, czego nie zrobił Nuget
+            'oNew.Typ = "!ERR!" '  VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
+            'Try
+            '    oNew.Typ = CStr(oVal("vehicleId"))
+            '    oNew.Typ = VehicleId2VehicleType(oNew.Typ)
+            'Catch
+            'End Try
+
+            'oNew.uiCol1 = GetSettingsInt("widthCol0") ' linia, typ pojazdu
+            'oNew.uiCol3 = GetSettingsInt("widthCol3") ' czas odjazdu
+            oNew.sPrzystCzas = $"{oNew.Odjazd.Przyst} ({oNew.Odl} m, {oNew.Odjazd.odlMin} min)"
+            oNew.bPkarMode = bPkarMode
+
+            ' oNode.SetAttribute("numer",
+            ' oVal.GetObject.GetNamedString("vehicleId", "12345678901234599999").Substring(15))
+            ' oNode.SetAttribute("odlSec", iMinSec)
+
+            Dim bBylo = False
+
+            For Each oTmp In moOdjazdy
+
+                If oTmp.Odjazd.Kier = oNew.Odjazd.Kier AndAlso oTmp.Odjazd.Linia = oNew.Odjazd.Linia Then
+                    Dim iOldSec = oTmp.Odjazd.TimeSec
+
+                    If oNew.Odjazd.TimeSec > iOldSec + 60 * GetSettingsInt("alsoNext") Then '  GetSettingsInt("alsoNext", 5) 
+                        bBylo = True
+                        Exit For
+                    End If
+                End If
+            Next
+
+            If Not bBylo Then moOdjazdy.Add(oNew)
         Next
 
         Return ""   ' wszystko OK
+    End Function
+
+    Private Function SkrocTypPojazdu(isBus As Boolean, typek As String) As String
+
+        Dim ret As String = typek
+
+        If isBus Then
+
+            ' Autosan M09LE
+            ret = ret.Replace("Autosan", "A")
+
+            'MAN Lion's Intercity 13
+            ret = ret.Replace("MAN Lion's Intercity 13", "MAN13")
+
+            'Mercedes Conecto II
+            'Mercedes O530 C2 Hybrid
+            'Mercedes O530 C2
+            ret = ret.Replace("Mercedes", "M").Replace("Hybrid", "H").Replace("Connecto", "C")
+
+            'Solaris Urbino 18 IV Electric
+            'Solaris Urbino 18 III Hybrid
+            'Solaris Urbino 12 IV
+            'Solaris Urbino 12, 9 III Hybrid
+            'Solaris Urbino 18 IV
+            'Solaris Urbino 8, 9LE Electric
+            'Solaris Urbino 12 IV Electric
+            'Solaris Urbino 18 III
+            'Solaris Urbino 18 MetroStyle
+            'Solaris Urbino 12 III
+            ret = ret.Replace("Solaris", "S").Replace(" Urbino", "U").Replace("Hybrid", "H").Replace("Electric", "E").Replace("MetroStyle", "M")
+
+            'Volvo 7900A Hybrid
+            ret = ret.Replace("Volvo", "V")
+
+        Else
+            ' Stadler Tango
+            ' Stadler Tango II
+            ret = ret.Replace("Stadler", "")
+        End If
+
+        ret = ret.Replace(" ", "")
+
+        Return ret
     End Function
 
     Public Sub OdfiltrujMiedzytabliczkowo()
@@ -270,8 +184,8 @@ Partial Public Class ListaOdjazdow
             If oNode.bShow Then
                 For Each oNode1 In moOdjazdy
 
-                    If oNode.Linia = oNode1.Linia Then
-                        If oNode.odlMin < oNode1.odlMin Then oNode1.bShow = False
+                    If oNode.Odjazd.Linia = oNode1.Odjazd.Linia Then
+                        If oNode.Odjazd.odlMin < oNode1.Odjazd.odlMin Then oNode1.bShow = False
                     End If
                 Next
             End If
@@ -283,8 +197,13 @@ Partial Public Class ListaOdjazdow
         ' = False, tylko ten kierunek
 
         For Each oNode In moOdjazdy
-            If bExclude AndAlso oNode.Kier = sKier Then oNode.bShow = False
-            If Not bExclude AndAlso oNode.Kier <> sKier Then oNode.bShow = False
+            If bExclude AndAlso oNode.Odjazd.Kier = sKier Then oNode.bShow = False
+            If Not bExclude AndAlso oNode.Odjazd.Kier <> sKier Then oNode.bShow = False
         Next
     End Sub
+
+    Public Async Function GetDelayStats(bBus As Boolean, sId As String) As Task(Of OpoznieniaStat)
+        Return Await _nuget.GetDelayStats(bBus, sId)
+    End Function
+
 End Class

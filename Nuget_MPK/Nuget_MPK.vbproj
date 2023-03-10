@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>pkar</RootNamespace>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>pkar.nuget.MPK</PackageId>
+    <Title>obsługa MPK</Title>
+    <Authors>pkar</Authors>
+    <RepositoryUrl>https://github.com/pkar70/KrakTram/Nuget_MPK</RepositoryUrl>
+    <Version>1.0.1</Version>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BasicGeopos" Version="1.2.2" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="StructList" Version="1.1.0" />
+  </ItemGroup>
+
+</Project>

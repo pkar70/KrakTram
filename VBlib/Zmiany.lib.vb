@@ -1,4 +1,4 @@
-﻿
+﻿#If PRENUGET Then
 Public Class JednaInfo
     Public Property sLinie As String
     Public Property sCzas As String
@@ -104,3 +104,4 @@ Public Class Zmiany
     End Function
 
 End Class
+#end if

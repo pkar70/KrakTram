@@ -12,6 +12,25 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+2023.02.26..
+* wykorzystywanie Nugetów (a wiêc i zmiany w Vblib, pkarmodulewithlib, oraz w kodzie)
+* wreszcie poprawne obracanie trasy (bez podwajania przystanków)
+* "»»»" jako prefix aktualnego przystanku w Trasa, mno¿enie przystanku ×2 (minuty), bez czasu dla przesz³ych przystanków, pokazywanie tylko jednego poprzedniego
+* ju¿ bez mno¿enia, za to mo¿liwoœæ pokazania ca³ej trasy b¹dŸ "od teraz"
+* Nuget prywatny, wrapper do MPK
+* likwidujê wy³¹czanie autobusów
+* nowa strona: przewidywane czasy dojazdu
+* szerokoœci pól: ju¿ nie przez pole w Odjazd, ale przez Static Int i XAMLconverter
+* ProgRing przy wczytywaniu trasy (zwyk³ej i scheduled)
+* TextBlock nie ma jednak ContextFlyout, wiêc nie dzia³a³ RightButton na przystanku (w odjazdach)
+* DumpJSON statystyki opóŸnieñ dla konkretnego przystanku (dla pkarmode tylko)
+* czy¿by d³u¿sze otwieranie app oraz combo?
+* poprawne znajdywanie kierunku na liœcie przystanków trasy (ignorowanie numeru s³upka)
+* pokazywanie na mapie przystanków na dalszej trasie z czasami
+* trasa scheduled: BOLD na przystanku po 20 minutach (najdalszy w ramach 20 minut)
+* skalowanie mapki tak by wszystkie przystanki siê znalaz³y
+* typy pojazdów, wraz z ikonk¹ inwalidzk¹
+
  STORE UWP
 
 2022.08.20

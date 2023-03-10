@@ -73,12 +73,12 @@
                 <SymbolIcon Symbol="Zoom" />
             </Button>
 
-            <ComboBox x:Uid="resBusStops" Name="uiBusStopList" Grid.Row="3" Header="Bus" Margin="0,0,0,15" Visibility="Collapsed" SelectionChanged="uiStopList_SelectionChanged" DoubleTapped="uiBusStopList_DoubleTapped"/>
-            <Button x:Uid="resGoStop" Content="Go" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,10,0,15"  Visibility="Collapsed"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
-            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiPinBus" Click="uiPinBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
-                <SymbolIcon Symbol="Pin" />
+            <ComboBox x:Uid="resBusStops" Name="uiBusStopList" Grid.Row="3" Header="Bus" Margin="0,0,0,15" SelectionChanged="uiStopList_SelectionChanged" DoubleTapped="uiBusStopList_DoubleTapped"/>
+            <Button x:Uid="resGoStop" Content="Go" x:Name="uiGoBusStop" Grid.Row="3" Grid.Column="1" Margin="15,10,0,15"  Click="uiGoBusStop_Click" VerticalAlignment="Bottom" />
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiPinBus" Click="uiPinBus_Click" VerticalAlignment="Bottom"  >
+                    <SymbolIcon Symbol="Pin"  />
             </Button>
-            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiSearchBus"  Click="uiSearchBus_Click" VerticalAlignment="Bottom" Visibility="Collapsed" >
+            <Button Grid.Row="3" Grid.Column="2" Margin="15,10,0,15" Name="uiSearchBus"  Click="uiSearchBus_Click" VerticalAlignment="Bottom" >
                 <SymbolIcon Symbol="Zoom" />
             </Button>
 

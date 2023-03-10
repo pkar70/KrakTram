@@ -22,7 +22,7 @@ namespace KrakTram
         private void uiMapka_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
-            uiMapka.Center = VBlib.MyBasicGeoposition.GetKrakowGeopos().ToWinGeopoint();
+            uiMapka.Center = pkar.BasicGeopos.GetKrakowCenter().ToWinGeopoint();
             if (p.k.IsFamilyMobile())
                 uiMapka.ZoomLevel = 10;
             else
@@ -43,7 +43,7 @@ namespace KrakTram
         {
             App.mbGoGPS = false;
 #if NETFX_CORE
-            App.mPoint = args.Location.Position.ToMyGeopos();
+            App.mPoint = pkar.BasicGeopos.FromObject(args.Location.Position); //.ToMyGeopos();
             App.mMaxOdl = vb14.GetSettingsInt("maxOdl");
             App.moOdjazdy.Clear();
             this.Navigate(typeof(Odjazdy));

@@ -1,0 +1,28 @@
+﻿
+
+Inne znane REST, wedle stopPoint a nie Stop:
+http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stopPoint?stopPoint=303819' => [
+{
+  "actual": [ MpkOdjazd ...
+
+	'http://www.ttss.krakow.pl/internetservice/services/stopInfo/stopPoint?stopPoint=303819' => [
+{
+  "id": "8059229492100768459",
+  "passengerName": "Czerwone Maki P+R (303819)",
+  "stopPointCode": "303819"
+}
+
+http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stopPoints?left=-648000000&bottom=-324000000&right=648000000&top=324000000
+
+{"stopPoints": [ MpkPrzystanek + 
+    "label": "",
+    "name": "Czerwone Maki P+R (303819)",
+  },
+
+
+http://www.ttss.krakow.pl/internetservice/services/stopInfo/stop?stop=632
+{
+  "id": "8059230041856278827",
+  "passengerName": "Dauna"
+}
+

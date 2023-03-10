@@ -1,2 +1,0 @@
-﻿
-' nic do przeniesienia

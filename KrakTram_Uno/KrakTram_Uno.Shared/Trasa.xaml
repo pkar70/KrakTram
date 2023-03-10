@@ -10,24 +10,30 @@
     mc:Ignorable="d not_win"
     Loaded="Page_Loaded">
 
+    <UserControl.Resources>
+        <local:KonwersjaLicznik x:Key="KonwersjaLicznik" />
+    </UserControl.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="5,5,5,5" x:Name="uiGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" x:Name="naStrone"/>
+            <RowDefinition Height="Auto" x:Name="naBottomAppBar"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
 
             <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" x:Name="naTitle"/>
+            <RowDefinition Height="Auto" x:Name="naFileDate" />
+            <RowDefinition x:Name="naListe" />
+            <RowDefinition Height="Auto" x:Name="naOK"/>
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="uiTitle" FontSize="18" HorizontalAlignment="Center" />
-        <TextBlock x:Name="uiFileDate" FontSize="10" HorizontalAlignment="Center" Grid.Row="1"/>
+        <TextBlock x:Name="uiFileDate" FontSize="10" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
+            <CheckBox Name="uiAllStops" HorizontalAlignment="Left" Grid.Row="1" Checked="uiAllStops_Checked" Unchecked="uiAllStops_Checked" x:Uid="uiAllStops"/>
+            <Button x:Uid="uiTrasaInvert" Content="Invert" HorizontalAlignment="Right" Grid.Row="1" Click="uiShowReverse_Click"/>
 
-        <ListView Grid.Row="2" x:Name="uiListStops" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
+            <ListView Grid.Row="2" x:Name="uiListStops" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -45,7 +51,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="1" Text="{Binding iMin, Mode=OneWay }" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="1" Text="{Binding iMin, Mode=OneWay, Converter={StaticResource KonwersjaLicznik} }" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="2" Text="{Binding Przyst, Mode=OneWay }" Margin="10,0,0,0" />
 
                         <Grid.ContextFlyout>

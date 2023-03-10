@@ -204,4 +204,7 @@
   <data name="resZmianyLink" xml:space="preserve">
     <value>(więcej info)</value>
   </data>
+  <data name="resScheduled" xml:space="preserve">
+    <value>Przewidywany czas dojazdu</value>
+  </data>
 </root>

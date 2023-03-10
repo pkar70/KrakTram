@@ -9,7 +9,7 @@ namespace KrakTram
     public sealed partial class Zmiany : Windows.UI.Xaml.Controls.Page
     {
 
-        private VBlib.Zmiany oVbLib = new VBlib.Zmiany(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
+        private pkar.MpkWrap.Zmiany oNuget = new pkar.MpkWrap.Zmiany(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
 
         public Zmiany()
         {
@@ -27,18 +27,18 @@ namespace KrakTram
 
             if (string.IsNullOrEmpty(sMask))
             {
-                uiLista.ItemsSource = oVbLib.moItemy;
+                uiLista.ItemsSource = oNuget.GetList();
             }
             else
             {
                 sMask = sMask.ToLower();
-                uiLista.ItemsSource = from c in oVbLib.moItemy
+                uiLista.ItemsSource = from c in oNuget.GetList()
                                       where c.sInfo.ToLower().Contains(sMask)
                                       select c;
             }
 
             if (uiLista.Items.Count == 1)
-                PokazObjazd((uiLista.Items.ElementAt(0) as VBlib.JednaInfo).sInfo);
+                PokazObjazd((uiLista.Items.ElementAt(0) as pkar.MpkMain.MpkZmiana).sInfo);
         }
 
     
@@ -46,44 +46,49 @@ namespace KrakTram
     private async void uiRefresh_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             uiReload.IsEnabled = false;
-            await WczytajZmianyAsync();
-            uiLista.ItemsSource = oVbLib.moItemy; // from c in moLista;
+
+            this.ProgRingShow(true);
+            bool bRet = await oNuget.LoadOrImport(true, p.k.NetIsIPavailable(false));
+            this.ProgRingShow(false);
+
+            if (!bRet) return;
+
+            uiFileDate.Text = oNuget.GetFileDate().ToString("yyyy.MM.dd");
+            uiLista.ItemsSource = oNuget.GetList(); // from c in moLista;
         }
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            uiReload.IsEnabled = p.k.NetIsIPavailable(false);
 
             this.ProgRingInit(true, false);
 
-            if (!TryLoadCache())
-            {
-                this.ProgRingShow(true);
-                await WczytajZmianyAsync();
-                this.ProgRingShow(false);
-            }
+            this.ProgRingShow(true);
+            await oNuget.LoadOrImport(false, p.k.NetIsIPavailable(false));
+            uiFileDate.Text = oNuget.GetFileDate().ToString("yyyy.MM.dd");
+
+            this.ProgRingShow(false);
 
 #if !__ANDROID__
             // uiRowInfo.Height = new Windows.UI.Xaml.GridLength { GridUnitType= Windows.UI.Xaml.GridUnitType.Pixel,  }
             uiRowInfo.MaxHeight = 10;
 #endif 
-            if (oVbLib.moItemy.Count < 1)
+            if (oNuget.Count() < 1)
                 return;
-            uiLista.ItemsSource = oVbLib.moItemy; //  From c In moLista ' Order By c.iMin
+            uiLista.ItemsSource = oNuget.GetList(); //  From c In moLista ' Order By c.iMin
 
         }
 
-
+#if false
         private bool TryLoadCache()
         {
-            string sRet = oVbLib.TryLoadCache();
-            if(sRet == "") return false;
+            if(!oNuget.Load()) return false;
 
-            uiFileDate.Text = sRet;
+            uiFileDate.Text = oNuget.GetFileDate().ToString("yyyy.MM.dd");
             uiReload.IsEnabled = true;
 
             return true;
         }
-
         private async System.Threading.Tasks.Task<bool> WczytajZmianyAsync()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -92,7 +97,7 @@ namespace KrakTram
                 return false;
             }
 
-            string sRet = await oVbLib.WczytajZmiany();
+            string sRet = await oNuget.LoadOrImport() oVbLib.WczytajZmiany();
             if(sRet != "")
             {
                 await vb14.DialogBoxAsync(sRet);
@@ -102,9 +107,10 @@ namespace KrakTram
 
             uiFileDate.Text = "";
             uiReload.IsEnabled = false;
-            oVbLib.Save();
+            oNuget.Save();
             return true;
         }
+#endif
 
         private void PokazObjazd(string sHtml)
         {
@@ -121,7 +127,7 @@ namespace KrakTram
         }
         private void uiPokaz_Click(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            VBlib.JednaInfo oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as VBlib.JednaInfo;
+            pkar.MpkMain.MpkZmiana oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as pkar.MpkMain.MpkZmiana;
 
             string sHtml = $"<p>{oItem.sInfo}<p><a href='{oItem.sLink}'>{vb14.GetLangString("resZmianyLink")}</a>";
             PokazObjazd(sHtml);
@@ -134,7 +140,8 @@ namespace KrakTram
 
             args.Cancel = true;
 
-            Windows.System.Launcher.LaunchUriAsync(args.Uri);
+            args.Uri.OpenBrowser();
+            // Windows.System.Launcher.LaunchUriAsync(args.Uri);
         }
 
     }

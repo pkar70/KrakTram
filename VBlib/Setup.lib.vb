@@ -1,13 +1,11 @@
 ﻿
-Namespace Global
 
-    Public Class BliskiStop
+Public Class BliskiStop
         Public Property sNazwa As String
         Public Property sDane As String
         Public Property iOdl As Integer
     End Class
 
-End Namespace
 Public Class Setup
 
     Public Shared Function ConvertGpsPrecFromAndroid(iSlider As Integer, bUWP As Boolean) As Integer
@@ -25,30 +23,25 @@ Public Class Setup
     End Function
 
 
-
-    Public Shared Function ListaBliskichPrzystankowListView(oPos As MyBasicGeoposition, dMaxOdl As Double, dWalkSpeed As Double, olStops As List(Of Przystanek)) As ObjectModel.Collection(Of BliskiStop)
+    Public Shared Function ListaBliskichPrzystankowListView(oPos As pkar.BasicGeopos, dMaxOdl As Double, dWalkSpeed As Double, olStops As List(Of pkar.MpkWrap.Przystanek)) As List(Of BliskiStop)
         Dim iOdl As Integer
 
         Dim iMinOdl = 100000
-        Dim oItemy As ObjectModel.Collection(Of BliskiStop) = New ObjectModel.Collection(Of BliskiStop)()
+        Dim oItemy As New List(Of BliskiStop)
 
-        For Each oNode As VBlib.Przystanek In olStops
-            iOdl = oPos.DistanceTo(oNode.Lat, oNode.Lon)
+        For Each oNode As pkar.MpkWrap.Przystanek In olStops
+            iOdl = oPos.DistanceTo(oNode.Geo)
 
             If iOdl < dMaxOdl Then
-                Dim oNew As BliskiStop = New BliskiStop()
+                Dim oNew As New BliskiStop
                 oNew.sNazwa = oNode.Name
                 oNew.iOdl = iOdl
 
-                If GetSettingsBool("settingsAlsoBus") Then
-                    If oNode.Cat = "bus" Then
-                        oNew.sNazwa += " (A)"
-                    Else
-                        oNew.sNazwa += " (T)"
-                    End If
-                ElseIf oNode.Cat = "bus" Then
-                    Continue For
-                End If   ' dla tramwajów - tylko tramwajowe ma pokazywać
+                If oNode.IsBus Then
+                    oNew.sNazwa += " (A)"
+                Else
+                    oNew.sNazwa += " (T)"
+                End If
 
                 oNew.sDane = iOdl & " m (" & CInt(60 * iOdl / (dWalkSpeed * 1000)) & " min)"
                 oItemy.Add(oNew)

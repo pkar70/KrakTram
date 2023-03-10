@@ -1,4 +1,61 @@
 ﻿
+Imports pkar
+
+Public Class proba
+
+    ''' <summary>
+    ''' Return GeoCenter point for list of locations (using Latitude, Longitude and Altitude)
+    ''' </summary>
+    Public Shared Function GetCenter(locations As List(Of BasicGeopos)) As BasicGeopos
+        Return GetCornersAndCenter(locations).Item(2)
+    End Function
+
+    ''' <summary>
+    ''' return NorthWest and SouthEast corners for list of locations. Also return altitude minimum (in NW) and maximum (in SE). It can be used for creating UWP GeoboundingBox.
+    ''' </summary>
+    Public Shared Function GetCorners(locations As List(Of BasicGeopos)) As List(Of BasicGeopos)
+
+        Dim oSE As New BasicGeopos(90, -180, -6378000)
+        Dim oNW As New BasicGeopos(-90, 360, 100000)
+
+        For Each loc As BasicGeopos In locations
+            oNW.Altitude = Math.Min(oNW.Altitude, loc.Altitude)
+            oNW.Latitude = Math.Max(oNW.Latitude, loc.Latitude)
+            oNW.Longitude = Math.Min(oNW.Longitude, loc.Longitude)
+
+            oSE.Altitude = Math.Max(oSE.Altitude, loc.Altitude)
+            oSE.Latitude = Math.Min(oSE.Latitude, loc.Latitude)
+            oSE.Longitude = Math.Max(oSE.Longitude, loc.Longitude)
+
+        Next
+
+        Return New List(Of BasicGeopos) From {oNW, oSE}
+
+    End Function
+
+    ''' <summary>
+    ''' return NorthWest, SouthEast corners and center point for list of locations. Also return altitude minimum (in NW) and maximum (in SE)
+    ''' </summary>
+    Public Shared Function GetCornersAndCenter(locations As List(Of BasicGeopos)) As List(Of BasicGeopos)
+
+        Dim corners As List(Of BasicGeopos) = GetCorners(locations)
+        Dim GeoNW As BasicGeopos = corners.Item(0)
+        Dim GeoSE As BasicGeopos = corners.Item(1)
+
+        Dim GeoCenter As New BasicGeopos(
+            GeoSE.Latitude + (GeoNW.Latitude - GeoSE.Latitude) / 2,
+            GeoNW.Longitude + (GeoSE.Longitude - GeoNW.Longitude) / 2,
+            GeoNW.Altitude + (GeoSE.Altitude - GeoNW.Altitude) / 2)
+
+
+        Return New List(Of BasicGeopos) From {GeoNW, GeoSE, GeoCenter}
+
+    End Function
+
+End Class
+
+#If PRENUGET Then
+
 Public Class App
 
     Public Shared sLastError As String = ""
@@ -65,3 +122,4 @@ Public Class App
 
 End Class
 
+#End If

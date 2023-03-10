@@ -3,6 +3,8 @@ using System.Linq;
 using Windows.UI.Xaml.Data;
 using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
+using Windows.UI.Xaml.Documents;
+using System.Collections.Specialized;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -82,7 +84,7 @@ namespace KrakTram
             App.moOdjazdy.OdfiltrujMiedzytabliczkowo();
         }
 
-        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosciAsync(VBlib.MyBasicGeoposition oPos , double dOdl)
+        private async System.Threading.Tasks.Task WczytajTabliczkiWOdleglosciAsync(pkar.BasicGeopos oPos , double dOdl)
         {
             int iWorking = 0;
             int iOdl;
@@ -91,11 +93,11 @@ namespace KrakTram
             if (vb14.GetSettingsBool("settingsAlsoBus"))
                 sFilter = "all";
 
-            foreach (VBlib.Przystanek oNode in App.oStops.GetList(sFilter))
+            foreach (pkar.MpkWrap.Przystanek oNode in App.oStops.GetList(sFilter))
             {
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = ".";
-                iOdl = (int)oPos.DistanceTo(oNode.Lat, oNode.Lon);
+                iOdl = (int)oPos.DistanceTo(oNode.Geo);
                 if (iOdl < dOdl)
                 {
                     iWorking += 1;
@@ -117,17 +119,12 @@ namespace KrakTram
                     }
 
                     string sErrData = oNode.Name;
-                    if (vb14.GetSettingsBool("settingsAlsoBus"))
-                    {
-                        if (oNode.Cat == "bus")
+                        if (oNode.IsBus)
                             sErrData += " (bus)";
                         else
                             sErrData += " (tram)";
-                    }
 
-                    int iId;
-                    if(!int.TryParse(oNode.id, out iId)) iId=0;
-                    await App.moOdjazdy.WczytajTabliczke(oNode.Cat, sErrData, iId, iOdl, App.mSpeed,
+                    await App.moOdjazdy.WczytajTabliczke(oNode.IsBus, sErrData, oNode.id, iOdl, App.mSpeed,
                         vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()));
 
                     WypiszTabele(false);  // w trakcie - pokazujemy na raty, zeby cos sie dzialo
@@ -149,25 +146,25 @@ namespace KrakTram
             {
                 case 1:  // stop/czas/dir
                         uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
-                                                  orderby c.Przyst, c.TimeSec, c.Kier
+                                                  orderby c.Odjazd.Przyst, c.Odjazd.TimeSec, c.Odjazd.Kier
                                                   where c.bShow == true
                                                   select c).ToList();
                         break;
                 case 2:  // dir/stop/czas
                         uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
-                                                  orderby c.Kier, c.Przyst, c.TimeSec
+                                                  orderby c.Odjazd.Kier, c.Odjazd.Przyst, c.Odjazd.TimeSec
                                                   where c.bShow == true
                                                   select c).ToList();
                         break;
                 case 3:   // czas/line
                         uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
-                                                  orderby c.TimeSec, c.iLinia
+                                                  orderby c.Odjazd.TimeSec, c.Odjazd.iLinia
                                                   where c.bShow == true
                                                   select c).ToList();
                         break;
                 default:
                         uiListItems.ItemsSource = (from c in App.moOdjazdy.GetItems()
-                                                  orderby c.iLinia, c.Kier, c.TimeSec
+                                                  orderby c.Odjazd.iLinia, c.Odjazd.Kier, c.Odjazd.TimeSec
                                                   where c.bShow == true
                                                   select c).ToList();
                         break;
@@ -231,7 +228,7 @@ namespace KrakTram
             SetSortMode(false, 3);
         }
 
-        private void GoShowStops(VBlib.JedenOdjazd oItem)
+        private void GoShowStops(pkar.MpkWrap.Odjazd oItem)
         {
             string sParam;
             sParam = $"{oItem.Linia}|{oItem.Kier}|{oItem.Przyst}";
@@ -243,58 +240,69 @@ namespace KrakTram
             // sender = grid
             // uiGrid.BorderThickness = 1
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
-            GoShowStops(oItem);
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
+            GoShowStops(oItem.Odjazd);
+        }
+
+        private async void uiDelayStats_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
+            if (oItem is null) return;
+
+            var statsy = await App.moOdjazdy.GetDelayStats(oItem.isBus, oItem.stopId);
+            vb14.DialogBox(statsy.DumpAsJSON());
         }
 
         private  void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
+            if (oItem is null) return;
 
-             vb14.DialogBox(oItem.sRawData);
+            vb14.DialogBox(oItem.Odjazd.sRawData);
+        }
+
+        private void uiScheduled_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
+
+            string callParam = oItem.Odjazd.tripId + "|" + oItem.Odjazd.Przyst;
+            if (oItem.Odjazd.Linia.Length > 2) callParam += "|BUS";
+
+            this.Frame.Navigate(typeof(ScheduledTrasa), callParam);
         }
 
         private void uiExcludeKier_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            if (oMFI == null)
-                return;
-            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
             if (oItem == null)
                 return;
 
-            App.moOdjazdy.FiltrWedleKierunku(true, oItem.Kier);
+            App.moOdjazdy.FiltrWedleKierunku(true, oItem.Odjazd.Kier);
             WypiszTabele(true);
         }
 
         private void uiOnlyThisKier_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
-            if (oMFI == null)
-                return;
-            var oItem = oMFI.DataContext as VBlib.JedenOdjazd;
+            var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
             if (oItem == null)
                 return;
 
-            App.moOdjazdy.FiltrWedleKierunku(false, oItem.Kier);
+            App.moOdjazdy.FiltrWedleKierunku(false, oItem.Odjazd.Kier);
             WypiszTabele(true);
         }
 
         private void uiLine_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {// shortcut: przeskok do przystanków (dla Windows)
-            VBlib.JedenOdjazd oItem;
 
-            var oGrid = sender as Windows.UI.Xaml.Controls.Grid;
-            if (oGrid is null)
-            {
-                var oTBlock = sender as Windows.UI.Xaml.Controls.TextBlock;
-                oItem = oTBlock.DataContext as VBlib.JedenOdjazd;
-            }
-            else
-                oItem = oGrid.DataContext as VBlib.JedenOdjazd;
+            var oFE = sender as Windows.UI.Xaml.FrameworkElement;
+            var oItem = oFE.DataContext as VBlib.JedenOdjazd;
 
-            GoShowStops(oItem);
+            GoShowStops(oItem.Odjazd);
         }
 
     }
@@ -322,5 +330,98 @@ namespace KrakTram
         }
     }
 
+    public class KonwersjaHideNoReal : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            string temp = System.Convert.ToString(value);
+            if (temp.Contains("ERR"))
+            {
+                return Windows.UI.Xaml.Visibility.Collapsed;
+            }
+            else
+            {
+                return Windows.UI.Xaml.Visibility.Visible;
+            }
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // statyczne wartości przyjmujemy
+    public class KonwersjaWidth : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+
+            int temp = System.Convert.ToInt16(parameter);
+
+            if (temp == 3)
+            {
+                return MainPage.widthCol3;
+            }
+            else
+            {
+                return MainPage.widthCol0;
+            }
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class KonwersjaInwalidaVisibility : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            int temp = System.Convert.ToInt32(value);
+            if (temp < 1)
+            {
+                return Windows.UI.Xaml.Visibility.Collapsed;
+            }
+            else
+            {
+                return Windows.UI.Xaml.Visibility.Visible;
+            }
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class KonwersjaInwalidaOpacity : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            int temp = System.Convert.ToInt32(value);
+            switch(temp)
+            {
+                case 1: return 0.5;
+                case 2: return 1;
+            }
+            return 0;
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }

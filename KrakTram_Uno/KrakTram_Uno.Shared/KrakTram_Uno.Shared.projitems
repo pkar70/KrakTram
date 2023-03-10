@@ -32,12 +32,14 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)pkModuleShared.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)pswd.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScheduledTrasa.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setup.xaml.cs">
       <DependentUpon>Setup.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Trasa.xaml.cs">
       <DependentUpon>Trasa.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)TrasaNaMapie.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WedleMapy.xaml.cs">
       <DependentUpon>WedleMapy.xaml</DependentUpon>
     </Compile>
@@ -62,11 +64,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ScheduledTrasa.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Setup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Trasa.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)TrasaNaMapie.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

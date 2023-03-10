@@ -86,6 +86,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BasicGeopos">
+      <Version>1.2.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>6.0.0</Version>
     </PackageReference>
@@ -139,6 +142,10 @@
     <AndroidResource Include="Resources\drawable\splash.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Nuget_MPK\Nuget_MPK.vbproj">
+      <Project>{23094813-6477-40cd-b836-6b5790168e37}</Project>
+      <Name>Nuget_MPK</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\VBlib\VBlib.vbproj">
       <Project>{fe2d6f6b-e03b-41a6-b5d0-da3ec58b049d}</Project>
       <Name>VBlib</Name>

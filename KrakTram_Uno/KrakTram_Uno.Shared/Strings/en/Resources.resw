@@ -249,4 +249,22 @@
   <data name="uiReverse.Label" xml:space="preserve">
     <value>Opposite direction</value>
   </data>
+  <data name="uiAllStops.Content" xml:space="preserve">
+    <value>All stops</value>
+  </data>
+  <data name="uiTrasaInvert.Content" xml:space="preserve">
+    <value>Invert</value>
+  </data>
+  <data name="uiScheduled.Text" xml:space="preserve">
+    <value>Predicted arrivals</value>
+  </data>
+  <data name="resScheduled" xml:space="preserve">
+    <value>Predicted arrivals</value>
+  </data>
+  <data name="uiScheduledTitle.Text" xml:space="preserve">
+    <value>Predicted arrivals</value>
+  </data>
+  <data name="uiDelayStats.Text" xml:space="preserve">
+    <value>Delays stat</value>
+  </data>
 </root>

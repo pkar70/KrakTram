@@ -11,6 +11,10 @@
 
     <UserControl.Resources>
         <local:KonwersjaVisibility x:Key="KonwersjaVisib" />
+        <local:KonwersjaWidth x:Key="KonwersjaWidth" />
+        <local:KonwersjaHideNoReal x:Key="KonwersjaHideNoReal" />
+        <local:KonwersjaInwalidaVisibility x:Key="KonwersjaInwalidaVisibility" />
+        <local:KonwersjaInwalidaOpacity x:Key="KonwersjaInwalidaOpacity" />
     </UserControl.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -48,9 +52,10 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Text="{Binding Linia, Mode=OneWay }" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman" not_win:Margin="2,0,2,0" DoubleTapped="uiLine_DoubleTapped" />
-                                <TextBlock Grid.Row="1" Text="{Binding Typ, Mode=OneWay }" FontSize="12" HorizontalAlignment="Center" Width="{Binding uiCol1, Mode=OneWay }" Margin="2,0,2,1"/>
-
+                                <TextBlock Grid.Row="0" Text="{Binding Odjazd.Linia, Mode=OneWay }" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman" not_win:Margin="2,0,2,0" DoubleTapped="uiLine_DoubleTapped" />
+                                <TextBlock Grid.Row="1" Text="{Binding vehicleType, Mode=OneWay }" FontSize="10" HorizontalAlignment="Center" Width="{Binding sPrzystCzas, Mode=OneWay, Converter={StaticResource KonwersjaWidth}, ConverterParameter=0 }" Margin="2,0,2,1"/>
+                                <TextBlock Grid.Row="1" Text="♿" FontSize="10" HorizontalAlignment="Right" Margin="2,0,1,1" Visibility="{Binding vehicleInwalida, Mode=OneTime, Converter={StaticResource KonwersjaInwalidaVisibility}}" Opacity="{Binding vehicleInwalida, Mode=OneTime, Converter={StaticResource KonwersjaInwalidaOpacity}}"/>
+                                
                                 <Grid.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="Sort" Click="bSortByLine_Click"  />
@@ -68,7 +73,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid Grid.Row="0" BorderThickness="1" BorderBrush="Blue" Margin="1,1,1,1" >
-                                    <TextBlock Text="{Binding Kier, Mode=OneWay }"  FontSize="18" FontWeight="Bold"  VerticalAlignment="Center"  FontFamily="Times New Roman" Padding="2,0,0,0" not_win:Margin="2,0,0,0" />
+                                    <TextBlock Text="{Binding Odjazd.Kier, Mode=OneWay }"  FontSize="18" FontWeight="Bold"  VerticalAlignment="Center"  FontFamily="Times New Roman" Padding="2,0,0,0" not_win:Margin="2,0,0,0" />
                                     <Grid.ContextFlyout>
                                         <MenuFlyout>
                                             <MenuFlyoutItem Text="Sort" Click="bSortByKier_Click"  />
@@ -77,13 +82,16 @@
                                         </MenuFlyout>
                                     </Grid.ContextFlyout>
                                 </Grid>
-                                <TextBlock Grid.Row="1" Text="{Binding sPrzystCzas, Mode=OneWay }"  FontSize="12" win:Margin="0,2,0,2" Padding="4,0,0,0" not_win:Margin="4,2,0,2" >
-                                    <TextBlock.ContextFlyout>
+
+                                <Grid Grid.Row="1">
+                                    <TextBlock Text="{Binding sPrzystCzas, Mode=OneWay }"  FontSize="12" win:Margin="0,2,0,2" Padding="4,0,0,0" not_win:Margin="4,2,0,2" />
+                                    <Grid.ContextFlyout>
                                         <MenuFlyout>
                                             <MenuFlyoutItem Text="Sort" Click="bSortByStop_Click"  />
+                                            <MenuFlyoutItem Text="Delays" Click="uiDelayStats_Click" x:Uid="uiDelayStats" Name="uiDelayStats" Visibility="{Binding bPkarMode, Mode=OneWay,  Converter={StaticResource KonwersjaVisib} }"/>
                                         </MenuFlyout>
-                                    </TextBlock.ContextFlyout>
-                                </TextBlock>
+                                    </Grid.ContextFlyout>
+                                </Grid>
                             </Grid>
 
                             <Grid Grid.Column="2" Margin="1,1,1,1" BorderThickness="1" BorderBrush="Blue" >
@@ -93,13 +101,15 @@
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0" Text=" " FontSize="1"  />
                                 <TextBlock Grid.Row="1" Text="{Binding Mins, Mode=OneWay }" MinWidth="{Binding uiCol3, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0" /> -->
-                                <TextBlock Text="{Binding Mins, Mode=OneWay }" MinWidth="{Binding uiCol3, Mode=OneWay }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0" />
+                                <TextBlock Text="{Binding Odjazd.Mins, Mode=OneWay }" MinWidth="{Binding sPrzystCzas, Mode=OneWay, Converter={StaticResource KonwersjaWidth}, ConverterParameter=3 }" FontSize="22" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Times New Roman" not_win:Margin="2,0,1,0" />
                                 <Grid.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="Sort" Click="bSortByCzas_Click"/>
                                         <MenuFlyoutSeparator/>
-                                        <MenuFlyoutItem Text="{Binding PlanTime, Mode=OneWay }" />
-                                        <MenuFlyoutItem Text="{Binding ActTime, Mode=OneWay }" />
+                                        <MenuFlyoutItem Text="{Binding Odjazd.PlanTime, Mode=OneWay }" />
+                                        <MenuFlyoutItem Text="{Binding Odjazd.ActTime, Mode=OneWay }" />
+                                        <MenuFlyoutSeparator Visibility="{Binding Odjazd.ActTime, Mode=OneWay,  Converter={StaticResource KonwersjaHideNoReal} }"/>
+                                        <MenuFlyoutItem Text="harmonogram" x:Uid="uiScheduled" Click="uiScheduled_Click" Visibility="{Binding Odjazd.ActTime, Mode=OneWay,  Converter={StaticResource KonwersjaHideNoReal} }"/>
                                         <MenuFlyoutSeparator Visibility="{Binding bPkarMode, Mode=OneWay,  Converter={StaticResource KonwersjaVisib} }"/>
                                         <MenuFlyoutItem Text="Raw data" Visibility="{Binding bPkarMode, Mode=OneWay,  Converter={StaticResource KonwersjaVisib} }" Click="uiRawData_Click"/>
                                     </MenuFlyout>
@@ -117,7 +127,7 @@
                 <AppBarButton Icon="Sort" Label="Sort" >
                     <AppBarButton.Flyout>
                         <MenuFlyout>
-                            <MenuFlyoutItem Text="nietoggle" Click="bSortByLine_Click" IsChecked="True"/>
+                            <!--<MenuFlyoutItem Text="nietoggle" Click="bSortByLine_Click" IsChecked="True"/>-->
                             <ToggleMenuFlyoutItem x:Name="uiSortLine" x:Uid="resSortLine" Text="byLine" Click="bSortByLine_Click" IsChecked="True"/>
                             <ToggleMenuFlyoutItem x:Name="uiSortStop" x:Uid="resSortStop" Text="byStop" Click="bSortByStop_Click"/>
                             <ToggleMenuFlyoutItem x:Name="uiSortKier" x:Uid="resSortKier" Text="byKier" Click="bSortByKier_Click"/>

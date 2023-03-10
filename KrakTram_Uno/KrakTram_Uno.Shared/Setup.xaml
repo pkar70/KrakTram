@@ -84,7 +84,7 @@
                 <TextBlock Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="{Binding ElementName=uiMaxOdlSld, Path=Value, Converter={StaticResource KonwersjaDouble2Text}, ConverterParameter=m}" />
                 <!--<TextBlock x:Name="uiMaxOdlTxt" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="1" Margin="10,5,10,0" VerticalAlignment="Center" Text="400 m" />-->
 
-                <ToggleSwitch x:Name="uiAlsoBus" x:Uid="uiAlsoBus" Grid.Row="8" OnContent="bus &amp; tram (experimental)" OffContent="only tram" Toggled="uiAlsoBus_Toggled"/>
+                <!--<ToggleSwitch x:Name="uiAlsoBus" x:Uid="uiAlsoBus" Grid.Row="8" OnContent="bus &amp; tram (experimental)" OffContent="only tram" Toggled="uiAlsoBus_Toggled"/>-->
 
                 <ToggleSwitch Name="uiAndroAutoTram" x:Uid="uiAndroAutoTram" Grid.Row="9" OnContent="tram stops: fill list" OffContent="tram stops: use search" Visibility="Collapsed" />
             </Grid>

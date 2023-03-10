@@ -2,6 +2,7 @@
 using System.Linq;
 using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
+using System.Collections.Generic;
 
 namespace KrakTram
 {
@@ -31,7 +32,7 @@ namespace KrakTram
 
             vb14.SetSettingsInt("gpsPrec", VBlib.Setup.ConvertGpsPrecFromAndroid((int)uiGPSPrecSld.Value, p.k.GetPlatform("uwp")));
 
-            uiAlsoBus.SetSettingsBool("settingsAlsoBus");
+            //uiAlsoBus.SetSettingsBool("settingsAlsoBus");
             uiAndroAutoTram.SetSettingsBool("androAutoTram");
             this.Frame.GoBack();
         }
@@ -66,16 +67,16 @@ namespace KrakTram
 
             uiPositionLat.Text = App.mPoint.Latitude.ToString();
             uiPositionLong.Text = App.mPoint.Longitude.ToString();
-            uiAlsoBus.GetSettingsBool("settingsAlsoBus");
+            //uiAlsoBus.GetSettingsBool("settingsAlsoBus");
             uiAndroAutoTram.GetSettingsBool("androAutoTram");
             if (!p.k.GetPlatform("uwp")) uiAndroAutoTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
-        private void ListaBliskichPrzystankowListView(VBlib.MyBasicGeoposition oPoint)
+        private void ListaBliskichPrzystankowListView(pkar.BasicGeopos oPoint)
         {
-            System.Collections.ObjectModel.Collection<BliskiStop > oItemy =
+            List<VBlib.BliskiStop> oItemy =
                 VBlib.Setup.ListaBliskichPrzystankowListView(oPoint, 
                         uiMaxOdlSld.Value, uiWalkSpeedSld.Value, App.oStops.GetList("all"));
 
@@ -85,8 +86,8 @@ namespace KrakTram
     private async void eMaxOdl_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             // oPoint - albo narzucony, albo z GPS
-            VBlib.MyBasicGeoposition oPoint;
-            if (App.mPoint.Latitude == 100)
+            pkar.BasicGeopos oPoint;
+            if (App.mPoint.IsEmpty())
                 oPoint = await App.GetCurrentPointAsync();
             else
                 oPoint = App.mPoint;
@@ -161,8 +162,8 @@ namespace KrakTram
                     return;
                 }
 
-                App.oFavour.Add(sTxt, dLat, dLon, (int)uiMaxOdlSld.Value);
-                App.mPoint = new VBlib.MyBasicGeoposition(dLat, dLon);  // i ustalamy to jako biezace wspolrzedne
+                App.mPoint = new pkar.BasicGeopos(dLat, dLon);  // ustalamy to jako biezace wspolrzedne
+                App.oFavour.Add(sTxt, App.mPoint, (int)uiMaxOdlSld.Value);
             }
 
             ShowPositionPanel(false);
@@ -193,11 +194,11 @@ namespace KrakTram
             ShowPositionPanel(true);
         }
 
-        private void uiAlsoBus_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-            uiAlsoBus.SetSettingsBool("settingsAlsoBus");
-            eMaxOdl_Changed(null, null);
-        }
+        //private void uiAlsoBus_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        //{
+        //    uiAlsoBus.SetSettingsBool("settingsAlsoBus");
+        //    eMaxOdl_Changed(null, null);
+        //}
     }
 
     public class KonwersjaDouble2Text : Windows.UI.Xaml.Data.IValueConverter

@@ -461,16 +461,16 @@ namespace KrakTram
 
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible
-    public static VBlib.Przystanki oStops = new VBlib.Przystanki(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
+    public static pkar.MpkWrap.Przystanki oStops = new pkar.MpkWrap.Przystanki(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
+
         public static VBlib.FavStopList oFavour = new VBlib.FavStopList(Windows.Storage.ApplicationData.Current.LocalFolder.Path);
-        //public static double mdLat = 100;
-        //public static double mdLong;
-        public static VBlib.MyBasicGeoposition mPoint = new VBlib.MyBasicGeoposition(100,0);
+
+        public static pkar.BasicGeopos mPoint = pkar.BasicGeopos.Empty();
         public static double mSpeed;
         public static bool mbGoGPS = false;
         public static double mMaxOdl = 20;
-        public static string msCat = "tram";
-        public static VBlib.ListaOdjazdow moOdjazdy = new VBlib.ListaOdjazdow();
+        //public static string msCat = "tram";
+        public static VBlib.ListaOdjazdow moOdjazdy = new VBlib.ListaOdjazdow(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path);
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
         public static async System.Threading.Tasks.Task CheckLoadStopListAsync(bool bForceLoad = false)
@@ -479,7 +479,7 @@ namespace KrakTram
         }
 
 
-        public static async System.Threading.Tasks.Task<VBlib.MyBasicGeoposition> GetCurrentPointAsync()
+        public static async System.Threading.Tasks.Task<pkar.BasicGeopos> GetCurrentPointAsync()
         {
             //Point oPoint = new Point(); // = default(Point);
 
@@ -493,7 +493,7 @@ namespace KrakTram
                 await vb14.DialogBoxResAsync("resErrorNoGPSAllowed");
                 // SetSettingsBool("noGPSshown", True)
                 // End If
-                return VBlib.MyBasicGeoposition.GetDomekGeopos(2); // oPoint;
+                return pkar.BasicGeopos.GetMyTestGeopos(2); // oPoint;
             }
 
             // https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0/33866959'
@@ -524,7 +524,7 @@ namespace KrakTram
                     }
                 }
 
-                return oPos.Coordinate.Point.Position.ToMyGeopos();
+                return pkar.BasicGeopos.FromObject(oPos.Coordinate.Point.Position);
 
             }
             catch (Exception e)
@@ -543,7 +543,7 @@ namespace KrakTram
 
                 mSpeed = vb14.GetSettingsInt("walkSpeed", 4);
 
-            return VBlib.MyBasicGeoposition.GetDomekGeopos(2);
+            return pkar.BasicGeopos.GetMyTestGeopos(2); 
         }
 
     }

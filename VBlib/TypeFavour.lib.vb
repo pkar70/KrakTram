@@ -1,78 +1,69 @@
 ﻿
+' *TODO* konwersja do BasicGeoPos oraz Inherits BasicList
+
+Imports pkar
 
 Public Class FavStop
-    Public Property Lat As Double
-    Public Property Lon As Double
+    Public Property Geo As pkar.BasicGeopos
     Public Property Name As String
     Public Property maxOdl As Integer
 End Class
 
-Partial Public Class FavStopList
-    Public sLastError As String
 
-    Private moItemy As ObjectModel.Collection(Of FavStop) = New ObjectModel.Collection(Of FavStop)()
+Partial Public Class FavStopList
+    Inherits pkar.BaseList(Of FavStop)
+
     Private msDataFilePath As String = ""
     Private bDirty As Boolean = False
 
     Public Sub New(sRootPath As String)
+        MyBase.New(sRootPath, "favs2.json")
         ' Windows.Storage.ApplicationData.Current.LocalFolder 
-        msDataFilePath = System.IO.Path.Combine(sRootPath, "favs.json")
+        msDataFilePath = sRootPath
     End Sub
 
-    Public Sub Add(sName As String, dLat As Double, dLon As Double, iMaxOld As Integer)
+    Public Overloads Sub Add(sName As String, oGeo As pkar.BasicGeopos, iMaxOld As Integer)
 
         ' jesli jest (np. tram), to nie dodawaj (np. bus)
-        For Each oNode In moItemy
-            If Equals(If(oNode.Name, ""), If(sName, "")) Then Return
+        For Each oNode In _lista
+            If oNode.Name.ToLowerInvariant = sName.ToLowerInvariant Then Return
         Next
 
         ' nie ma, to dodaj
         Dim oNew = New FavStop()
-        oNew.Lat = dLat
-        oNew.Lon = dLon
+        oNew.Geo = oGeo
         oNew.Name = sName
         oNew.maxOdl = iMaxOld
-        moItemy.Add(oNew)
-        bDirty = True
+        _lista.Add(oNew)
     End Sub
 
     Public Sub Del(sName As String)
-        For Each oItem In moItemy
+        Remove(Function(x) x.Name.ToLowerInvariant = sName.ToLowerInvariant)
+    End Sub
 
-            If oItem.Name = sName Then
-                moItemy.Remove(oItem)
-                Return
-            End If
+    Protected Overrides Sub InsertDefaultContent()
+        Dim oldLista As New pkar.BaseList(Of FavStopOld)(msDataFilePath, "favs.json")
+
+        If Not oldLista.Load Then Return
+
+        _lista.Clear()
+        For Each oldFav As FavStopOld In oldLista.GetList
+            Dim oNew As New FavStop
+            oNew.Name = oldFav.Name
+            oNew.maxOdl = oldFav.maxOdl
+            oNew.Geo = New pkar.BasicGeopos(oldFav.Lat, oldFav.Lon)
+            _lista.Add(oNew)
         Next
+
+        Save()
+
     End Sub
 
-    ''' <summary>
-    ''' ret=-1 error; see LastError; albo =0 (nie ma pliku), albo = 1
-    ''' </summary>
-    Public Function Load() As Integer
-        ' ret=false gdy nie jest wczytane
+    Protected Class FavStopOld
+        Public Property Lat As Double
+        Public Property Lon As Double
+        Public Property Name As String
+        Public Property maxOdl As Integer
+    End Class
 
-        If Not System.IO.File.Exists(msDataFilePath) Then Return 0
-        Dim sTxt As String = System.IO.File.ReadAllText(msDataFilePath)
-
-        Try
-            moItemy = Newtonsoft.Json.JsonConvert.DeserializeObject(sTxt, GetType(ObjectModel.Collection(Of FavStop)))
-        Catch ex As Exception
-            sLastError = "ERROR reading fav file?"
-            Return -1
-        End Try
-
-        Return 1
-
-    End Function
-
-    Public Sub Save(bForce As Boolean)
-        If Not bForce And Not bDirty Then Return
-        Dim sTxt As String = Newtonsoft.Json.JsonConvert.SerializeObject(moItemy, Newtonsoft.Json.Formatting.Indented)
-        System.IO.File.WriteAllText(msDataFilePath, sTxt)
-    End Sub
-
-    Public Function GetList() As ObjectModel.Collection(Of FavStop)
-        Return moItemy
-    End Function
 End Class

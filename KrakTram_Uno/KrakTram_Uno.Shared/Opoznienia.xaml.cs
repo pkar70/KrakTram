@@ -1,35 +1,33 @@
-﻿using System;
+﻿
+using System;
 using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
-
 
 namespace KrakTram
 {
 
-
     public sealed partial class Opoznienia : Windows.UI.Xaml.Controls.Page
     {
         private static DateTime mdOpoznLastDate = System.DateTime.Now.AddDays(-5);
+        private static VBlib.PrzystankiOpoznione _StopDelays;
+        private static pkar.MpkWrap.OpoznieniaStat _StatTram;
+        private static pkar.MpkWrap.OpoznieniaStat _StatBus;
+
 
         public Opoznienia()
         {
             this.InitializeComponent();
+            _StopDelays = new VBlib.PrzystankiOpoznione(App.oStops.GetList("all"));
         }
-
-        private double mdDelayMinsTram = 0;
-        private int miDelayCntTram = 0;
-        private double mdDelayMinsBus = 0;
-        private int miDelayCntBus = 0;
-
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             this.ProgRingInit(true, false);
         }
 
-        private static void PokazDelayStat(int iDelay, int iCount, int iMaxDelay, Windows.UI.Xaml.Controls.TextBlock uiDelay, Windows.UI.Xaml.Controls.TextBlock uiData)
+        private static void PokazDelayStat(pkar.MpkWrap.OpoznieniaStat oStat, Windows.UI.Xaml.Controls.TextBlock uiDelay, Windows.UI.Xaml.Controls.TextBlock uiData)
         {
-            if (iCount == 0)
+            if (oStat.itemsCount == 0)
             {
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiDelay.Text = "--";
@@ -38,73 +36,66 @@ namespace KrakTram
                 return;
             }
 
-            double dDelay = iDelay / (double)iCount;
-            uiDelay.Text = dDelay.ToString("####0.#") + " mins";
-            string sTmp = "(" + iDelay + "/" + iCount;
-            if (iMaxDelay > 0)
-                sTmp = sTmp + ", max " + iMaxDelay;
-            sTmp = sTmp + ")";
+            uiDelay.Text = oStat.DelayAvg.ToString("####0.#") + " mins";
+            string sTmp = $"({oStat.DelaySum}/{oStat.itemsCount}";
+            if (oStat.DelayMax > 0)
+                sTmp += $", max {oStat.DelayMax}";
+            sTmp += ")";
             uiData.Text = sTmp;
         }
 
         private void PokazTotalDelay()
         {
-            PokazDelayStat((int)(mdDelayMinsTram + mdDelayMinsBus), miDelayCntTram + miDelayCntBus, -1, uiTotalDelay, uiTotalCount);
+            pkar.MpkWrap.OpoznieniaStat total = _StatTram.Clone() as pkar.MpkWrap.OpoznieniaStat;
+            total.DelaySum += _StatBus.DelaySum;
+            total.itemsCount += _StatBus.itemsCount;
+
+            PokazDelayStat(total, uiTotalDelay, uiTotalCount);
         }
 
-        private async void ReloadOpoznienia(int iTyp)
+        private async void ReloadOpoznienia(bool isBus)
         {
-            int iDelay = 0;
-            int iCount = 0;
-            int iMaxDelay = 0;
-
-            // policzenie opóźnień, b0 = bus, b1 = tram
             if (mdOpoznLastDate.AddMinutes(5) > DateTime.Now)
                 if (!await vb14.DialogBoxYNAsync("Niedawno było, na pewno?"))
                     return;
 
             this.ProgRingShow(true);
+            string sRet = await _StopDelays.OpoznieniaFromHttpAsync(isBus);
+            this.ProgRingShow(false);
 
-            
-            string sRet = await App.oStops.OpoznieniaFromHttpAsync(iTyp);
-            if (sRet == "")
-            {
-                vb14.DialogBox(App.oStops.sLastError);
-                return;
-            }
+            if (sRet == "") return;
+
             vb14.ClipPut(sRet);
 
             // sygnalizacja kiedy bylo ostatnie
             mdOpoznLastDate = DateTime.Now;
-            
-            bool bRet = App.oStops.OpoznieniaGetStat(iTyp, ref iDelay, ref iCount, ref iMaxDelay);
-            this.ProgRingShow(false);
-            if (!bRet)
-                return;
 
-            if (iTyp == 1) // tram
+            string msg = "";
+
+            if (!isBus)
             {
-                mdDelayMinsTram = iDelay;
-                miDelayCntTram = iCount;
-                PokazDelayStat((int)mdDelayMinsTram, miDelayCntTram, iMaxDelay, uiTramDelay, uiTramCount);
+                _StatTram = _StopDelays.OpoznieniaGetStat(isBus);
+                PokazDelayStat(_StatTram, uiTramDelay, uiTramCount);
+                msg = msg + "Tram: \n" + _StatTram.DumpAsJSON() + "\n";
             }
-            else // bus
+            else
             {
-                mdDelayMinsBus = iDelay;
-                miDelayCntBus = iCount;
-                PokazDelayStat((int)mdDelayMinsBus, miDelayCntBus, iMaxDelay, uiBusDelay, uiBusCount);
+                _StatBus = _StopDelays.OpoznieniaGetStat(isBus);
+                PokazDelayStat(_StatBus, uiBusDelay, uiBusCount);
+                msg = msg + "Bus: \n" + _StatBus.DumpAsJSON() + "\n";
             }
+
             PokazTotalDelay();
         }
 
         private void uiTramReload_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            ReloadOpoznienia(1);
+            ReloadOpoznienia(false);
         }
 
         private void uiBusReload_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            ReloadOpoznienia(2);
+            ReloadOpoznienia(true);
         }
 
         private void uiTotalReshow_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -143,31 +134,19 @@ namespace KrakTram
             oBrush20min.Opacity = 0.5;
             oBrushMaxmin.Opacity = 0.5;
 
-
-            foreach (VBlib.Przystanek oItem in App.oStops.GetList("all"))
+            foreach (VBlib.PrzystanekOpoznienie oItem in _StopDelays.GetList())
             {
-                if (oItem.iEntriesCount == 0)
+                if (oItem.delays.itemsCount == 0)
                     continue;
-                switch (oItem.Cat)
-                {
-                    case "bus":
-                        if (!bBus)
-                            continue;
-                        break;
-                    case "tram":
-                        if (!bTram)
-                            continue;
-                        break;
-                    default:
-                        continue;
-                }
+                if (oItem.IsBus && !bBus) continue;
+                if (!oItem.IsBus && !bTram) continue;
 
                 Windows.UI.Xaml.Shapes.Ellipse oNew = new Windows.UI.Xaml.Shapes.Ellipse();
                 oNew.Height = 20;
                 oNew.Width = 20;
                 double dAvgDelay = 0;
 
-                dAvgDelay = oItem.iSumDelay / (double)oItem.iEntriesCount;
+                dAvgDelay = oItem.delays.DelayAvg;
 
                 if (dAvgDelay < 1)
                     continue;
@@ -201,8 +180,7 @@ namespace KrakTram
                 }
                 else
                     oNew.Fill = oBrush2min;
-
-                Windows.Devices.Geolocation.Geopoint oPoint = new VBlib.MyBasicGeoposition(oItem.Lat, oItem.Lon).ToWinGeopoint();
+                Windows.Devices.Geolocation.Geopoint oPoint = oItem.Geo.ToWinGeopoint();
 
                 iCnt += 1;
                 oMapCtrl.Children.Add(oNew);
@@ -210,6 +188,7 @@ namespace KrakTram
                 // shared member - ale skąd wie jaka mapa? nie można dwu wyświetlić?
                 Windows.UI.Xaml.Controls.Maps.MapControl.SetLocation(oNew, oPoint);
                 Windows.UI.Xaml.Controls.Maps.MapControl.SetNormalizedAnchorPoint(oNew, new Windows.Foundation.Point(0.5, 0.5));
+
             }
 
             return iCnt;
@@ -218,12 +197,8 @@ namespace KrakTram
 
         private void uiMapka_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Windows.Devices.Geolocation.BasicGeoposition oPosition;
-            oPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-            oPosition.Latitude = 50.061389;  // współrzędne wedle Wiki
-            oPosition.Longitude = 19.938333;
-            // Dim oPoint As Windows.Devices.Geolocation.Geopoint
-            // oPoint = New Windows.Devices.Geolocation.Geopoint(oPosition)
+            var oPosition = new Windows.Devices.Geolocation.BasicGeoposition();
+            pkar.BasicGeopos.GetKrakowCenter().CopyTo(oPosition);
 
             uiMapka.Center = new Windows.Devices.Geolocation.Geopoint(oPosition);
             uiMapka.ZoomLevel = 12;
@@ -234,3 +209,4 @@ namespace KrakTram
         }
     }
 }
+

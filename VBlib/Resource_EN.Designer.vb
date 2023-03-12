@@ -300,7 +300,7 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to No tram in next hour..
+        '''  Looks up a localized string similar to No tram/bus in next hour..
         '''</summary>
         Friend Shared ReadOnly Property resZeroKursow() As String
             Get

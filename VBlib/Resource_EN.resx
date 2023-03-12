@@ -151,7 +151,7 @@
     <value>Error: name is too short</value>
   </data>
   <data name="resZeroKursow" xml:space="preserve">
-    <value>No tram in next hour.</value>
+    <value>No tram/bus in next hour.</value>
   </data>
   <data name="resSettPosItemEnter" xml:space="preserve">
     <value>[enter]</value>

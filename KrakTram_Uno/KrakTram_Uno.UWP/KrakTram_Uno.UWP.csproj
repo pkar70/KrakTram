@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ItemGroup>
     <PackageReference Include="BasicGeopos">
-      <Version>1.2.2</Version>
+      <Version>1.2.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <!-- 
@@ -120,10 +120,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="..\..\Nuget_MPK\Nuget_MPK.vbproj">
-      <Project>{23094813-6477-40cd-b836-6b5790168e37}</Project>
-      <Name>Nuget_MPK</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\VBlib\VBlib.vbproj">
       <Project>{fe2d6f6b-e03b-41a6-b5d0-da3ec58b049d}</Project>
       <Name>VBlib</Name>

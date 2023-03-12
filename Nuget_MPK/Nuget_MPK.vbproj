@@ -7,16 +7,35 @@
     <PackageId>pkar.nuget.MPK</PackageId>
     <Title>obsługa MPK</Title>
     <Authors>pkar</Authors>
-    <RepositoryUrl>https://github.com/pkar70/KrakTram/Nuget_MPK</RepositoryUrl>
-    <Version>1.0.1</Version>
+    <RepositoryUrl>https://github.com/pkar70/KrakTram/tree/master/Nuget_MPK</RepositoryUrl>
+    <Version>1.0.2</Version>
 	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	  <Description>This package is only for Kraków, Poland - wrapper for public transport services. Although it can be used (in part) also for other TTSS based services.</Description>
+	  <Copyright>Piotr Karocki</Copyright>
+	  <PackageProjectUrl></PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageTags>TTSS, Kraków, autobusy, tramwaje, odjazdy, przystanki</PackageTags>
+	  <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <PackageReleaseNotes>przeniesienie BaseDict z wlasnego do pkar.StructList</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BasicGeopos" Version="1.2.2" />
+    <PackageReference Include="BasicGeopos" Version="1.2.3" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="StructList" Version="1.1.0" />
+    <PackageReference Include="StructList" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CHANGES.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

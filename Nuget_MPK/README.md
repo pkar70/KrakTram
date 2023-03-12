@@ -2,12 +2,8 @@
 Nuget, 'wrappujący' dostęp do danych MPK.
 
 Dwa główne poziomy:
-
 1) MpkMain: bezpośredni dostęp do serwerów MPK, i ichniejszy format danych
-2) MpkWrapper:
-a) konwersja z ich formatu na mój (np. ichniejsza geografia do BasicGeopos)
-b) listy (wraz z zapisywaniem na dysk / cache)
-
+2) MpkWrapper: własny format danych, cache'owanie
 
 # MpkMain
 
@@ -152,7 +148,7 @@ Klasy te odpowiadają temu co zwracane jest przez serwery
 
 # vehicles
 
- Dane są cache'owalne w pliku 'vehicles.json', kopiowane z linku https://mpk.jacekk.net/vehicles/ 
+ Dane są cache'owalne w pliku 'vehicles.json'. Jest to wrapper dla danych udostępnianych na stronie https://mpk.jacekk.net/vehicles/ 
 
       Public Class VehiclesData
             Public Sub New(sFolder As String)
@@ -185,7 +181,7 @@ http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehiclei
 Przystanki na linii:
 https://rozklady.mpk.krakow.pl/?lang=PL&linia=52
 
-Zmiany:
+Zmiany tras:
 https://ztp.krakow.pl/transport-publiczny/komunikacja-miejska/komunikaty
 
 

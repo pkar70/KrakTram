@@ -1,6 +1,4 @@
 ﻿
-Imports pkar.MpkWrap
-
 Partial Public Class JedenOdjazd
 
     Public Property Odjazd As pkar.MpkWrap.Odjazd
@@ -28,7 +26,7 @@ Partial Public Class ListaOdjazdow
     Private Shared _pojazdy As pkar.MpkWrap.MpkWrap_Vehicles
 
     Public Sub New(cacheFolder As String)
-        _pojazdy = New MpkWrap_Vehicles(cacheFolder)
+        _pojazdy = New pkar.MpkWrap.MpkWrap_Vehicles(cacheFolder)
     End Sub
 
     Public Function GetItems() As List(Of JedenOdjazd)
@@ -202,7 +200,7 @@ Partial Public Class ListaOdjazdow
         Next
     End Sub
 
-    Public Async Function GetDelayStats(bBus As Boolean, sId As String) As Task(Of OpoznieniaStat)
+    Public Async Function GetDelayStats(bBus As Boolean, sId As String) As Task(Of pkar.MpkWrap.OpoznieniaStat)
         Return Await _nuget.GetDelayStats(bBus, sId)
     End Function
 

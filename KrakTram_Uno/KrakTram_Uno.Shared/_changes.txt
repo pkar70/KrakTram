@@ -30,6 +30,8 @@ Uno STRIP:
 * trasa scheduled: BOLD na przystanku po 20 minutach (najdalszy w ramach 20 minut)
 * skalowanie mapki tak by wszystkie przystanki siê znalaz³y
 * typy pojazdów, wraz z ikonk¹ inwalidzk¹
+* czytanie odjazdów: progring, wraz z tekstem w œrodku o przystanku
+* zmiana tekstu "no tram/bus", a nie tylko tram 
 
  STORE UWP
 

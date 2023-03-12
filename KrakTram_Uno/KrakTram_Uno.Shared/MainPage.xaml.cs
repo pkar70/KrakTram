@@ -66,11 +66,16 @@ namespace KrakTram
 
             // await LoadFavListAsync(); - gdy było razem z importem z XML (2022.04), teraz już usuwam ten import (2022.08)
             // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
+
+            this.ProgRingText("Favourites...");
             App.oFavour.Load();
 
             ShowFavourCombo();
 
+            this.ProgRingText("Stops...");
             await App.CheckLoadStopListAsync();
+            this.ProgRingText("combos...");
+
             if (vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp"))
             {
                 uiStopList.ItemsSource = (from c in App.oStops.GetList("tram")
@@ -284,7 +289,7 @@ namespace KrakTram
             App.mbGoGPS = true;    // zgodnie z GPS prosze postapic (jak do tej pory)
             App.moOdjazdy.Clear();
             if(!mbSkalowane) KontrolaSzerokosci();  // dla Android 
-            this.Frame.Navigate(typeof(Odjazdy));
+            this.Navigate(typeof(Odjazdy));
         }
 
         private void uiGoFavour_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)

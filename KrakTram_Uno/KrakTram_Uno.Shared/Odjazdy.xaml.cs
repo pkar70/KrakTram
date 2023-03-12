@@ -31,6 +31,7 @@ namespace KrakTram
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            this.ProgRingInit(true, false);
             // App.moOdjazdy.Clear() - pietro wyzej to jest zrobione
             await WczytajPokazDaneAsync(false);
         }
@@ -43,6 +44,7 @@ namespace KrakTram
 
         private async System.Threading.Tasks.Task WczytajPokazDaneAsync(bool bForce)
         {
+
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 await vb14.DialogBoxResAsync("resErrorNoNetwork");
@@ -51,8 +53,10 @@ namespace KrakTram
 
             uiGoTtssBar.IsEnabled = false;
 
+            this.ProgRingShow(true);
             if (App.moOdjazdy.Count() == 0 || bForce)
                 await CzytanieTabliczekAsync();
+            this.ProgRingShow(false);
 
             WypiszTabele(true);
 
@@ -68,6 +72,7 @@ namespace KrakTram
                 // ustaw wspolrzedne
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = "o";
+                this.ProgRingText("GPS");
                 App.mPoint = await App.GetCurrentPointAsync();
                 uiWorking.Text = " ";
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
@@ -89,9 +94,7 @@ namespace KrakTram
             int iWorking = 0;
             int iOdl;
 
-            string sFilter = "tram";
-            if (vb14.GetSettingsBool("settingsAlsoBus"))
-                sFilter = "all";
+            string sFilter = "all";
 
             foreach (pkar.MpkWrap.Przystanek oNode in App.oStops.GetList(sFilter))
             {
@@ -123,6 +126,8 @@ namespace KrakTram
                             sErrData += " (bus)";
                         else
                             sErrData += " (tram)";
+
+                    this.ProgRingText(oNode.Name + " " + (oNode.IsBus?"B":"T"));
 
                     await App.moOdjazdy.WczytajTabliczke(oNode.IsBus, sErrData, oNode.id, iOdl, App.mSpeed,
                         vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()));

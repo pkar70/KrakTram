@@ -52,12 +52,11 @@ namespace KrakTram
         {
             if (_punkty is null) return;
 
-            var LandmarksLayer = new MapElementsLayer
-            {
-                ZIndex = 1,
-                MapElements = _punkty
-            };
-
+            //var LandmarksLayer = new MapElementsLayer
+            //{
+            //    ZIndex = 1,
+            //    MapElements = _punkty
+            //};
 
             // na same geoposy
             var punkty = new List<pkar.BasicGeopos>();
@@ -76,7 +75,14 @@ namespace KrakTram
             GeoboundingBox box = new GeoboundingBox(cornerNW.ToWinGeopos(), cornerSE.ToWinGeopos());
             await uiMapka.TrySetViewBoundsAsync(box, new Thickness(10), MapAnimationKind.None);
 
-            uiMapka.Layers.Add(LandmarksLayer);
+            uiMapka.MapElements.Clear();
+
+            foreach (var mapElement in _punkty)
+            {
+                uiMapka.MapElements.Add(mapElement);
+            }
+
+            // uiMapka.Layers.Add(LandmarksLayer);
 
 
             //var oPosition = VBlib.proba.GetCenter(punkty);

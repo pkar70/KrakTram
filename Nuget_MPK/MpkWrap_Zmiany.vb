@@ -36,7 +36,8 @@
             If Not bNetAvail Then Return False
 
             Dim oMPK As New MpkMain.MPK
-            Dim noweItemyMPK As List(Of MpkMain.MpkZmiana) = Await oMPK.DownloadZmianyAsync
+
+            _lista = Await oMPK.DownloadZmianyAsync
 
             Save()
 

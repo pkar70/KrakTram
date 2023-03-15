@@ -48,6 +48,7 @@ namespace KrakTram
             uiReload.IsEnabled = false;
 
             this.ProgRingShow(true);
+
             bool bRet = await oNuget.LoadOrImport(true, p.k.NetIsIPavailable(false));
             this.ProgRingShow(false);
 

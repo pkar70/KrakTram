@@ -378,7 +378,7 @@ Namespace MpkMain
 
             ' iterujemy <div class="card">
 
-            Dim entries As HtmlAgilityPack.HtmlNodeCollection = oHtmlDoc.DocumentNode.SelectNodes("//div[@Class='card']")
+            Dim entries As HtmlAgilityPack.HtmlNodeCollection = oHtmlDoc.DocumentNode.SelectNodes("//div[@class='card']")
             If entries Is Nothing Then
                 errMessage = "Cos nie tak, nie powinno byc null - jakies komunikaty jednak powinny byæ"
                 Return Nothing

@@ -24,6 +24,4 @@ Primary version.
 # User guide
  https://github.com/pkar70/KrakTram/wiki/Instrukcja
 
-
-
- For history (in Polish), see MainPage.xaml.cs file.
+ For history (in Polish), see https://github.com/pkar70/KrakTram/blob/master/KrakTram_Uno/KrakTram_Uno.Shared/_changes.txt .

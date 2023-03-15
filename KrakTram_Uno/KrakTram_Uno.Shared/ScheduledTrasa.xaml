@@ -5,6 +5,7 @@
     xmlns:local="using:KrakTram"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d"
     Loaded="Page_Loaded">
 
@@ -54,8 +55,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15,15,15,15" Content="Map" Grid.Row="1" Click="uiShowOnMap_Click" Name="uiShowOnMap"/>
-
+        <win:Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15,15,15,15" Content="Map" Grid.Row="1" Click="uiShowOnMap_Click" Name="uiShowOnMap"/>
 
         <Button HorizontalAlignment="Center" Margin="5,5,5,5" Content="Ok" Grid.Row="2" Click="uiClose_Click" />
         </Grid>

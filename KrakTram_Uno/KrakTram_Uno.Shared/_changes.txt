@@ -12,6 +12,19 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+STORE DROID
+
+2023.04.04
+* Nuget Uno.UI 4.4.13 -> 4.8.15
+* Droid: tramwaje zawsze pokazywane, busy - togglebutton
+* setup.xaml.cs, konwerter: w Uno wywo³ywany z value=null; odpowiednie zabezpieczenie.
+
+2023.03.16
+* GIFy +2019: skasowanie Walcowni, i zmiana w 2022 i 2024: ta sama Walcownia
+* wycinanie "(n¿)" z nazwy przystanku - fatimska np. nie pokazywa³ poprawnie trasy (szuka³ "fatimska (n¿)", a na liœcie by³a tylko "fatimska 02")
+
+STORE Win 2303
+
 2023.02.26..
 * wykorzystywanie Nugetów (a wiêc i zmiany w Vblib, pkarmodulewithlib, oraz w kodzie)
 * wreszcie poprawne obracanie trasy (bez podwajania przystanków)

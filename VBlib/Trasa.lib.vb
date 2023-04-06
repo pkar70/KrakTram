@@ -24,7 +24,7 @@ Public Class Trasa
         _nuget = New pkar.MpkWrap.Linia(sRootPath, sLinia)
         ' msLinia = sLinia
         msKier = sKier
-        msStop = sStop
+        msStop = sStop.Replace("(nż)", "").Trim
     End Sub
 
 

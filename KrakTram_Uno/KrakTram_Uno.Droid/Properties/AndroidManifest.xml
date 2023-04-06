@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pkar.KrakTram" android:versionCode="22081" android:versionName="11.2208.1.0" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="23" android:targetSdkVersion="31" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pkar.KrakTram" android:versionCode="230401" android:versionName="11.2304.1.0" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="23" android:targetSdkVersion="33" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-feature android:name="android.hardware.location" android:required="false" />

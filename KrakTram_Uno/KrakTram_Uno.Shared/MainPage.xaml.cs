@@ -76,7 +76,7 @@ namespace KrakTram
             await App.CheckLoadStopListAsync();
             this.ProgRingText("combos...");
 
-            if (vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp"))
+            if (true || vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp"))
             {
                 uiStopList.ItemsSource = (from c in App.oStops.GetList("tram")
                                           orderby c.Name
@@ -91,7 +91,7 @@ namespace KrakTram
             }
 
 
-                if (p.k.GetPlatform("uwp"))
+                if (vb14.GetSettingsBool("androAutoBus") || p.k.GetPlatform("uwp"))
                 {
                     uiBusStopList.ItemsSource = (from c in App.oStops.GetList("bus")
                                                  orderby c.Name

@@ -98,16 +98,16 @@
             <!--</CommandBar> -->
         </not_win:Grid>
     </Grid>
-    <Page.BottomAppBar>
-        <win:CommandBar ClosedDisplayMode="Minimal" >
+    <win:Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal" >
             <!-- <AppBarButton x:Uid="uiUnpin" Icon="UnPin" x:Name="uiUnpin" Label="Del fav" Click="uiUnPin_Click" Visibility="Collapsed" />
             <AppBarButton x:Uid="uiPin" Icon="Pin" x:Name="uiPin" Label="Add fav" Click="uiPin_Click" Visibility="Collapsed" /> -->
             <AppBarButton x:Uid="uiChanges" Icon="Shuffle" Name="uiChanges" Label="Changes" Click="uiChanges_Click" />
             <AppBarButton x:Uid="uiHistoria" Icon="Clock" Label="Historia" Click="uiHist_Click" />
             <AppBarSeparator Name="uiAppSep" />
             <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click"  />
-        </win:CommandBar>
+        </CommandBar>
 
-    </Page.BottomAppBar>
+    </win:Page.BottomAppBar>
 
 </Page>

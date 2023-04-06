@@ -267,4 +267,10 @@
   <data name="uiDelayStats.Text" xml:space="preserve">
     <value>Delays stat</value>
   </data>
+  <data name="uiAndroAutoBus.OffContent" xml:space="preserve">
+    <value>bus stops: use search</value>
+  </data>
+  <data name="uiAndroAutoBus.OnContent" xml:space="preserve">
+    <value>bus stops: fill list</value>
+  </data>
 </root>

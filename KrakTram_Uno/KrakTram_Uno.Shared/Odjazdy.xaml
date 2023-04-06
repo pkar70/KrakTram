@@ -140,8 +140,8 @@
             </StackPanel>
         </not_win:Grid>
     </Grid>
-    <Page.BottomAppBar>
-        <win:CommandBar ClosedDisplayMode="Minimal" >
+    <win:Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal" >
             <AppBarButton Icon="Sort" Label="Sort" >
                 <AppBarButton.Flyout>
                     <MenuFlyout>
@@ -154,8 +154,8 @@
             </AppBarButton>
             <AppBarButton x:Name="uiGoTtssBar" x:Uid="resGoTtss" Icon="Refresh" Label="Wczytaj TTSS" Click="uiGetData_Click"/>
             <AppBarButton x:Uid="resGoSettings" Icon="Setting" Label="Settings" Click="bSetup_Click" />
-        </win:CommandBar>
+        </CommandBar>
 
-    </Page.BottomAppBar>
+    </win:Page.BottomAppBar>
 
 </Page>

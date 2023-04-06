@@ -100,11 +100,15 @@ namespace KrakTram
             if(_lista.Count<1)
             {
                 _lista = null;
+#if !__ANDROID__
                 uiShowOnMap.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+#endif 
             }
             else
             {
+#if !__ANDROID__
                 uiShowOnMap.Visibility = Windows.UI.Xaml.Visibility.Visible;
+#endif 
 
                 // pierwszy to czas start, wylicz z niego maxTime
                 DateTime dt;

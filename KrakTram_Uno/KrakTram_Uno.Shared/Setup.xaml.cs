@@ -33,7 +33,8 @@ namespace KrakTram
             vb14.SetSettingsInt("gpsPrec", VBlib.Setup.ConvertGpsPrecFromAndroid((int)uiGPSPrecSld.Value, p.k.GetPlatform("uwp")));
 
             //uiAlsoBus.SetSettingsBool("settingsAlsoBus");
-            uiAndroAutoTram.SetSettingsBool("androAutoTram");
+            //uiAndroAutoTram.SetSettingsBool("androAutoTram");
+            uiAndroAutoBus.SetSettingsBool("androAutoBus");
             this.Frame.GoBack();
         }
 
@@ -68,8 +69,9 @@ namespace KrakTram
             uiPositionLat.Text = App.mPoint.Latitude.ToString();
             uiPositionLong.Text = App.mPoint.Longitude.ToString();
             //uiAlsoBus.GetSettingsBool("settingsAlsoBus");
-            uiAndroAutoTram.GetSettingsBool("androAutoTram");
-            if (!p.k.GetPlatform("uwp")) uiAndroAutoTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //uiAndroAutoTram.GetSettingsBool("androAutoTram");
+            uiAndroAutoBus.GetSettingsBool("androAutoBus");
+            if (!p.k.GetPlatform("uwp")) uiAndroAutoBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
@@ -205,6 +207,7 @@ namespace KrakTram
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if (value is null) return "";
             double dTmp = (double)value;
             string sUnit = (string)parameter;
             if (sUnit == "kph") sUnit = "km/h";

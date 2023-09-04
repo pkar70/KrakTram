@@ -139,6 +139,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\2008.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2010.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2012.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\2023.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2024.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2022.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\2015.gif" />

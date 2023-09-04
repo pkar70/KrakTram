@@ -89,9 +89,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BasicGeopos">
-      <Version>1.2.3</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>6.0.0</Version>
     </PackageReference>

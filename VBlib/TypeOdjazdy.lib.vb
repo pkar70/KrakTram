@@ -1,4 +1,7 @@
 ﻿
+Imports System.Net
+Imports System.Threading
+
 Partial Public Class JedenOdjazd
 
     Public Property Odjazd As pkar.MpkWrap.Odjazd
@@ -13,6 +16,7 @@ Partial Public Class JedenOdjazd
     Public Property bPkarMode As Boolean
 
     Public Property vehicleType As String
+    Public Property vehicleInfoUri As Uri
     Public Property vehicleInwalida As Integer
 
 End Class
@@ -83,6 +87,7 @@ Partial Public Class ListaOdjazdow
 
                 If danePojazdu IsNot Nothing Then
                     oNew.vehicleType = SkrocTypPojazdu(isBus, danePojazdu.type)
+                    oNew.vehicleInfoUri = GetInfoUri(isBus, oNew.vehicleType)
                     If danePojazdu.low.HasValue Then
                         oNew.vehicleInwalida = danePojazdu.low.Value
                     Else
@@ -170,6 +175,117 @@ Partial Public Class ListaOdjazdow
 
         Return ret
     End Function
+
+    Public Shared Function GetInfoUri(isBus As Boolean, vehicleType As String) As Uri
+
+        If String.IsNullOrWhiteSpace(vehicleType) Then Return Nothing
+
+        ' zob. też SkrocTypPojazdu
+
+        Select Case vehicleType
+
+            ' tramwaje
+
+            Case "EU8N"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/655-eu8n")
+            Case "105N"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/537-105na")
+
+            Case "N8S"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/191-n8s")
+            Case "N8C"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/916-n8c")
+
+            ' Stadler Tango
+            ' Stadler Tango II
+            Case "Tango"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/3331-stadler-tango-lajkonik")
+            Case "TangoII"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/3331-stadler-tango-lajkonik")
+
+            Case "GT8N"
+            Case "GT8C"
+            Case "GT8S"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/233-gt8s-gt8c-gt8n")
+
+            Case "NGT8"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/109-ngt8")
+
+            Case "NGT6"
+            Case "NGT6(3)"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/547-ngt6")
+
+            Case "2014N"
+                Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/1507-pesa-2014n")
+
+                'autobusy
+
+                ' Autosan M09LE
+            Case "AM09LE"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/255-autosan-sancity-m09le")
+
+                'MAN Lion's Intercity 13
+                'Case "MAN13"
+
+                'Mercedes Conecto II
+                'Mercedes O530 C2 Hybrid
+                'Mercedes O530 C2
+                'Case "MCII"
+                'Case "M0530C2H"
+            Case "M0530C2"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2601-mercedes-o530-c2")
+
+                'Solaris Urbino 18 IV Electric
+                'Solaris Urbino 18 III Hybrid
+                'Solaris Urbino 12 IV
+                'Solaris Urbino 12, 9 III Hybrid
+                'Solaris Urbino 18 IV
+                'Solaris Urbino 8, 9LE Electric
+                'Solaris Urbino 12 IV Electric
+                'Solaris Urbino 18 III
+                'Solaris Urbino 18 MetroStyle
+                'Solaris Urbino 12 III
+            Case "SU8,9LEE"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/1614-solaris-urbino-8-9-le-electric")
+                'Case "SU9IIIH"
+                'Return New Uri("")
+                'Case "SU12IIIH"
+                'Return New Uri("")
+                'Case "SU12III"
+                'Return New Uri("")
+            Case "SU12IV"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2069-solaris-urbino-18-iv")
+            Case "SU18IVE"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2089-solaris-urbino-18-iv-electric")
+                'Case "SU18IIIH"
+                'Return New Uri("")
+            Case "SU18IV"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2069-solaris-urbino-18-iv")
+            Case "SU18III"
+                Return New Uri("")
+            Case "SU18M"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/1000-solaris-urbino-18-metro-style")
+            Case "SU18IVE"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2089-solaris-urbino-18-iv-electric")
+
+                'Volvo 7900A Hybrid
+            Case "V7900H"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2817-volvo-7900-hybrid")
+            Case "V7900AH"
+                Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie/2473-volvo-7900a-hybrid")
+
+        End Select
+
+        If isBus Then
+            Return New Uri("https://psmkms.krakow.pl/autobusy/autobusy-w-krakowie?limitstart=0")
+        Else
+            Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie")
+
+        End If
+
+    End Function
+
+
 
     Public Sub OdfiltrujMiedzytabliczkowo()
         ' usuwa z oXml to co powinien :) - czyli te same tramwaje z dalszych przystankow

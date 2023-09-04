@@ -99,33 +99,33 @@ namespace KrakTram
     }
 }
 
-internal static partial class Extensions
-{
-    public static void CopyTo1(this pkar.BasicGeopos from, ref object anyObject )
-    {
+//internal static partial class Extensions
+//{
+//    public static void CopyTo1(this pkar.BasicGeopos from, ref object anyObject )
+//    {
 
-        System.Reflection.PropertyInfo prop;
+//        System.Reflection.PropertyInfo prop;
 
-        prop = anyObject.GetType().GetRuntimeProperty("Latitude");
-        if (prop != null) prop.SetValue(anyObject, from.Latitude);
+//        prop = anyObject.GetType().GetRuntimeProperty("Latitude");
+//        if (prop != null) prop.SetValue(anyObject, from.Latitude);
 
-        prop = anyObject.GetType().GetRuntimeProperty("Longitude");
-        if (prop != null) prop.SetValue(anyObject, from.Longitude);
+//        prop = anyObject.GetType().GetRuntimeProperty("Longitude");
+//        if (prop != null) prop.SetValue(anyObject, from.Longitude);
 
-        prop = anyObject.GetType().GetRuntimeProperty("Altitude");
-        if (prop != null) prop.SetValue(anyObject, from.Altitude);
+//        prop = anyObject.GetType().GetRuntimeProperty("Altitude");
+//        if (prop != null) prop.SetValue(anyObject, from.Altitude);
 
-        System.Reflection.FieldInfo fld;
+//        System.Reflection.FieldInfo fld;
 
-        fld = anyObject.GetType().GetRuntimeField("Latitude");
-        if(fld != null) fld.SetValue(anyObject, from.Latitude);
+//        fld = anyObject.GetType().GetRuntimeField("Latitude");
+//        if(fld != null) fld.SetValue(anyObject, from.Latitude);
 
-        fld = anyObject.GetType().GetRuntimeField("Longitude");
-        if (fld != null) fld.SetValue(anyObject, from.Longitude);
+//        fld = anyObject.GetType().GetRuntimeField("Longitude");
+//        if (fld != null) fld.SetValue(anyObject, from.Longitude);
 
-        fld = anyObject.GetType().GetRuntimeField("Altitude");
-        if (fld != null) fld.SetValue(anyObject, from.Altitude);
+//        fld = anyObject.GetType().GetRuntimeField("Altitude");
+//        if (fld != null) fld.SetValue(anyObject, from.Altitude);
 
-    }
+//    }
 
-}
+//}

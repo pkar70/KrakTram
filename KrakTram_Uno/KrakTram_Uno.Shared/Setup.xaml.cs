@@ -4,6 +4,12 @@ using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
 using System.Collections.Generic;
 
+#if NETFX_CORE 
+using static pkar.Uwp.Configs.Extensions;
+#else
+//using static p.Extensions;
+#endif 
+
 namespace KrakTram
 {
 
@@ -55,9 +61,9 @@ namespace KrakTram
             //    uiGPSPrecTxt.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             //}
 
-            uiMaxOdlSld.GetSettingsInt("maxOdl", 1000);
-            uiWalkSpeedSld.GetSettingsInt("walkSpeed", 4);
-            uiAlsoNextSld.GetSettingsInt("alsoNext", 5);
+            uiMaxOdlSld.GetSettingsInt("maxOdl"); //, 1000);
+            uiWalkSpeedSld.GetSettingsInt("walkSpeed");//, 4);
+            uiAlsoNextSld.GetSettingsInt("alsoNext"); //, 5);
             // Android: 100 m, bo <100 jest Accuracy.High, a ≥ 100 to juz bedzie .Medium
             uiGPSPrecSld.Value = VBlib.Setup.ConvertGpsPrecToAndroid(vb14.GetSettingsInt("gpsPrec", p.k.GetPlatform(75,100,75,75,75)), p.k.GetPlatform("uwp"));
 

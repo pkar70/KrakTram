@@ -13,4 +13,4 @@ Minuty - trasa - mapka (wspó³rzêdne z przystanków, dodanie info o czasie na ka¿d
 
 https://learn.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geopath.positions?view=winrt-22621#windows-devices-geolocation-geopath-positions
 
-* +20 minut zaznaczenie na mapie przejazdu
+

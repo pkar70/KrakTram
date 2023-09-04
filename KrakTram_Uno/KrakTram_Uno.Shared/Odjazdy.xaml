@@ -15,6 +15,7 @@
         <local:KonwersjaHideNoReal x:Key="KonwersjaHideNoReal" />
         <local:KonwersjaInwalidaVisibility x:Key="KonwersjaInwalidaVisibility" />
         <local:KonwersjaInwalidaOpacity x:Key="KonwersjaInwalidaOpacity" />
+        <local:KonwersjaInfoUriVisibility x:Key="KonwersjaInfoUriVisibility" />
     </UserControl.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -60,6 +61,7 @@
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="Sort" Click="bSortByLine_Click"  />
                                         <MenuFlyoutItem x:Uid="uiShowStops" Text="Przystanki" Click="uiShowStops_Click"/>
+                                        <MenuFlyoutItem Text="Model info" Click="uiModelInfo_Click" Visibility="{Binding vehicleInfoUri, Mode=OneTime, Converter={StaticResource KonwersjaInfoUriVisibility}}" />
                                     </MenuFlyout>
                                 </Grid.ContextFlyout>
 

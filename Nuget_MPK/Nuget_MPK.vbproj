@@ -21,9 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BasicGeopos" Version="1.2.3" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="pkar.BasicGeopos" Version="1.2.4" />
     <PackageReference Include="StructList" Version="1.2.0" />
   </ItemGroup>
 

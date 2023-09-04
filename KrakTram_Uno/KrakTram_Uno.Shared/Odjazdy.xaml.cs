@@ -5,6 +5,7 @@ using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
 using Windows.UI.Xaml.Documents;
 using System.Collections.Specialized;
+using VBlib;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -213,6 +214,16 @@ namespace KrakTram
             }
         }
 
+        private void uiModelInfo_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var oFI = sender as Windows.UI.Xaml.FrameworkElement;
+            var oItem = oFI?.DataContext as VBlib.JedenOdjazd;
+            if (oItem is null) return;
+
+            oItem.vehicleInfoUri.OpenBrowser();
+        }
+
+
         private void bSortByLine_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             SetSortMode(false, 0);
@@ -384,6 +395,29 @@ namespace KrakTram
         }
     }
 
+    
+    public class KonwersjaInfoUriVisibility : Windows.UI.Xaml.Data.IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
+        {
+            Uri temp = value as Uri;
+            if (temp is null)
+            {
+                return Windows.UI.Xaml.Visibility.Collapsed;
+            }
+            else
+            {
+                return Windows.UI.Xaml.Visibility.Visible;
+            }
+        }
+
+
+        // ' ConvertBack is not implemented for a OneWay binding.
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class KonwersjaInwalidaVisibility : Windows.UI.Xaml.Data.IValueConverter
     {

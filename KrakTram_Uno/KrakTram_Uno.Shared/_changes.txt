@@ -12,6 +12,13 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+2023.09.03
+* nowy obrazek - trasa do Górki Narodowej
+* przeskok do typeInfo - w menu tylko gdy znamy pojazd (i umiemy dla niego stronê pokazaæ)
+
+2023.08.31
+* przeskok do informacji o typie pojazdu (na psmkms.krakow.pl)
+
 STORE DROID
 
 2023.04.04

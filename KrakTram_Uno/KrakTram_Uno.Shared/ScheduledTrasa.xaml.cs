@@ -11,7 +11,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Text;
 using System.Globalization;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace KrakTram
 {
@@ -110,14 +109,17 @@ namespace KrakTram
                 uiShowOnMap.Visibility = Windows.UI.Xaml.Visibility.Visible;
 #endif 
 
+                System.Diagnostics.Debug.WriteLine("Zaczynam trase od " + _lista[0].name + " @ " + _lista[0].actualTime);
+
                 // pierwszy to czas start, wylicz z niego maxTime
                 DateTime dt;
                 try
                 {
-                    dt = DateTime.ParseExact(lista[0].actualTime, "HH:mm", CultureInfo.InvariantCulture);
+                    dt = DateTime.ParseExact(_lista[0].actualTime, "HH:mm", CultureInfo.InvariantCulture);
                 }
                 catch
                 {
+                    System.Diagnostics.Debug.WriteLine("nieudana konwersja na czas: " + _lista[0].actualTime);
                     dt = DateTime.Now;
                 }
                 string maxTime = dt.AddMinutes(20).ToString("HH:mm");
@@ -128,7 +130,9 @@ namespace KrakTram
                 {
                     if (oItem.actualTime.CompareTo(maxTime) > 0) break;
                     BoldTime = oItem.actualTime;
+                    System.Diagnostics.Debug.WriteLine("Przystanek krotki " + oItem.name + " @ " + oItem.actualTime);
                 }
+                System.Diagnostics.Debug.WriteLine("koniec trasy 20min: " + BoldTime);
 
             }
 

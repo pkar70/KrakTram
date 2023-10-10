@@ -12,6 +12,14 @@ Uno STRIP:
 * mapka
 * szybkie wype³nianie Combo
 
+
+2023.10.07
+* settings, podawanie wspó³rzêdnych - zadzia³a teraz link z serwisu mapowego
+* trochê wiêcej z Nuget geopos
+* fix: pokazywa³ BOLD na trasie trochê za wczeœnie (wzglêdem przystanku na który dany tramwaj zaraz podjedzie, a nie przystanku na którym siê by wsiada³o)
+
+STORE
+
 2023.09.03
 * nowy obrazek - trasa do Górki Narodowej
 * przeskok do typeInfo - w menu tylko gdy znamy pojazd (i umiemy dla niego stronê pokazaæ)

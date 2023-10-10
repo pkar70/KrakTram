@@ -144,19 +144,6 @@ namespace KrakTram
             // sTxt = sTxt.Replace("[", "")
             // sTxt = sTxt.Replace("]", "")
 
-            if (sTxt.Length < 4)
-            {
-                vb14.DialogBoxRes("resErrorNazwaZaKrotka");
-                return;
-            }
-
-            double dLat, dLon;
-            if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
-            {
-                vb14.DialogBoxRes("resBadFloat");
-                return;
-            }
-
             if (pswd.TryInitPkarFav(sTxt))
             {
                 App.oFavour.Save(false);
@@ -164,17 +151,43 @@ namespace KrakTram
             }
             else
             {
-                if (dLon < 19 | dLon > 21 | dLat < 49 | dLat > 51)
+                pkar.BasicGeopos basGeo = pkar.BasicGeopos.GetFromLink(uiPositionLat.Text);
+                if (basGeo != null)
+                {
+                    uiPositionLong.Text = basGeo.Longitude.ToString();
+                    uiPositionLat.Text = basGeo.Latitude.ToString();
+                }
+
+                if (sTxt.Length < 4)
+                {
+                    vb14.DialogBoxRes("resErrorNazwaZaKrotka");
+                    return;
+                }
+
+                if(basGeo is null)
+                {
+                    double dLat, dLon;
+
+                    if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
+                    {
+                        vb14.DialogBoxRes("resBadFloat");
+                        return;
+                    }
+                    basGeo = new pkar.BasicGeopos(dLat, dLon);
+                }
+
+                if(!basGeo.IsInsideKrakow())
                 {
                     vb14.DialogBoxRes("resErrorPozaKrakowem");
                     return;
                 }
 
-                App.mPoint = new pkar.BasicGeopos(dLat, dLon);  // ustalamy to jako biezace wspolrzedne
+                App.mPoint = basGeo;  // ustalamy to jako biezace wspolrzedne
                 App.oFavour.Add(sTxt, App.mPoint, (int)uiMaxOdlSld.Value);
             }
 
             ShowPositionPanel(false);
+            eMaxOdl_Changed(null, null);
         }
 
         private void uiGpsPrec_Changed(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)

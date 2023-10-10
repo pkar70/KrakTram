@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="622PKar.KrakTram" Publisher="CN=B2AF14E8-43FD-463C-83BA-4CEC47122EA2" Version="11.2309.2.0" />
+  <Identity Name="622PKar.KrakTram" Publisher="CN=B2AF14E8-43FD-463C-83BA-4CEC47122EA2" Version="11.2310.1.0" />
   <mp:PhoneIdentity PhoneProductId="0a7e4515-d00a-4dae-858f-72226367a72b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>KrakTram</DisplayName>

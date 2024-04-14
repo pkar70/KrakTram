@@ -46,6 +46,11 @@ Namespace MpkWrap
                     oNew.iLinia = 9999
                 End If  ' trafia na koniec
 
+                ' 2024.0.04
+                If oNew.iLinia > 989 AndAlso oNew.iLinia < 1000 Then
+                    oNew.Linia = "LR" & oNew.iLinia - 990
+                End If
+
                 oNew.Kier = entry.direction
                 If String.IsNullOrEmpty(oNew.Kier) Then oNew.Kier = "!error!"
 

@@ -245,7 +245,7 @@ Namespace MpkMain
 #Region "wczytanie trasy linii"
 
         ''' <summary>
-        ''' wczytaj listê przystanków trasy konkretnej linii
+        ''' wczytaj listê przystanków trasy konkretnej linii (wywo³ywaæ z LR0, nie 990)
         ''' </summary>
         ''' <returns>NULL w razie b³êdu (i wtedy zobacz errMessage)</returns>
         Public Async Function DownloadTrasaLiniiAsync(linia As String, Optional iTimeoutSecs As Integer = 10) As Task(Of List(Of String))

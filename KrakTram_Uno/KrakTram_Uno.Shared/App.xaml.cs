@@ -62,8 +62,8 @@ namespace KrakTram
             mRootFrame.Navigated += OnNavigatedAddBackButton;
             Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
 
-            //' Place the frame in the current Window
-            Window.Current.Content = mRootFrame;
+                //' Place the frame in the current Window
+                Windows.UI.Xaml.Window.Current.Content = mRootFrame;
 
             p.k.InitLib(null);
         }
@@ -100,7 +100,7 @@ namespace KrakTram
     {
         try
         {
-            (Window.Current.Content as Frame)?.GoBack();
+            (Windows.UI.Xaml.Window.Current.Content as Frame)?.GoBack();
             e.Handled = true;
         }
         catch { }
@@ -191,7 +191,7 @@ namespace KrakTram
             if (!string.IsNullOrEmpty(strArgs))
             {
                 await ObsluzCommandLineAsync(strArgs);
-                Window.Current.Close();
+                    Windows.UI.Xaml.Window.Current.Close();
             }
             return;
         }
@@ -205,7 +205,7 @@ namespace KrakTram
             rootFrame.Navigate(typeof(MainPage));
 
 
-        Window.Current.Activate();
+            Windows.UI.Xaml.Window.Current.Activate();
     }
 
 

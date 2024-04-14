@@ -3,7 +3,7 @@ using System.Linq;
 using Windows.UI.Xaml.Controls;
 using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
-
+using pkar.UI.Extensions;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System;
 using vb14 = VBlib.pkarlibmodule14;
-using static p.Extensions;
-
+//using static p.Extensions;
+using pkar.UI.Extensions;
 
 namespace KrakTram
 {
@@ -43,7 +43,11 @@ namespace KrakTram
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
-            uiVersion.ShowAppVers(); // .Text = "v. " + p.k.GetAppVers();
+#if DEBUG
+            uiVersion.ShowAppVers(true); // .Text = "v. " + p.k.GetAppVers();
+#else
+            uiVersion.ShowAppVers(false); // .Text = "v. " + p.k.GetAppVers();
+#endif 
 
             // int i = (int)(System.TimeSpan.FromSeconds(20).TotalMilliseconds / 250.0); // i=80
 
@@ -67,14 +71,14 @@ namespace KrakTram
             // await LoadFavListAsync(); - gdy było razem z importem z XML (2022.04), teraz już usuwam ten import (2022.08)
             // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
 
-            this.ProgRingText("Favourites...");
+            this.ProgRingSetText("Favourites...");
             App.oFavour.Load();
 
             ShowFavourCombo();
 
-            this.ProgRingText("Stops...");
+            this.ProgRingSetText("Stops...");
             await App.CheckLoadStopListAsync();
-            this.ProgRingText("combos...");
+            this.ProgRingSetText("combos...");
 
             if (true || vb14.GetSettingsBool("androAutoTram") || p.k.GetPlatform("uwp"))
             {

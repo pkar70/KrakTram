@@ -2,7 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Data;
 using vb14 = VBlib.pkarlibmodule14;
-using static p.Extensions;
+using pkar.UI.Extensions;
 using Windows.UI.Xaml.Documents;
 using System.Collections.Specialized;
 using VBlib;
@@ -73,7 +73,7 @@ namespace KrakTram
                 // ustaw wspolrzedne
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
                 uiWorking.Text = "o";
-                this.ProgRingText("GPS");
+                this.ProgRingSetText("GPS");
                 App.mPoint = await App.GetCurrentPointAsync();
                 uiWorking.Text = " ";
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
@@ -128,7 +128,7 @@ namespace KrakTram
                         else
                             sErrData += " (tram)";
 
-                    this.ProgRingText(oNode.Name + " " + (oNode.IsBus?"B":"T"));
+                    this.ProgRingSetText(oNode.Name + " " + (oNode.IsBus?"B":"T"));
 
                     await App.moOdjazdy.WczytajTabliczke(oNode.IsBus, sErrData, oNode.id, iOdl, App.mSpeed,
                         vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()));

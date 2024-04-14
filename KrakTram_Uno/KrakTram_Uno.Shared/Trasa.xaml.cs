@@ -1,7 +1,8 @@
 ﻿
 using System.Linq;
 using vb14 = VBlib.pkarlibmodule14;
-using static p.Extensions;
+//using static p.Extensions;
+using pkar.UI.Extensions;
 using Windows.UI.Xaml.Data;
 using System;
 //using Uno.UI.ViewManagement;

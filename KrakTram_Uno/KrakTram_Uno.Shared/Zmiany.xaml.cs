@@ -2,7 +2,8 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using vb14 = VBlib.pkarlibmodule14;
-using static p.Extensions;
+//using static p.Extensions;
+using pkar.UI.Extensions;
 
 namespace KrakTram
 {

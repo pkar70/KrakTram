@@ -8,7 +8,7 @@
     <Title>obsługa MPK</Title>
     <Authors>pkar</Authors>
     <RepositoryUrl>https://github.com/pkar70/KrakTram/tree/master/Nuget_MPK</RepositoryUrl>
-    <Version>1.0.4</Version>
+    <Version>1.1.0</Version>
 	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	  <Description>This package is only for Kraków, Poland - wrapper for public transport services. Although it can be used (in part) also for other TTSS based services.</Description>
 	  <Copyright>Piotr Karocki</Copyright>
@@ -17,13 +17,13 @@
 	  <PackageTags>TTSS, Kraków, autobusy, tramwaje, odjazdy, przystanki</PackageTags>
 	  <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 	  <IncludeSymbols>True</IncludeSymbols>
-	  <PackageReleaseNotes>poprawka w liście zmian tras</PackageReleaseNotes>
+	  <PackageReleaseNotes>wersja DEBUG uzywa bus.mpk.., dziala tylko u mnie :)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="pkar.BasicGeopos" Version="1.2.4" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="pkar.BasicGeopos" Version="1.5.5" />
     <PackageReference Include="StructList" Version="1.2.0" />
   </ItemGroup>
 

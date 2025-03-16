@@ -1,4 +1,7 @@
 Imports System.Linq
+Imports System.Net.Http
+Imports System.Net.Security
+'Imports System.Security.Cryptography.X509Certificates
 
 Namespace MpkMain
     ' z namespace, by nie by³o widaæ niepotrzebnie struktur z których siê nie korzysta
@@ -9,15 +12,44 @@ Namespace MpkMain
     Public Class MPK
 
         Private oHttp As New Net.Http.HttpClient
+        'Private _handler As HttpClientHandler
+
+        'Public Sub New()
+        '    'Dim _handler As New HttpClientHandler
+        '    '_handler.ClientCertificateOptions = ClientCertificateOption.Manual
+        '    '_handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator 'Function(hrm, c2, cc, pe) True 'AddressOf ServerCertificateCustomValidation
+        '    'oHttp = New HttpClient(_handler)
+
+        'End Sub
+
+        'Private Shared Function ServerCertificateCustomValidation(requestMessage As HttpRequestMessage, certif As X509Certificate2, chain As X509Chain, sslErrors As SslPolicyErrors) As Boolean
+        '    Return True
+        '    '// It Is possible to inspect the certificate provided by the server.
+        '    'Console.WriteLine($"Requested URI: {requestMessage.RequestUri}");
+        '    'Console.WriteLine($"Effective date {certificate?.GetEffectiveDateString()}");
+        '    'Console.WriteLine($"Exp date {certificate?.GetExpirationDateString()}");
+        '    'Console.WriteLine($"Issuer {certificate?.Issuer}");
+        '    'Console.WriteLine($"Subject {certificate?.Subject}");
+
+        '    '// Based on the custom logic it Is possible to decide whether the client considers certificate valid Or Not
+        '    'Console.WriteLine($"Errors {sslErrors}");
+        '    'Return sslErrors == SslPolicyErrors.None;
+        'End Function
 
         ''' <summary>
         ''' Baselink dla komend REST dla tramwajów
         ''' </summary>
         Public Property UriTram As String = "http://www.ttss.krakow.pl/"
+
         ''' <summary>
         ''' Baselink dla komend REST dla autobusów
         ''' </summary>
-        Public Property UriBus As String = "http://91.223.13.70/"
+        Public Property UriBus As String = "https://ttss.mpk.krakow.pl/"
+        '#If DEBUG Then
+        '        Public Property UriBus As String = "https://bus.mpk.krakow.pl/"
+        '#Else
+        ' Public Property UriBus As String = "https://91.223.13.70/"
+        '#End If
 
         ''' <summary>
         ''' zwraca baselink w zale¿noœci od bus/tram (ze slash na koñcu)
@@ -73,7 +105,7 @@ Namespace MpkMain
 
             Try
                 sPage = Await oHttp.GetStringAsync(sUrl)
-            Catch
+            Catch ex As Exception
                 Return "resErrorGetHttp"
             End Try
 

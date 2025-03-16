@@ -5,7 +5,7 @@ using static p.Extensions;
 using System.Collections.Generic;
 
 #if NETFX_CORE 
-using static pkar.Uwp.Configs.Extensions;
+using pkar.UI.Configs;
 #else
 //using static p.Extensions;
 #endif 
@@ -49,6 +49,7 @@ namespace KrakTram
             uiReloadStop.IsEnabled = false;
             await App.CheckLoadStopListAsync(true);
             uiReloadStop.IsEnabled = true;
+            eMaxOdl_Changed(null,null);
         }
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -80,6 +81,9 @@ namespace KrakTram
             if (!p.k.GetPlatform("uwp")) uiAndroAutoBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             if (msRunType != "MAIN") uiOpenPosPanel.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+
+            //VBlib.Setup.cosik();
         }
 
         private void ListaBliskichPrzystankowListView(pkar.BasicGeopos oPoint)

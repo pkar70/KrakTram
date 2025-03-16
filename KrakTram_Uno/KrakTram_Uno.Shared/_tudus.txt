@@ -1,4 +1,6 @@
 
+"diagnostyka", czyli próba http-raw z portow.
+
 https://github.com/unoplatform/uno/issues/8618#issuecomment-1111335182
 
   <ItemGroup>
@@ -14,3 +16,8 @@ Minuty - trasa - mapka (wspó³rzêdne z przystanków, dodanie info o czasie na ka¿d
 https://learn.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geopath.positions?view=winrt-22621#windows-devices-geolocation-geopath-positions
 
 
+
+
+
+		ServerCertificateCustomValidationCallback	Nothing	System.Func(Of System.Net.Http.HttpRequestMessage, System.Security.Cryptography.X509Certificates.X509Certificate2, System.Security.Cryptography.X509Certificates.X509Chain, System.Net.Security.SslPolicyErrors, Boolean)
+		ServerCertificateCustomValidationCallback	Nothing	System.Func(Of System.Net.Http.HttpRequestMessage, System.Security.Cryptography.X509Certificates.X509Certificate2, System.Security.Cryptography.X509Certificates.X509Chain, System.Net.Security.SslPolicyErrors, Boolean)

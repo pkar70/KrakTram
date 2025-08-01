@@ -22,6 +22,8 @@
         ''' kasuje numer słupka na końcu nazwy przystanku
         ''' </summary>
         Public Shared Function NazwaBezSlupka(sNazwaZeSlupkiem As String) As String
+            ' najpierw usuwam to co sam dodałem podczas wczytywania danych z JSON
+            sNazwaZeSlupkiem = sNazwaZeSlupkiem.Replace(" (n/ż)", "").Replace(" (nż)", "")
             Dim iInd As Integer = sNazwaZeSlupkiem.LastIndexOf(" ")
             Dim iTest As Integer = 0
             If iInd > 1 AndAlso Integer.TryParse(sNazwaZeSlupkiem.Substring(iInd).Trim, iTest) Then

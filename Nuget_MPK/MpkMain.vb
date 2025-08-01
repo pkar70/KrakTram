@@ -276,6 +276,7 @@ Namespace MpkMain
 
 #Region "wczytanie trasy linii"
 
+#If False Then
         ''' <summary>
         ''' wczytaj listê przystanków trasy konkretnej linii (wywo³ywaæ z LR0, nie 990)
         ''' </summary>
@@ -286,7 +287,6 @@ Namespace MpkMain
             errMessage = ""
 
             Dim oUri As Uri = New Uri("https://rozklady.mpk.krakow.pl/?lang=PL&linia=" & linia) ' http://rozklady.mpk.krakow.pl/?lang=PL&linia=50
-
 
             ' normalnie nie zadzia³a - robi redirect do b³êdnego Location - b³¹d po stronie serwera MPK
 
@@ -371,6 +371,39 @@ Namespace MpkMain
 
             Return stopy
         End Function
+#End If
+
+        ''' <summary>
+        ''' wczytaj listê przystanków trasy konkretnej linii (wywo³ywaæ z LR0, nie 990)
+        ''' </summary>
+        ''' <returns>NULL w razie b³êdu (i wtedy zobacz errMessage)</returns>
+        Public Async Function DownloadTrasaLiniiAsync(linia As String, Optional iTimeoutSecs As Integer = 10) As Task(Of List(Of String))
+
+            errMessage = ""
+
+            Dim oUri As Uri = New Uri("https://services.mpk.amistad.pl/mpk/schedule/variantGroup/" & linia & "-1")
+
+            Dim sPage As String = Await oHttp.GetStringAsync(oUri)
+
+            Dim oLiniaStops As MpkLiniaStops
+            Try
+                oLiniaStops = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(MpkLiniaStops))
+            Catch ex As Exception
+                Return Nothing
+            End Try
+
+            Dim stopy As New List(Of String)
+
+            For Each oPrzyst As MpkLiniaElementInside In oLiniaStops.elements.Select(Function(e) e.element)
+                Dim nazwa As String = oPrzyst.name
+                If oPrzyst.onDemand Then nazwa &= " (n/¿)"
+                stopy.Add(nazwa)
+            Next
+
+            Return stopy
+        End Function
+
+
 #End Region
 
 #Region "wczytanie listy zmian trasy"
@@ -395,6 +428,8 @@ Namespace MpkMain
                 oHttp.Timeout = TimeSpan.FromSeconds(iTimeoutSecs)
             End If
 
+            Debug.WriteLine("wczytuje")
+
             Try
                 ' Android: "Ssl error:1000007d:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED\n  at /Users/builder/jenki…"
                 sPage = Await oHttp.GetStringAsync(New Uri("https://ztp.krakow.pl/transport-publiczny/komunikacja-miejska/komunikaty"))
@@ -403,12 +438,16 @@ Namespace MpkMain
                 Return Nothing
             End Try
 
+            Debug.WriteLine("wczytane jako string")
+
             Dim moItemy As New List(Of MpkZmiana)
 
             Dim oHtmlDoc As New HtmlAgilityPack.HtmlDocument()
             oHtmlDoc.LoadHtml(sPage)
 
             ' iterujemy <div class="card">
+
+            Debug.WriteLine("wczytane jako HTML")
 
             Dim entries As HtmlAgilityPack.HtmlNodeCollection = oHtmlDoc.DocumentNode.SelectNodes("//div[@class='card']")
             If entries Is Nothing Then
@@ -423,7 +462,7 @@ Namespace MpkMain
                 oNew.sCzas = entry.SelectSingleNode(".//div[@class='date']").InnerText.Trim
                 oNew.sLinie = entry.SelectSingleNode(".//div[@class='lines']").InnerText.Trim
                 oNew.sTytul = entry.SelectSingleNode(".//div[@class='message-title']").InnerText.Trim
-                oNew.sInfo = entry.SelectSingleNode(".//div[@class='card-body-inner']/div").InnerText.Trim
+                oNew.sInfo = entry.SelectSingleNode(".//a[@class='message-btn']").InnerText.Trim
                 oNew.sLink = entry.SelectSingleNode(".//a").Attributes("href").Value
 
                 moItemy.Add(oNew)
@@ -570,5 +609,44 @@ Namespace MpkMain
         Public Property number As String
     End Class
 
+#Region "przystanki na linii JSON"
+    Public Class MpkLiniaStops
+        'Public Property children() As MpkLiniaChildren
+        Public Property elements As List(Of MpkLiniaElement)
+    End Class
 
+    ' niepotrzebne nam do niczego, wiêc lepiej nie próbowaæ wczytywaæ
+    '    Public Class MpkLiniaChildren
+    '        Public Property header As MpkLiniaChildrenHeader
+    '        Public Property trace()() As Single ' [50.149865, 19.854535] czyli jakby geografia
+    'End Class
+
+    '    Public Class MpkLiniaChildrenHeader
+    '        Public Property id As String    ' "LR0-1", "LR0-2" w zale¿noœci od tego w którym kierunku
+    '        Public Property name As String  ' "Os. Podwawelskie - Ojców Zamek", czyli pêtle
+    '        Public Property streets As String ' "Barska - Konopnickiej - al. Krasiñskiego - al. Mickiewicza - Czarnowiejska - Nawojki - Armii Krajowej - Jasnogórska - Szyce ul. Olkuska - Bia³y Koœció³ ul. Krakowska - Bia³y Koœció³ os. Murownia - Czajowice ul. Ojcowska"
+    '    End Class
+
+    Public Class MpkLiniaElement
+        Public Property element As MpkLiniaElementInside
+        'Public Property variants As Variants
+    End Class
+
+    Public Class MpkLiniaElementInside
+        Public Property type As String ' "Stop"
+        Public Property id As Integer   ' integer numeru, ale 50 na Dauna ma tutaj 1603!
+        Public Property name As String ' "Rondo Grunwaldzkie 04" - przystanek razem ze s³upkiem
+        'Public Property positions() As Position
+        Public Property onDemand As Boolean
+    End Class
+
+    'Public Class Position
+    '    Public Property lat As Single
+    '    Public Property lng As Single
+    'End Class
+
+    'Public Class Variants
+    '    Public Property LR01 As Integer?
+    'End Class
+#End Region
 End Namespace

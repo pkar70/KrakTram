@@ -5,49 +5,14 @@ Dwa główne poziomy:
 1) MpkMain: bezpośredni dostęp do serwerów MPK, i ichniejszy format danych
 2) MpkWrapper: własny format danych, cache'owanie
 
+Nuget nie posługuje się danymi GTFS, gdyż są one po prostu zbyt wielkie - aby sprawdzić jeden przystanek, trzeba ściągać dane o całej sieci zbiorkom w mieście.
+Wersje 1.* posługiwały się danymi TTSS.
+Wersje 2.* posługują się danymi ZTP (zmiany), Amistad (przystanki), Zbiorkom (stan)
+
 # MpkMain
-
-        Public Property UriTram As String = "http://www.ttss.krakow.pl/"
-        Public Property UriBus As String = "http://91.223.13.70/"
-        Public Function GetUriBase(isBus As Boolean) As String
-        Public Property errMessage As String = ""
-        Public Async Function DownloadListaPrzystankowAsync(Optional bTram As Boolean = True, Optional bBus As Boolean = True, Optional iTimeoutSecs As Integer = 10) As Task(Of List(Of MpkPrzystanek))
-        Public Async Function WczytajTabliczkeAsync(isBus As Boolean, sId As String, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkTabliczka)
-        Public Async Function DownloadDalszaTrasaAsync(isBus As Boolean, tripId As String, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkDalszaTrasa)
-        Public Async Function DownloadTrasaLiniiAsync(linia As String, Optional iTimeoutSecs As Integer = 10) As Task(Of List(Of String))
-        Public Async Function DownloadZmianyAsync(Optional iTimeoutSecs As Integer = 10) As Task(Of List(Of MpkZmiana))
-        Public Async Function DownloadVehiclesState(isBus As Boolean, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkVehiclesState)
-        Public Async Function DownloadTrasaNaMapieVehicle(isBus As Boolean, sId As String, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkPathInfo)
-        Public Async Function DownloadTrasaNaMapieRoute(isBus As Boolean, sId As String, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkPathInfo)
-        Public Async Function DownloadRouteTrasaAsync(isBus As Boolean, routeId As String, Optional iTimeoutSecs As Integer = 10) As Task(Of MpkRouteStops)
-
- oraz wewnętrzna funkcja, dla wygody upubliczniona:
-
-        Public Async Function ReadRest(isBus As Boolean, sCmd As String, Optional iTimeoutSecs As Integer = 10) As Task(Of String)
-
-## struktury danych
-
-Klasy te odpowiadają temu co zwracane jest przez serwery
-
-        Public Class MpkPrzystanek
-        Public Class MpkTabliczka
-        Public Class MpkOdjazd
-        Public Class MpkRoute
-        Public Class MpkDalszaTrasa
-        Public Class MpkDalszyStop
-        Public Class MpkDalszyStop_Stop
-        Public Class MpkZmiana
-        Public Class MpkVehiclesState
-        Public Class MpkVehicleState
-        Public Class MpkVehicleStatePath
-        Public Class MpkWayPoint
-        Public Class MpkPath
-        Public Class MpkPathInfo
-        Public Class MpkRouteStops
-        Public Class MpkRouteStop
+ - proponuję nie używać, bo jednak API w miarę płynne jest
 
 # MpkWrap
-
  Wszystkie klasy wykorzystują MpkMain jako mechanizm dostępu do serwerów. Dane są (zwykle) cache'owane.
 
 ## Przystanki
@@ -59,6 +24,9 @@ Klasy te odpowiadają temu co zwracane jest przez serwery
         Public Property Geo As BasicGeopos
         Public Property Name As String
         Public Property id As String
+        Public Property Ami_AlsoTram As Boolean
+        Public Property Ami_Ids As String
+        Public Property Ami_Count As Integer    ' liczba słupków
         Public Sub New(Optional wersjaMPK As MpkMain.MpkPrzystanek = Nothing)
 
     Public Class Przystanki
@@ -127,6 +95,7 @@ Klasy te odpowiadają temu co zwracane jest przez serwery
         Public Shared Function NazwaBezSlupka(sNazwaZeSlupkiem As String) As String
         Public Async Function LoadOrImport(bForceLoad As Boolean, bNetAvail As Boolean) As Task(Of String)
 
+<!--
 ## Trasa pojazdu / route w wersji dla mapy
 
  Bez cache danych.
@@ -137,7 +106,7 @@ Klasy te odpowiadają temu co zwracane jest przez serwery
     Public Class TrasaNaMape
         Public Property color As String
         Public Property wayPoints As List(Of BasicGeopos)
-
+-->
 ## Lista zmian (objazdy)
 
  Dane są cache'owane w pliku "zmiany.json".
@@ -156,7 +125,7 @@ Klasy te odpowiadają temu co zwracane jest przez serwery
             Public Function GetItem(sName As String, Optional isBus As Boolean = False) As VehicleData
 
 
-# Przykładowe URL:
+# Przykładowe URL (historyczne)
 
 Przystanki:
 http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-648000000&bottom=-324000000&right=648000000&top=324000000
@@ -179,9 +148,10 @@ Położenie pojazdów:
 http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehicleinfo/vehicles
 
 Przystanki na linii:
-https://rozklady.mpk.krakow.pl/?lang=PL&linia=52
+https://services.mpk.amistad.pl/mpk/schedule/variantGroup/50-1
 
 Zmiany tras:
 https://ztp.krakow.pl/transport-publiczny/komunikacja-miejska/komunikaty
 
-
+Autobusy przystanki:
+http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-648000000&bottom=-324000000&right=648000000&top=324000000

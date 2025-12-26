@@ -14,18 +14,18 @@ Namespace MpkWrap
         ''' </summary>
         Public Property LastStat As OpoznieniaStat
 
-        Private Shared oMpk As New MpkMain.MPK
+        Private Shared oMpk As New MpkMain.MPK_Merged
 
         ''' <summary>
         ''' wczytuj tabliczkę, konwertując na mój format
         ''' </summary>
-        ''' <param name="isBus">false: tram, true: bus</param>
-        ''' <param name="sId">identyfikator (shortName z listy przystanków)</param>
         ''' <param name="iMinSec">czas dotarcia do przystanku - wcześniejszych odjazdów nie podawaj</param>
         ''' <returns></returns>
-        Public Async Function WczytajTabliczke(isBus As Boolean, sId As String, iMinSec As Integer, Optional HttpTimeoutSecs As Integer = 10) As Task(Of List(Of Odjazd))
+        Public Async Function WczytajTabliczke(oPrzyst As Przystanek, iMinSec As Integer, Optional HttpTimeoutSecs As Integer = 10) As Task(Of List(Of Odjazd))
+            '' <param name="isBus">false: tram, true: bus</param>
+            '' <param name="sId">identyfikator (shortName z listy przystanków)</param>
 
-            Dim tabliczka As MpkTabliczka = Await oMpk.WczytajTabliczkeAsync(isBus, sId, HttpTimeoutSecs)
+            Dim tabliczka As MpkTabliczka = Await oMpk.WczytajTabliczkeAsync(oPrzyst, HttpTimeoutSecs)
             If tabliczka Is Nothing Then Return Nothing
 
             Dim lista As New List(Of Odjazd)
@@ -87,7 +87,8 @@ Namespace MpkWrap
         End Function
 
         Public Async Function GetDelayStats(isBus As Boolean, sId As String) As Task(Of OpoznieniaStat)
-            Await WczytajTabliczke(isBus, sId, 0)
+            'Await WczytajTabliczke(isBus, sId, 0)
+            ' wersja uproszczona - stat z ostatniego czytania tabliczki
             Return LastStat
         End Function
 

@@ -8,7 +8,7 @@
     <Title>obsługa MPK</Title>
     <Authors>pkar</Authors>
     <RepositoryUrl>https://github.com/pkar70/KrakTram/tree/master/Nuget_MPK</RepositoryUrl>
-    <Version>1.2.0</Version>
+    <Version>2.1.0</Version>
 	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	  <Description>This package is only for Kraków, Poland - wrapper for public transport services. Although it can be used (in part) also for other TTSS based services.</Description>
 	  <Copyright>Piotr Karocki</Copyright>
@@ -21,10 +21,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="2.16.3" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="pkar.BasicGeopos" Version="1.5.5" />
-    <PackageReference Include="StructList" Version="1.2.0" />
+    <PackageReference Include="PeterO.Cbor" Version="4.5.5" />
+    <PackageReference Include="pkar.BasicGeopos" Version="1.7.1" />
+    <PackageReference Include="pkar.DotNetExts" Version="1.2.10" />
+    <PackageReference Include="pkar.StructList" Version="1.8.7" />
   </ItemGroup>
 
   <ItemGroup>

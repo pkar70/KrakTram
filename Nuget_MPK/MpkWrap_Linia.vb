@@ -1,4 +1,6 @@
-﻿Namespace MpkWrap
+﻿Imports pkar.MpkMain
+
+Namespace MpkWrap
 
     ''' <summary>
     ''' wrapper dla MPKinternal, format danych: mój
@@ -8,9 +10,8 @@
         Inherits pkar.BaseList(Of String)
 
         Private _maxDays As Integer = 30
-        Private Shared oMpk As New MpkMain.MPK
+        Private Shared oMpk As New MpkMain.MPK_Merged
         Private _linia As String = ""
-
 
         Public Sub New(cacheFolder As String, sLinia As String, Optional maxDaysCache As Integer = 30)
             MyBase.New(cacheFolder, "line" & sLinia & ".json")
@@ -53,8 +54,9 @@
 
             If Not bNetAvail Then Return "resErrorNoNetwork"
 
-            _lista = Await oMpk.DownloadTrasaLiniiAsync(_linia)
-            If _lista Is Nothing Then Return "emptyLinia"
+            Me.Clear()
+            Me.AddRange(Await oMpk.DownloadTrasaLiniiAsync(_linia))
+            If Me.Count < 1 Then Return "emptyLinia"
 
             Save()
 

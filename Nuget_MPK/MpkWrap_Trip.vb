@@ -4,7 +4,7 @@ Namespace MpkWrap
 
     Public Class DalszaTrip
 
-        Private Shared oMpk As New MpkMain.MPK
+        Private Shared oMpk As New MpkMain.MPK_Merged
 
         Public Async Function GetTrasa(bBus As Boolean, tripId As String) As Task(Of List(Of DalszyStop))
 

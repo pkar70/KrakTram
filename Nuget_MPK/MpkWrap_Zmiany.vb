@@ -35,9 +35,10 @@
 
             If Not bNetAvail Then Return False
 
-            Dim oMPK As New MpkMain.MPK
+            Dim oMPK As New MpkMain.MPK_Merged
 
-            _lista = Await oMPK.DownloadZmianyAsync
+            Me.Clear()
+            Me.AddRange(Await oMPK.DownloadZmianyAsync)
 
             Save()
 

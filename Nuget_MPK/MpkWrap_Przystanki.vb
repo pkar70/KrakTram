@@ -1,4 +1,6 @@
 ﻿
+Imports pkar.MpkMain
+
 Namespace MpkWrap
 
     ''' <summary>
@@ -6,6 +8,8 @@ Namespace MpkWrap
     ''' </summary>
     Public Class Przystanki
         Inherits BaseList(Of Przystanek)
+
+        Private oMPK As New MPK_Merged
 
         Private _maxDays As Integer = 30
 
@@ -43,21 +47,22 @@ Namespace MpkWrap
 
             If Not bNetAvail Then Return False
 
-            Dim oMPK As New MpkMain.MPK
-            Dim noweItemyMPK As List(Of MpkMain.MpkPrzystanek) = Await oMPK.DownloadListaPrzystankowAsync
+            Dim nowaLista As List(Of Przystanek) = Await oMPK.DownloadListaPrzystankowAsync
+            'Dim noweItemyMPK As List(Of Przystanek) = Await oMPK.DownloadListaPrzystankowAsync
 
-            Dim nowaLista As New List(Of Przystanek)
-            For Each oNowyMpk As MpkMain.MpkPrzystanek In noweItemyMPK
-                If oNowyMpk.category.ToLowerInvariant = "other" Then Continue For
+            'Dim nowaLista As New List(Of Przystanek)
+            'For Each oNowyMpk As MpkMain.MpkPrzystanek In noweItemyMPK
+            '    If oNowyMpk.category.ToLowerInvariant = "other" Then Continue For
 
-                nowaLista.Add(New Przystanek(oNowyMpk))
-            Next
+            '    nowaLista.Add(New Przystanek(oNowyMpk))
+            'Next
 
             If bDoCompare Then
-                ZmianyPrzystankow = Compare(_lista, nowaLista)
+                ZmianyPrzystankow = Compare(Me, nowaLista)
             End If
 
-            _lista = nowaLista
+            Me.Clear()
+            Me.AddRange(nowaLista)
 
             Save(True)
 
@@ -66,7 +71,7 @@ Namespace MpkWrap
         End Function
 
         Public Function GetItem(sName As String, Optional isBus As Boolean = False) As Przystanek
-            For Each oItem In _lista
+            For Each oItem In Me
                 If oItem.Name = sName AndAlso oItem.IsBus = isBus Then Return oItem
             Next
 
@@ -76,12 +81,12 @@ Namespace MpkWrap
         Public Overloads Function GetList(Optional sCat As String = "tram") As List(Of Przystanek)
             Select Case sCat
                 Case "all"
-                    Return _lista
+                    Return Me
                 Case "bus"
                     ' Return From c In moItemy Where sCat = "bus"
-                    Return _lista.Where(Function(s) Equals(s.IsBus, True)).ToList
+                    Return Where(Function(s) Equals(s.IsBus, True)).ToList
                 Case Else
-                    Return _lista.Where(Function(s) Equals(s.IsBus, False)).ToList
+                    Return Where(Function(s) Equals(s.IsBus, False)).ToList
             End Select
         End Function
 
@@ -134,6 +139,11 @@ Namespace MpkWrap
         Public Property Geo As BasicGeopos
         Public Property Name As String
         Public Property id As String
+
+        ' dla AMIstad
+        Public Property Ami_AlsoTram As Boolean
+        Public Property Ami_Ids As String
+        Public Property Ami_Count As Integer
 
         ' tak by mógł wczytać JSON :)
         Public Sub New(Optional wersjaMPK As MpkMain.MpkPrzystanek = Nothing)

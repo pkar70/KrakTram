@@ -57,7 +57,7 @@ namespace KrakTram
         private async void ReloadOpoznienia(bool isBus)
         {
             if (mdOpoznLastDate.AddMinutes(5) > DateTime.Now)
-                if (!await vb14.DialogBoxYNAsync("Niedawno było, na pewno?"))
+                if (!await this.DialogBoxYNAsync("Niedawno było, na pewno?"))
                     return;
 
             this.ProgRingShow(true);

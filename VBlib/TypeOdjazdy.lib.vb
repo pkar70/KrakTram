@@ -1,6 +1,7 @@
 ﻿
 Imports System.Net
 Imports System.Threading
+Imports pkar.MpkWrap
 
 Partial Public Class JedenOdjazd
 
@@ -48,7 +49,7 @@ Partial Public Class ListaOdjazdow
 
     Private Shared _nuget As New pkar.MpkWrap.Tabliczka
 
-    Public Async Function WczytajTabliczke(isBus As Boolean, sErrData As String, sId As String, iOdl As Integer, mSpeed As Double, bPkarMode As Boolean) As Task(Of String)
+    Public Async Function WczytajTabliczke(isBus As Boolean, sErrData As String, przyst As Przystanek, iOdl As Integer, mSpeed As Double, bPkarMode As Boolean) As Task(Of String)
         ' mSpeed = App.mSpeed
         ' Dim bPkarMode As Boolean = p.k.GetSettingsBool("pkarmode", p.k.IsThisMoje())
         'oNew.uiCol1 = GetSettingsInt("widthCol0")  ' linia, typ pojazdu
@@ -66,19 +67,21 @@ Partial Public Class ListaOdjazdow
 
         If _pojazdy.Count < 1 Then Await _pojazdy.LoadOrImport(False, True)
 
-        Dim nugetOdjazdy As List(Of pkar.MpkWrap.Odjazd) = Await _nuget.WczytajTabliczke(isBus, sId, iMinSec)
+        Dim nugetOdjazdy As List(Of pkar.MpkWrap.Odjazd) = Await _nuget.WczytajTabliczke(przyst, iMinSec)
         If nugetOdjazdy Is Nothing Then Return "ERROR"
 
         For Each odjazd As pkar.MpkWrap.Odjazd In nugetOdjazdy
-            Dim oNew As New JedenOdjazd
-            oNew.Odjazd = odjazd
-            oNew.isBus = isBus
-            oNew.stopId = sId
-            oNew.Odl = iOdl
+            Dim oNew As New JedenOdjazd With {
+                .Odjazd = odjazd,
+                .isBus = isBus,
+                .stopId = przyst.Name,
+                .Odl = iOdl,
+                .bPkarMode = bPkarMode
+            }
 
-            If odjazd.vehicleId IsNot Nothing Then
+            If Not String.IsNullOrWhiteSpace(odjazd.vehicleId) Then
                 ' no bo się zdarza że jest NULL!
-
+                Debug.WriteLine("Szukam pojazzdu dla " & odjazd.vehicleId)
                 Dim danePojazdu As pkar.MpkWrap.VehicleData = _pojazdy.GetItem(odjazd.vehicleId, isBus)
                 If danePojazdu Is Nothing Then
                     Await _pojazdy.LoadOrImport(True, True)
@@ -97,21 +100,8 @@ Partial Public Class ListaOdjazdow
             End If
 
             ' tylko to, czego nie zrobił Nuget
-            'oNew.Typ = "!ERR!" '  VehicleId2VehicleType(oVal.GetObject().GetNamedString("vehicleId", "!ERR!"));
-            'Try
-            '    oNew.Typ = CStr(oVal("vehicleId"))
-            '    oNew.Typ = VehicleId2VehicleType(oNew.Typ)
-            'Catch
-            'End Try
-
-            'oNew.uiCol1 = GetSettingsInt("widthCol0") ' linia, typ pojazdu
-            'oNew.uiCol3 = GetSettingsInt("widthCol3") ' czas odjazdu
             oNew.sPrzystCzas = $"{oNew.Odjazd.Przyst} ({oNew.Odl} m, {oNew.Odjazd.odlMin} min)"
             oNew.bPkarMode = bPkarMode
-
-            ' oNode.SetAttribute("numer",
-            ' oVal.GetObject.GetNamedString("vehicleId", "12345678901234599999").Substring(15))
-            ' oNode.SetAttribute("odlSec", iMinSec)
 
             Dim bBylo = False
 
@@ -203,16 +193,13 @@ Partial Public Class ListaOdjazdow
             Case "TangoII"
                 Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/3331-stadler-tango-lajkonik")
 
-            Case "GT8N"
-            Case "GT8C"
-            Case "GT8S"
+            Case "GT8N", "GT8C", "GT8S"
                 Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/233-gt8s-gt8c-gt8n")
 
             Case "NGT8"
                 Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/109-ngt8")
 
-            Case "NGT6"
-            Case "NGT6(3)"
+            Case "NGT6", "NGT6(3)"
                 Return New Uri("https://psmkms.krakow.pl/tramwaje/w-krakowie/547-ngt6")
 
             Case "2014N"
@@ -293,16 +280,13 @@ Partial Public Class ListaOdjazdow
         ' o tabliczce: stop, odl, odlMin, odlSec - nazwa, odleglosc: metry, minuty, sec
         ' o tramwaju: line, dir, time, timSec, typ, numer - linia, kierunek, mixedTime, sekundy, typ (eu8n), numer wozu
 
-        For Each oNode In moOdjazdy
+        For Each oNode In moOdjazdy.Where(Function(n) n.bShow)
+            For Each oNode1 In moOdjazdy
 
-            If oNode.bShow Then
-                For Each oNode1 In moOdjazdy
-
-                    If oNode.Odjazd.Linia = oNode1.Odjazd.Linia Then
-                        If oNode.Odjazd.odlMin < oNode1.Odjazd.odlMin Then oNode1.bShow = False
-                    End If
-                Next
-            End If
+                If oNode.Odjazd.Linia = oNode1.Odjazd.Linia Then
+                    If oNode.Odjazd.odlMin < oNode1.Odjazd.odlMin Then oNode1.bShow = False
+                End If
+            Next
         Next
     End Sub
 
@@ -318,6 +302,7 @@ Partial Public Class ListaOdjazdow
 
     Public Async Function GetDelayStats(bBus As Boolean, sId As String) As Task(Of pkar.MpkWrap.OpoznieniaStat)
         Return Await _nuget.GetDelayStats(bBus, sId)
+        'Return Nothing
     End Function
 
 End Class

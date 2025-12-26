@@ -48,7 +48,7 @@ namespace KrakTram
 
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                await vb14.DialogBoxResAsync("resErrorNoNetwork");
+                await this.MsgBoxAsync("res:resErrorNoNetwork");
                 return;
             }
 
@@ -130,7 +130,7 @@ namespace KrakTram
 
                     this.ProgRingSetText(oNode.Name + " " + (oNode.IsBus?"B":"T"));
 
-                    await App.moOdjazdy.WczytajTabliczke(oNode.IsBus, sErrData, oNode.id, iOdl, App.mSpeed,
+                    await App.moOdjazdy.WczytajTabliczke(oNode.IsBus, sErrData, oNode, iOdl, App.mSpeed,
                         vb14.GetSettingsBool("pkarmode", p.k.IsThisMoje()));
 
                     WypiszTabele(false);  // w trakcie - pokazujemy na raty, zeby cos sie dzialo
@@ -144,7 +144,7 @@ namespace KrakTram
             if (App.moOdjazdy.Count() < 1)
             {
                 if (bShowZero)
-                    vb14.DialogBoxRes("resZeroKursow");
+                    this.MsgBox("res:resZeroKursow");
                 return;
             }
 
@@ -267,7 +267,7 @@ namespace KrakTram
             if (oItem is null) return;
 
             var statsy = await App.moOdjazdy.GetDelayStats(oItem.isBus, oItem.stopId);
-            vb14.DialogBox(statsy.DumpAsJSON());
+            this.MsgBox(statsy.DumpAsJSON());
         }
 
         private  void uiRawData_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -276,7 +276,7 @@ namespace KrakTram
             var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
             if (oItem is null) return;
 
-            vb14.DialogBox(oItem.Odjazd.sRawData);
+            this.MsgBox(oItem.Odjazd.sRawData);
         }
 
         private void uiScheduled_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -284,7 +284,8 @@ namespace KrakTram
             var oMFI = sender as Windows.UI.Xaml.Controls.MenuFlyoutItem;
             var oItem = oMFI?.DataContext as VBlib.JedenOdjazd;
 
-            string callParam = oItem.Odjazd.tripId + "|" + oItem.Odjazd.Przyst;
+            // .vehicleId dla Zbiorkom, .tripId dla TTSS
+            string callParam = oItem.Odjazd.vehicleId + "|" + oItem.Odjazd.Przyst;
             if (oItem.Odjazd.Linia.Length > 2) callParam += "|BUS";
 
             this.Frame.Navigate(typeof(ScheduledTrasa), callParam);

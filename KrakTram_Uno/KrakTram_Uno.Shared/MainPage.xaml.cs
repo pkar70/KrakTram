@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System;
 using vb14 = VBlib.pkarlibmodule14;
-//using static p.Extensions;
 using pkar.UI.Extensions;
 
 namespace KrakTram
@@ -17,29 +16,7 @@ namespace KrakTram
         private bool mbAndroAdd = false;
         private bool mbSkalowane = false;
 
-#if false
-        private void policzmy()
-        {
-            // testowanie czasu
-            int iSumLen = 0;
-            int iCntStop = 0;
-            foreach (string sStop in from c in App.oStops.GetList("tram")
-                                     orderby c.Name
-                                     select c.Name)
-            {
-                iSumLen += sStop.Length;
-                iCntStop++;
-            }
-        }
 
-        private void wypelnijmy()
-        {
-            // testowanie czasu
-            uiStopList.ItemsSource = from c in App.oStops.GetList("tram")
-                                     orderby c.Name
-                                     select c.Name;
-        }
-#endif
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 
@@ -68,11 +45,8 @@ namespace KrakTram
                 uiBusStopList.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 uiGoBusStop.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-            // await LoadFavListAsync(); - gdy było razem z importem z XML (2022.04), teraz już usuwam ten import (2022.08)
-            // a jeszcze wcześniej było wczytywanie ze zmiennej (też XML)
-
             this.ProgRingSetText("Favourites...");
-            App.oFavour.Load();
+            if(App.oFavour.Count<1) App.oFavour.Load();
 
             ShowFavourCombo();
 
@@ -89,7 +63,7 @@ namespace KrakTram
             else
             {
                 mbAndroAdd = true;
-                uiStopList.Items.Add(vb14.GetLangString("resUseSearch"));
+                uiStopList.Items.Add(pkar.Localize.GetResManString("resUseSearch"));
                 uiStopList.SelectedIndex = 0;
 
             }
@@ -104,7 +78,7 @@ namespace KrakTram
                 else
                 {
                     mbAndroAdd = true;
-                    uiBusStopList.Items.Add(vb14.GetLangString("resUseSearch"));
+                    uiBusStopList.Items.Add(pkar.Localize.GetResManString("resUseSearch"));
                     uiBusStopList.SelectedIndex = 0;
                 }
 
@@ -121,17 +95,22 @@ namespace KrakTram
             uiStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80);  // Max dla Android, bo wtedy chyba NaN
             uiBusStopList.Width = System.Math.Max(uiFavList.ActualWidth, 80); // Max dla Android, bo wtedy chyba NaN
 
+
+
+
             mbAndroAdd = false;
 
         }
 
         private void ShowFavourCombo()
         {
-            uiFavList.ItemsSource = from c in App.oFavour.GetList()
+            uiFavList.ItemsSource = from c in App.oFavour
                                     orderby c.Name
                                     select c.Name;
-            if (App.oFavour.GetList().Count == 1)
+            if (App.oFavour.Count == 1)
                 uiFavList.SelectedIndex = 0;
+
+            uiFavList.IsEnabled = App.oFavour.Count > 0;
         }
 
 
@@ -172,18 +151,6 @@ namespace KrakTram
                 mbSkalowane = true;
             }
 
-            //'uiTester.FontSize = 9
-            //'uiTester.Text = "2014N"
-            //'iWidth = uiTester.ActualWidth   'typ
-            //'uiTester.FontSize = 20
-            //'uiTester.Text = "22 min"
-            //'iWidth2 = uiTester.ActualWidth  'linia
-
-            //'uiTester.FontSize = 28
-            //'uiTester.FontWeight = Windows.UI.Text.FontWeights.Bold
-            //'uiTester.Text = "50"
-            //'uiTester.Visibility = Visibility.Collapsed
-
             widthCol0 = System.Math.Max(iWidthLine, iWidthTyp);
             widthCol3 = iWidthTime;
         }
@@ -203,9 +170,6 @@ namespace KrakTram
                 uiSearchTram.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            //uiPinBus.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            //if (!vb14.GetSettingsBool("settingsAlsoBus"))
-            //        return;
 
             if (uiPinBus.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
                 uiSearchBus.Visibility = Windows.UI.Xaml.Visibility.Visible;
@@ -245,6 +209,7 @@ namespace KrakTram
 
             App.oFavour.Add(msStopName, oPrzyst.Geo, 150);  // odl 150, zeby byl tram/bus
             App.oFavour.Save(false);
+            uiFavList.IsEnabled = true;
 
             msStopName = ""; // powtorka buttonu nie zadziała
 
@@ -302,7 +267,7 @@ namespace KrakTram
                 return;
 
             string sStop = uiFavList.SelectedValue.ToString();
-            foreach (VBlib.FavStop oStop in App.oFavour.GetList())
+            foreach (VBlib.FavStop oStop in App.oFavour)
             {
                 if (oStop.Name == sStop)
                 {
@@ -356,7 +321,7 @@ namespace KrakTram
 
         private async void uiStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await vb14.DialogBoxInputResAsync("msgEnterName");
+            string sMask = await this.InputBoxAsync("res:msgEnterName");
 
             if (string.IsNullOrEmpty(sMask))
             {
@@ -385,7 +350,7 @@ namespace KrakTram
 
         private async void uiBusStopList_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            string sMask = await vb14.DialogBoxInputResAsync("msgEnterName");
+            string sMask = await this.InputBoxAsync("res:msgEnterName");
             if (string.IsNullOrEmpty(sMask))
             {
                 sMask = sMask.ToLower();

@@ -54,7 +54,7 @@ namespace KrakTram
 
             if (!sRet.StartsWith("OK"))
             {
-                vb14.DialogBox(sRet);
+                this.MsgBox(sRet);
                 return;
             }
 
@@ -92,7 +92,7 @@ namespace KrakTram
 
         private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            uiTitle.Text = vb14.GetLangString("resTrasa") + " " + msLinia;
+            uiTitle.Text = pkar.Localize.GetResManString("resTrasa") + " " + msLinia;
             PrepareTrasaAsync(false);
         }
 

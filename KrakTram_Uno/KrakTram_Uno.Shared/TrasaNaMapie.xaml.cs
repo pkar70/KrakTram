@@ -14,13 +14,9 @@ using vb14 = VBlib.pkarlibmodule14;
 using System.Reflection;
 using Windows.Devices.Geolocation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace KrakTram
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class TrasaNaMapie : Page
     {
         public TrasaNaMapie()
@@ -65,7 +61,7 @@ namespace KrakTram
                 var tempIcon = mapElement as MapIcon;
                 punkty.Add(pkar.BasicGeopos.FromObject(tempIcon.Location.Position));
             }
-            var corners = VBlib.proba.GetCornersAndCenter(punkty);
+            var corners = pkar.BasicGeopos.GetCornersAndCenter(punkty);
             var cornerNW = corners[0];
             var cornerSE = corners[1];
 
@@ -82,50 +78,9 @@ namespace KrakTram
                 uiMapka.MapElements.Add(mapElement);
             }
 
-            // uiMapka.Layers.Add(LandmarksLayer);
-
-
-            //var oPosition = VBlib.proba.GetCenter(punkty);
-            // var temp = _punkty[0] as MapIcon;
-            // uiMapka.Center = temp.Location;
-
-            //double metersPerPixel = VBlib.proba.MetersPerPixelForZoom(temp.Location.Position.Latitude)
-            //uiMapka.ZoomLevel = VBlib.proba.zo
-
-
         }
 
 
     }
 }
 
-//internal static partial class Extensions
-//{
-//    public static void CopyTo1(this pkar.BasicGeopos from, ref object anyObject )
-//    {
-
-//        System.Reflection.PropertyInfo prop;
-
-//        prop = anyObject.GetType().GetRuntimeProperty("Latitude");
-//        if (prop != null) prop.SetValue(anyObject, from.Latitude);
-
-//        prop = anyObject.GetType().GetRuntimeProperty("Longitude");
-//        if (prop != null) prop.SetValue(anyObject, from.Longitude);
-
-//        prop = anyObject.GetType().GetRuntimeProperty("Altitude");
-//        if (prop != null) prop.SetValue(anyObject, from.Altitude);
-
-//        System.Reflection.FieldInfo fld;
-
-//        fld = anyObject.GetType().GetRuntimeField("Latitude");
-//        if(fld != null) fld.SetValue(anyObject, from.Latitude);
-
-//        fld = anyObject.GetType().GetRuntimeField("Longitude");
-//        if (fld != null) fld.SetValue(anyObject, from.Longitude);
-
-//        fld = anyObject.GetType().GetRuntimeField("Altitude");
-//        if (fld != null) fld.SetValue(anyObject, from.Altitude);
-
-//    }
-
-//}

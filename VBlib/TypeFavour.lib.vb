@@ -25,20 +25,22 @@ Partial Public Class FavStopList
     Public Overloads Sub Add(sName As String, oGeo As pkar.BasicGeopos, iMaxOld As Integer)
 
         ' jesli jest (np. tram), to nie dodawaj (np. bus)
-        For Each oNode In _lista
+        For Each oNode In Me
             If oNode.Name.ToLowerInvariant = sName.ToLowerInvariant Then Return
         Next
 
         ' nie ma, to dodaj
-        Dim oNew = New FavStop()
-        oNew.Geo = oGeo
-        oNew.Name = sName
-        oNew.maxOdl = iMaxOld
-        _lista.Add(oNew)
+        Me.Add(New FavStop() With {
+            .Geo = oGeo,
+            .Name = sName,
+            .maxOdl = iMaxOld
+        })
     End Sub
 
     Public Sub Del(sName As String)
-        Remove(Function(x) x.Name.ToLowerInvariant = sName.ToLowerInvariant)
+        Dim oToDel As FavStop = Me.FirstOrDefault(Function(x) x.Name.ToLowerInvariant = sName.ToLowerInvariant)
+        If oToDel Is Nothing Then Return
+        MyBase.Remove(oToDel)
     End Sub
 
     Protected Overrides Sub InsertDefaultContent()
@@ -46,13 +48,13 @@ Partial Public Class FavStopList
 
         If Not oldLista.Load Then Return
 
-        _lista.Clear()
-        For Each oldFav As FavStopOld In oldLista.GetList
+        Me.Clear()
+        For Each oldFav As FavStopOld In oldLista
             Dim oNew As New FavStop
             oNew.Name = oldFav.Name
             oNew.maxOdl = oldFav.maxOdl
             oNew.Geo = New pkar.BasicGeopos(oldFav.Lat, oldFav.Lon)
-            _lista.Add(oNew)
+            Me.Add(oNew)
         Next
 
         Save()

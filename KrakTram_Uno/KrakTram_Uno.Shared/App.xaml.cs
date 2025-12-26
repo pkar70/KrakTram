@@ -475,6 +475,8 @@ namespace KrakTram
 
         public static async System.Threading.Tasks.Task CheckLoadStopListAsync(bool bForceLoad = false)
         {
+            if (!bForceLoad && App.oStops.Count > 1) return;
+
             await oStops.LoadOrImport(bForceLoad, p.k.NetIsIPavailable(false));
         }
 

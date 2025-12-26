@@ -4,6 +4,8 @@ using vb14 = VBlib.pkarlibmodule14;
 using static p.Extensions;
 using System.Collections.Generic;
 
+using pkar.UI.Extensions;
+
 #if NETFX_CORE 
 using pkar.UI.Configs;
 #else
@@ -164,7 +166,7 @@ namespace KrakTram
 
                 if (sTxt.Length < 4)
                 {
-                    vb14.DialogBoxRes("resErrorNazwaZaKrotka");
+                    this.MsgBox("res:resErrorNazwaZaKrotka");
                     return;
                 }
 
@@ -174,7 +176,7 @@ namespace KrakTram
 
                     if (!double.TryParse(uiPositionLong.Text, out dLon) || !double.TryParse(uiPositionLat.Text, out dLat))
                     {
-                        vb14.DialogBoxRes("resBadFloat");
+                        this.MsgBox("res:resBadFloat");
                         return;
                     }
                     basGeo = new pkar.BasicGeopos(dLat, dLon);
@@ -182,7 +184,7 @@ namespace KrakTram
 
                 if(!basGeo.IsInsideKrakow())
                 {
-                    vb14.DialogBoxRes("resErrorPozaKrakowem");
+                    this.MsgBox("res:resErrorPozaKrakowem");
                     return;
                 }
 

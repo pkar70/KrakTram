@@ -21,11 +21,11 @@ Public Class PrzystankiOpoznione
     Public Sub New(przystanki As List(Of pkar.MpkWrap.Przystanek))
 
         _przystanki = New List(Of PrzystanekOpoznienie)
-        For Each oItem As pkar.MpkWrap.Przystanek In przystanki
-            Dim oNew As New PrzystanekOpoznienie
-            oItem.CopyTo(oNew)
-            _przystanki.Add(oNew)
-        Next
+        przystanki.ForEach(Sub(s)
+                               Dim oNew As New PrzystanekOpoznienie
+                               s.CopyTo(oNew)
+                               _przystanki.Add(oNew)
+                           End Sub) ' tylko autobusy
 
     End Sub
 
@@ -36,15 +36,15 @@ Public Class PrzystankiOpoznione
         ' z Opoznienia.Xaml.cs, 1 raz
 
         ' policz
-        Dim sTxt = ""
+        Dim sTxt As String = ""
 
         For Each oItem As PrzystanekOpoznienie In _przystanki
             ' wczytaj dane przystanku
             If oItem.IsBus <> isBus Then Continue For
 
-            oItem.delays = Await _oMPK.GetDelayStats(isBus, oItem.id)
+            '*TEMPBLOCK* oItem.delays = Await _oMPK.GetDelayStats(isBus, oItem.id)
 
-            sTxt = sTxt & "Przystanek: " & oItem.Name & vbTab & oItem.delays.DelaySum & vbCrLf
+            '*TEMPBLOCK* sTxt &= $"Przystanek: " & oItem.Name & vbTab & oItem.delays.DelaySum & vbCrLf
 
         Next
 

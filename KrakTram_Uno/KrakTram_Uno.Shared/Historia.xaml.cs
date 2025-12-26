@@ -159,7 +159,7 @@ namespace KrakTram
             this.Navigate(typeof(Opoznienia));
         }
 
-        private async System.Threading.Tasks.Task PrzestawRokAsync(int initRokChange)
+        private async void PrzestawRokAsync(int initRokChange)
         {
             int iRok = (int)uiSlider.Value + initRokChange;
             int iRokDelta = initRokChange;
@@ -182,7 +182,7 @@ namespace KrakTram
             if(iRok >= _MaxRok)
                 uiRokPlus.IsEnabled = false;
 
-            uiTitle.Text = vb14.GetLangString("resHistoriaTitle") + " " + iRok;
+            uiTitle.Text = pkar.Localize.GetResManString("resHistoriaTitle") + " " + iRok;
 
             // czyli wywołanie z guzików, plus/minus - aktualizujemy Slider
             if(initRokChange != 0)

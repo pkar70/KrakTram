@@ -66,7 +66,8 @@ namespace KrakTram
         {
             foreach (pkar.MpkWrap.Przystanek oStop in App.oStops.GetList("all"))
             {
-                if (oStop.id == shortName)
+                //if (oStop.id == shortName) - dla TTSS
+                if (oStop.Name == shortName)
                 {
                     App.mbGoGPS = false;
                     App.mMaxOdl = vb14.GetSettingsInt("treatAsSameStop");
@@ -93,7 +94,7 @@ namespace KrakTram
             bool bDoCopy = false;
             foreach (var oItem in lista)
             {
-                if (oItem.name == _stopName) bDoCopy = true;
+                if (VBlib.Trasa.NazwaBezSlupka(oItem.name) == _stopName) bDoCopy = true;
                 if (bDoCopy) _lista.Add(oItem);
             }
 
@@ -169,7 +170,8 @@ namespace KrakTram
 
         private Windows.Devices.Geolocation.Geopoint stopek2geopoint(string stopName, bool isbus)
         {
-            var stopek = App.oStops.Find(c => (c.Name == stopName) && (c.IsBus == isbus));
+            //var stopek = App.oStops.Find(c => (c.Name == stopName) && (c.IsBus == isbus));
+            var stopek = App.oStops.Find(c => (c.Name == stopName));
             if (stopek is null) return null;
             return stopek.Geo.ToWinGeopoint();
         }

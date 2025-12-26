@@ -28,12 +28,12 @@ namespace KrakTram
 
             if (string.IsNullOrEmpty(sMask))
             {
-                uiLista.ItemsSource = oNuget.GetList();
+                uiLista.ItemsSource = oNuget;
             }
             else
             {
                 sMask = sMask.ToLower();
-                uiLista.ItemsSource = from c in oNuget.GetList()
+                uiLista.ItemsSource = from c in oNuget
                                       where c.sInfo.ToLower().Contains(sMask)
                                       select c;
             }
@@ -56,7 +56,7 @@ namespace KrakTram
             if (!bRet) return;
 
             uiFileDate.Text = oNuget.GetFileDate().ToString("yyyy.MM.dd");
-            uiLista.ItemsSource = oNuget.GetList(); // from c in moLista;
+            uiLista.ItemsSource = oNuget; // from c in moLista;
         }
 
         private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -77,42 +77,10 @@ namespace KrakTram
 #endif 
             if (oNuget.Count() < 1)
                 return;
-            uiLista.ItemsSource = oNuget.GetList(); //  From c In moLista ' Order By c.iMin
+            uiLista.ItemsSource = oNuget; //  From c In moLista ' Order By c.iMin
 
         }
 
-#if false
-        private bool TryLoadCache()
-        {
-            if(!oNuget.Load()) return false;
-
-            uiFileDate.Text = oNuget.GetFileDate().ToString("yyyy.MM.dd");
-            uiReload.IsEnabled = true;
-
-            return true;
-        }
-        private async System.Threading.Tasks.Task<bool> WczytajZmianyAsync()
-        {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                await vb14.DialogBoxResAsync("resErrorNoNetwork");
-                return false;
-            }
-
-            string sRet = await oNuget.LoadOrImport() oVbLib.WczytajZmiany();
-            if(sRet != "")
-            {
-                await vb14.DialogBoxAsync(sRet);
-                return false;
-            }
-
-
-            uiFileDate.Text = "";
-            uiReload.IsEnabled = false;
-            oNuget.Save();
-            return true;
-        }
-#endif
 
         private void PokazObjazd(string sHtml)
         {
@@ -131,7 +99,7 @@ namespace KrakTram
         {
             pkar.MpkMain.MpkZmiana oItem = (sender as Windows.UI.Xaml.Controls.Grid).DataContext as pkar.MpkMain.MpkZmiana;
 
-            string sHtml = $"<p>{oItem.sInfo}<p><a href='{oItem.sLink}'>{vb14.GetLangString("resZmianyLink")}</a>";
+            string sHtml = $"<p>{oItem.sInfo}<p><a href='{oItem.sLink}'>{pkar.Localize.GetResManString("resZmianyLink")}</a>";
             PokazObjazd(sHtml);
         }
 

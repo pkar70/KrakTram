@@ -33,15 +33,12 @@ Public Class Setup
             iOdl = oPos.DistanceTo(oNode.Geo)
 
             If iOdl < dMaxOdl Then
-                Dim oNew As New BliskiStop
-                oNew.sNazwa = oNode.Name
-                oNew.iOdl = iOdl
+                Dim oNew As New BliskiStop With {
+                    .sNazwa = oNode.Name,
+                    .iOdl = iOdl
+                }
 
-                If oNode.IsBus Then
-                    oNew.sNazwa += " (A)"
-                Else
-                    oNew.sNazwa += " (T)"
-                End If
+                oNew.sNazwa += If(oNode.IsBus, " (A)", " (T)")
 
                 oNew.sDane = iOdl & " m (" & CInt(60 * iOdl / (dWalkSpeed * 1000)) & " min)"
                 oItemy.Add(oNew)
@@ -51,8 +48,8 @@ Public Class Setup
         Next
 
         If oItemy.Count < 1 Then
-            Dim oNew As BliskiStop = New BliskiStop()
-            Dim sMsg As String = GetLangString("resNearestStop")
+            Dim oNew As New BliskiStop()
+            Dim sMsg As String = pkar.Localize.GetResManString("resNearestStop")
 
             If iMinOdl < 10000 Then
                 sMsg = sMsg.Replace("###", iMinOdl.ToString() & " m")

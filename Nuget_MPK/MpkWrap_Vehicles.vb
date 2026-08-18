@@ -45,6 +45,9 @@ Namespace MpkWrap
                 Return New VehicleData With {.type = "", .low = 0, .num = "???"}
             End If
 
+            If vehicleId.StartsWith("3/") Then vehicleId = vehicleId.Replace("3/", "")
+            If vehicleId.StartsWith("0/") Then vehicleId = vehicleId.Replace("0/", "")
+
             If vehicleId.Length > 7 Then
                 ' dotychczasowy sposób - z długimi ID
                 Dim key As String = If(isBus, "b", "t") & vehicleId

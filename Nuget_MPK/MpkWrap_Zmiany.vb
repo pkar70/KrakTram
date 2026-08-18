@@ -38,7 +38,11 @@
             Dim oMPK As New MpkMain.MPK_Merged
 
             Me.Clear()
-            Me.AddRange(Await oMPK.DownloadZmianyAsync)
+            ' null gdy jest np. timeout (a 2026.07.24 tak się zdarza, dopiero drugie wejście zwraca dane)
+            Dim oList As List(Of MpkMain.MpkZmiana) = Await oMPK.DownloadZmianyAsync()
+            If oList Is Nothing Then Return False
+
+            Me.AddRange(oList)
 
             Save()
 

@@ -13,7 +13,7 @@
     <PackageReference Include="pkar.DotNetExts" Version="1.2.10" />
     <PackageReference Include="pkar.Localize" Version="1.0.2" />
     <PackageReference Include="pkar.NetConfigs" Version="1.0.9" />
-    <PackageReference Include="pkar.nuget.MPK" Version="2.1.0" />
+    <PackageReference Include="pkar.nuget.MPK" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>

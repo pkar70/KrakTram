@@ -84,9 +84,9 @@ Namespace MpkWrap
                     Return Me
                 Case "bus"
                     ' Return From c In moItemy Where sCat = "bus"
-                    Return Where(Function(s) Equals(s.IsBus, True)).ToList
+                    Return Where(Function(s) s.IsBus).ToList
                 Case Else
-                    Return Where(Function(s) Equals(s.IsBus, False)).ToList
+                    Return Where(Function(s) s.Ami_AlsoTram).ToList
             End Select
         End Function
 
@@ -98,13 +98,13 @@ Namespace MpkWrap
 
                 For Each oItemNew In oNew
 
-                    If Equals(If(oItemNew.Name, ""), If(oItemOld.Name, "")) Then
+                    If oItemNew.Name.EqualsCI(oItemOld.Name) Then
                         bDalej = True
                         Exit For
                     End If
                 Next
 
-                If Not bDalej Then sDiffsDel = sDiffsDel & oItemOld.Name & vbLf
+                If Not bDalej Then sDiffsDel &= oItemOld.Name & vbLf
             Next
 
             Dim sDiffsNew = ""
@@ -114,13 +114,13 @@ Namespace MpkWrap
 
                 For Each oItemOld In oOld
 
-                    If Equals(If(oItemNew.Name, ""), If(oItemOld.Name, "")) Then
+                    If oItemNew.Name.EqualsCI(oItemOld.Name) Then
                         bNowe = False
                         Exit For
                     End If
                 Next
 
-                If bNowe Then sDiffsNew = sDiffsNew & oItemNew.Name & vbLf
+                If bNowe Then sDiffsNew &= oItemNew.Name & vbLf
             Next
 
             If Not String.IsNullOrEmpty(sDiffsNew) Then sDiffsNew = "Nowe:" & vbLf & sDiffsNew
@@ -146,18 +146,18 @@ Namespace MpkWrap
         Public Property Ami_Count As Integer
 
         ' tak by mógł wczytać JSON :)
-        Public Sub New(Optional wersjaMPK As MpkMain.MpkPrzystanek = Nothing)
-            If wersjaMPK IsNot Nothing Then
-                IsBus = (wersjaMPK.category.ToLowerInvariant <> "tram")
-                Geo = BasicGeoposFromMpk(wersjaMPK.latitude, wersjaMPK.longitude)
-                Name = wersjaMPK.name
-                id = wersjaMPK.shortName
-            End If
-        End Sub
+        'Public Sub New(Optional wersjaMPK As MpkMain.MpkPrzystanek = Nothing)
+        '    If wersjaMPK IsNot Nothing Then
+        '        IsBus = (wersjaMPK.category.ToLowerInvariant <> "tram")
+        '        Geo = BasicGeoposFromMpk(wersjaMPK.latitude, wersjaMPK.longitude)
+        '        Name = wersjaMPK.name
+        '        id = wersjaMPK.shortName
+        '    End If
+        'End Sub
 
-        Public Shared Function BasicGeoposFromMpk(latitude As Integer, longitude As Integer) As BasicGeopos
-            Return New BasicGeopos(latitude / 3600000.0, longitude / 3600000.0)
-        End Function
+        'Public Shared Function BasicGeoposFromMpk(latitude As Integer, longitude As Integer) As BasicGeopos
+        '    Return New BasicGeopos(latitude / 3600000.0, longitude / 3600000.0)
+        'End Function
     End Class
 End Namespace
 
